@@ -13,7 +13,7 @@ Transcendence is a web-based application built using Docker and Django. The proj
 Before running the project, ensure you have the following installed:
 - Docker and Docker Compose
 - Python 3.x
-- Node.js (optional, if front-end requires build steps)
+- Node.js
 
 ## Installation
 1. Clone the repository:
