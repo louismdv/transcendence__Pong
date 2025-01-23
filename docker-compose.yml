@@ -1,0 +1,18 @@
+version: '3.8'
+
+services:
+  web:
+    build: .
+    command: python ft_transcendence/manage.py runserver 0.0.0.0:8000
+    volumes:
+      - .:/app  # Lier ton répertoire local avec le répertoire du container pour un développement en temps réel
+      - ./staticfiles:/app/staticfiles  # Associe le répertoire local aux fichiers collectés
+    ports:
+      - "8000:8000"
+    environment:
+      - DEBUG=True
+    networks:
+      - backend
+networks:
+  backend:
+    driver: bridge
