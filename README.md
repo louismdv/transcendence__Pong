@@ -46,7 +46,7 @@ ROADMAP / TODO list
 ### Phase 1 : Configuration du backend et de la base de données
 
 - [ ] Use the Django framework for the backend
-- [ ] Set up the database (use MariaDB or another option)
+- [ ] Set up the database (use PostgreSQL)
 - [ ] Create database models for users
 - [ ] Implement user registration and login
 - [ ] Ensure secure password storage (hashing and safe storage)
