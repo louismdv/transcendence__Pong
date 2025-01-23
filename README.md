@@ -51,7 +51,7 @@ ROADMAP / TODO list
 - [ ] Implement user registration and login
 - [ ] Ensure secure password storage (hashing and safe storage)
 - [ ] Protect against SQL injections and XSS attacks
-- [ ] Set up HTTPS and WSS if applicable
+- [ ] Set up HTTPS and WSS
 - [ ] Implement form validation on the server side
 
 ### Phase 2: Frontend
