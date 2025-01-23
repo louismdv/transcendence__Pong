@@ -1,7 +1,15 @@
+:root {
+    --primary-color: #404b69;
+    --background-color: #283149;
+    --text-color: #fff;
+    --secondary-color: #f73859;;
+}
+
 body{
     margin: 0;
     padding: 0;
-    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+    background-color: var(--background-color);
+    font-family: 'Poppins', sans-serif;
     overflow-x: hidden;
 }
 main {
@@ -23,54 +31,81 @@ section {
 }
 
 #login{
-    /* display: flex; */
     justify-content: center;
     align-items: center;
     width: 100%;
     height: 100%;
-    /* background-color: blue; */
-    /* max-width: 800px; */
     justify-content: center;
     gap: 40px;
     flex-direction: row-reverse;
 }
 
 .login-content{
-    background-color: aqua;
+    background-color: var(--primary-color);
     width:400px;
     height:600px;
     justify-content: center;
-    border-color: rgb(0, 0, 0);
     border: solid;
     align-items: center;
     border-radius: 20px;
+    color: var(--text-color);
 }
 
-.login-content h2{
+.h2-login{
+    font-weight: 600; /* ou 700 pour un aspect encore plus épais */
+    font-size: 2rem; /* Ajustez la taille selon vos besoins */
+
+}
+
+.login-content {
     justify-content: center;
     display: flex;
-    color: white;
-    font-size: 3em;
-    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    flex-direction: column;
 }
 
 form {
     display: flex;
     flex-direction: column;
-    gap: 20px; /* Espacement entre les sections */
+    gap: 20px; 
     width: 100%; /* Adapter à la largeur du conteneur */
     max-width: 80%;
     margin-top: 80px;
 }
 
-.login-row {
-    display: flex;
-    justify-content: space-between; /* Nom à gauche, Email à droite */
-    gap: 20px; /* Espacement entre les deux champs */
+input, button {
+    border: none;
+    background-color: var(--primary-color);
+    border-bottom-style: solid;
+	border-bottom-width: 10px;
+    justify-content: center;
+    border-width: 0.3px;
+	margin-top: 10px;
+    width: 100%; /* Ajustement automatique de la largeur */
+    border-color: var(--secondary-color);
 }
+
 
 .login-form {
     flex: 1; /* Égalité des largeurs entre Nom et Email */
     display: flex;
     flex-direction: column; /* Permet au label de rester au-dessus de l'input */
+    justify-content: center;
+}
+
+button {
+    background-color: var(--text-color);
+    border-radius: 20px;
+	text-align: center;
+    cursor: pointer;
+	display: flex;
+	justify-content: center;
+	/* padding: 5em; */
+    padding: 12px;
+    font-size: 25px;
+	width: 8em;
+}
+
+.a {
+	display: flex;
+	justify-self: center;
 }
