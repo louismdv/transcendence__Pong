@@ -31,11 +31,15 @@ ROADMAP / TODO list
 - Phase 5 : opti du front et back clean code + test du projet complet
 
 !!!!! MANDATORY !!!!!
-Hash any passwords stored in the database, if applicable.
-Protect the website against SQL injections and XSS attacks.
-Enable HTTPS for all website features and use WSS instead of WS if applicable.
-Implement form validation for all user input, either client-side or server-side, depending on the backend.
-Prioritize security even if you don't use JWT tokens; protect API routes and consider implementing 2FA if necessary.
+- Hash any passwords stored in the database, if applicable.
+
+- Protect the website against SQL injections and XSS attacks.
+
+- Enable HTTPS for all website features and use WSS instead of WS if applicable.
+
+- Implement form validation for all user input, either client-side or server-side, depending on the backend.
+
+- Prioritize security even if you don't use JWT tokens; protect API routes and consider implementing 2FA if necessary.
 
 
 
