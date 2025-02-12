@@ -99,13 +99,16 @@ button {
     cursor: pointer;
 	display: flex;
 	justify-content: center;
-	/* padding: 5em; */
     padding: 12px;
-    font-size: 25px;
-	width: 8em;
+    font-size: 15px;
 }
 
 .a {
 	display: flex;
+    width: 150px;
 	justify-self: center;
+}
+
+register {
+    width: auto;
 }
