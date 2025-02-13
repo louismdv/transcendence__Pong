@@ -11,7 +11,7 @@ logs:
 	docker-compose logs -f
 
 migrate:
-	docker-compose run web python ft_transcendence/manage.py migrate
+	docker-compose run web python ft_transcendence/manage.py migrate --noinput
 
 collectstatic:
 	docker-compose run web python ft_transcendence/manage.py collectstatic --noinput
