@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-x=&ot3)u%h9r96@7#0&e3#w-b(t$d#uzyi4lu6optmh(bp#4*k
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -74,12 +74,19 @@ WSGI_APPLICATION = 'ft_transcendence.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
+from decouple import config
+
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': config('POSTGRES_DB', default='your_db_name'),
+        'USER': config('POSTGRES_USER', default='your_db_user'),
+        'PASSWORD': config('POSTGRES_PASSWORD', default='your_db_password'),
+        'HOST': 'db',
+        'PORT': '5432',
     }
 }
+
 
 
 # Password validation
