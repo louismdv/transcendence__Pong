@@ -95,17 +95,44 @@ input, button {
 button {
     background-color: var(--text-color);
     border-radius: 20px;
-	text-align: center;
     cursor: pointer;
-	display: flex;
-	justify-content: center;
-	/* padding: 5em; */
-    padding: 12px;
-    font-size: 25px;
-	width: 8em;
+    padding: 8px;
 }
 
-.a {
-	display: flex;
-	justify-self: center;
+.styled-text {
+    display: inline-block;
+    position: relative;
+    padding: 0 10px; /* Espacement entre le texte et les traits */
+    font-weight: bold;
+    font-family: Arial, sans-serif;
+}
+
+.styled-text::before,
+.styled-text::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    width: 50px;
+    height: 1px;
+    background-color: var(--secondary-color);
+}
+
+.styled-text::before {
+    left: 0;
+    transform: translateX(-100%);
+}
+
+.styled-text::after {
+    right: 0;
+    transform: translateX(100%);
+}
+
+
+.register {
+    width: auto;
+    justify-content: center;
+    text-align: center;
+    flex-direction: column;
+	margin-top: 30px;
+
 }

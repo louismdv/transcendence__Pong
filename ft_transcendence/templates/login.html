@@ -18,27 +18,29 @@
         <div class="login-content">
             <h2 class="h2-login">Login</h2>
             <form action="" method="POST">
-               
-                    <!-- Champ texte -->
                     <div class="login-form">
                         <label for="email">Email</label>
                         <input type="text" id="email" name="email" required>
                         
                     </div>
-                    <!-- Adresse email -->
                     <div class="login-form">
                         <label for="password">Password</label>
                         <input type="password" id="password" name="password" required>
                     </div>
             </form>
-            <button type="submit" class="a">Register 42</button>
-            
-            <button type="submit" class="a">Login</button>
             <div class="register"> 
-                <p>Don't have a account <a href="">Register</a></p>
+                <button type="submit">Login</button>
+                <ul>
+                    <p>Need an account? <a href="{% url 'register' %}" hx-get="{% url 'register' %}" hx-target="#register" hx-push-url="true">SIGN UP</a></p>
+                </ul>
+                
+                <div class="styled-text">
+                    <span>OR</span>
+                </div>                
+                <button type="submit">Register 42</button>
             </div>
         </section>
-   </main>
+       </main>
    <footer> 
 
    </footer>
