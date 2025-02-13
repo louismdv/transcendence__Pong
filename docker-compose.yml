@@ -13,6 +13,27 @@ services:
       - DEBUG=True
     networks:
       - backend
+
+  db:
+    image: postgres:latest
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+    networks:
+      - backend
+  adminer:
+    image: adminer
+    ports:
+      - 8080:8080
+    restart: unless-stopped
+    networks:
+      - backend
 networks:
   backend:
     driver: bridge
+
+volumes:
+  postgres_data:
