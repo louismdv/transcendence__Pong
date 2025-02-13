@@ -4,6 +4,8 @@ from django.shortcuts import render
 
 def home(request):
     return render(request, 'login.html')
+def register(request):
+    return render(request, 'register.html')
 # def about_view(request):
 #     return render(request, 'apropos.html')
 # def contact_view(request):
