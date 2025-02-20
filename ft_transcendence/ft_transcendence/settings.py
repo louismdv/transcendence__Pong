@@ -130,6 +130,12 @@ STATIC_URL = '/static/'
 
 STATICFILES_DIRS = [
     BASE_DIR / "static",  # Indique à Django où trouver tes fichiers statiques
+    BASE_DIR / "js",  # Indique à Django où trouver tes fichiers statiques
+    
 ]
 
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
