@@ -3,14 +3,16 @@ version: '3.8'
 services:
   web:
     build: .
-    command: python ft_transcendence/manage.py runserver 0.0.0.0:8000
+    command: sh -c "python ft_transcendence/manage.py migrate && python ft_transcendence/manage.py runserver 0.0.0.0:8000"
     volumes:
-      - .:/app  # Lier ton répertoire local avec le répertoire du container pour un développement en temps réel
-      - ./staticfiles:/app/staticfiles  # Associe le répertoire local aux fichiers collectés
+      - .:/app
+      - ./staticfiles:/app/staticfiles
     ports:
       - "8000:8000"
     environment:
       - DEBUG=True
+    depends_on:
+      - db
     networks:
       - backend
 
@@ -24,6 +26,7 @@ services:
       - postgres_data:/var/lib/postgresql/data/
     networks:
       - backend
+
   adminer:
     image: adminer
     ports:
@@ -31,6 +34,7 @@ services:
     restart: unless-stopped
     networks:
       - backend
+
 networks:
   backend:
     driver: bridge

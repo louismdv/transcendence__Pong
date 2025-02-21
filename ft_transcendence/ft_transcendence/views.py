@@ -1,18 +1,46 @@
-# ft_transcendence/views.py
-
-from django.shortcuts import render
+from django.shortcuts import render, redirect
+from django.contrib.auth import login, authenticate
+from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
+from django.contrib import messages
+from django.contrib.auth import get_user_model
+from django.contrib.auth.backends import ModelBackend
 
 def home(request):
     return render(request, 'main.html')
+
 def home2(request):
     return render(request, 'home.html')
+
 def register(request):
-    return render(request, 'register.html')
+    if request.method == 'POST':
+        form = UserCreationForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+            user.backend = 'django.contrib.auth.backends.ModelBackend'
+            login(request, user)
+            messages.success(request, 'Your account has been created successfully!')
+            return redirect('home')
+        else:
+            for field, errors in form.errors.items():
+                for error in errors:
+                    messages.error(request, f"{field}: {error}")
+    else:
+        form = UserCreationForm()
+    return render(request, 'register.html', {'form': form})
+
 def login_view(request):
-    return render(request, 'login.html')
-# def about_view(request):
-#     return render(request, 'apropos.html')
-# def contact_view(request):
-#     return render(request, 'contact.html')
-# def skills_view(request):
-#     return render(request, 'skills.html')
+    if request.method == 'POST':
+        form = AuthenticationForm(request, data=request.POST)
+        if form.is_valid():
+            username = form.cleaned_data.get('username')
+            password = form.cleaned_data.get('password')
+            user = authenticate(username=username, password=password)
+            if user is not None:
+                login(request, user)
+                messages.success(request, 'You have successfully logged in!')
+                return redirect('home')
+            else:
+                messages.error(request, 'Invalid username or password.')
+    else:
+        form = AuthenticationForm()
+    return render(request, 'login.html', {'form': form})
