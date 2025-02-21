@@ -2,7 +2,7 @@
     --primary-color: #404b69;
     --background-color: #283149;
     --text-color: #fff;
-    --secondary-color: #f73859;;
+    --secondary-color: #f73859;
 }
 
 body{
@@ -22,7 +22,6 @@ main {
 }
 
 section {
-    min-height: 70vh;
     display: flex;
     justify-content: center;
     align-items: center;
