@@ -24,7 +24,7 @@ urlpatterns = [
    path('', views.home2, name='home'),  # Accueil
    path('login/', views.login_view, name='login'),  # Page de login, crée une vue dédiée
    path('register/', views.register, name='register'), # Page d'inscription
-   path('liveChat/', views.register, name='liveChat')  # Page d'inscription
+   path('livechat/', views.register, name='livechat')  # Page d'inscription
 
 ]
 

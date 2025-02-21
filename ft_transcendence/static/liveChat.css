@@ -1,4 +1,4 @@
-#liveChat {
+#livechat {
     position: fixed;
     bottom: 20px;
     right: 20px;
@@ -98,7 +98,8 @@ body {
     width: 100%;
 }
 
-.emoji-button, .send-button {
+.emoji-button,
+.send-button {
     background: none;
     border: none;
     cursor: pointer;
@@ -129,6 +130,6 @@ body {
     font-size: 20px;
 }
 
-i{
+i {
     color: var(--secondary-color);
 }

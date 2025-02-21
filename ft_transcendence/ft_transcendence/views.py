@@ -7,7 +7,7 @@ def home(request):
 def home2(request):
     return render(request, 'home.html')
 def register(request):
-    return render(request, 'liveChat.html')
+    return render(request, 'livechat.html')
 def login_view(request):
     return render(request, 'login.html')
 # def about_view(request):
