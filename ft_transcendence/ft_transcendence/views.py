@@ -3,14 +3,10 @@
 from django.shortcuts import render
 
 def home(request):
-    return render(request, 'main.html')
+    return render(request, 'liveChat.html')
 def register(request):
-    return render(request, 'register.html')
+    return render(request, 'liveChat.html')
 def login_view(request):
-    return render(request, 'login.html')
-# def about_view(request):
-#     return render(request, 'apropos.html')
-# def contact_view(request):
-#     return render(request, 'contact.html')
-# def skills_view(request):
-#     return render(request, 'skills.html')
+    return render(request, 'liveChat.html')
+def chat(request):
+    return render(request, 'liveChat.html')

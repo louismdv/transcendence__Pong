@@ -1,0 +1,134 @@
+#liveChat {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    height: 10px;
+    z-index: 1000;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    height: 10vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: white;
+}
+
+.chat-container {
+    width: 100%;
+    max-width: 400px;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.chat-header {
+    background-color: var(--primary-color);
+    padding: 16px;
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+    display: flex;
+    justify-content: center;
+}
+
+.chat-header h1 {
+    font-size: 16px;
+    font-weight: 500;
+    color: var(--text-color);
+}
+
+.chat-messages {
+    flex: 1;
+    background-color: var(--background-color);
+    padding: 16px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.message {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.message-bubble {
+    padding: 12px 24px;
+    border-radius: 9999px;
+    color: white;
+    max-width: 80%;
+}
+
+.message-send .message-bubble {
+    background-color: #9b9898;
+}
+
+.message-receive .message-bubble {
+    background-color: #0e0d0d;
+}
+
+.chat-input {
+    background-color: var(--background-color);
+    padding: 16px;
+    border-bottom-left-radius: 8px;
+    border-bottom-right-radius: 8px;
+}
+
+.input-container {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background-color: var(--text-color);
+    padding: 8px 16px;
+    border-radius: 9999px;
+}
+
+.input-container input {
+    flex: 1;
+    border: none;
+    outline: none;
+    font-size: 16px;
+    background-color: var(--text-color);
+    padding: 8px 0;
+}
+
+.input-container input::placeholder {
+    color: var(--background-color);
+    width: 100%;
+}
+
+.emoji-button, .send-button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 4px;
+}
+
+.emoji-button {
+    font-size: 24px;
+    line-height: 1;
+    color: #ffd700;
+}
+
+.send-button {
+    color: #504d4d;
+    width: 30px;
+}
+
+/* Flèche stylisée pour le bouton d'envoi */
+.send-arrow {
+    display: inline-block;
+    width: 24px;
+    height: 24px;
+    position: relative;
+}
+
+.send-arrow::before {
+    content: "➤";
+    font-size: 20px;
+}
+
+i{
+    color: var(--secondary-color);
+}

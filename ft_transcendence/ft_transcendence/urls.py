@@ -23,5 +23,7 @@ from django.conf.urls.static import static
 urlpatterns = [
    path('', views.home, name='home'),  # Accueil
    path('login/', views.login_view, name='login'),  # Page de login, crée une vue dédiée
-   path('register/', views.register, name='register')  # Page d'inscription
+   path('register/', views.register, name='register'), # Page d'inscription
+   path('liveChat/', views.register, name='liveChat')  # Page d'inscription
+
 ]
