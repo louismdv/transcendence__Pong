@@ -1,3 +1,4 @@
+# filepath: /c:/Users/KSE/Desktop/42/Transcendence/Dockerfile
 # Utilisation d'une image de base Python
 FROM python:3.10-slim
 
@@ -14,4 +15,4 @@ RUN pip install --no-cache-dir -r requirements.txt
 EXPOSE 8000
 
 # Lancer le serveur de développement Django
-CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
+CMD ["sh", "-c", "python manage.py migrate && python manage.py runserver 0.0.0.0:8000"]
