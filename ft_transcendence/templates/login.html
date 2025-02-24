@@ -32,4 +32,15 @@
             </form>
         </div>
     </section>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const messages = document.querySelectorAll('.messages p');
+            messages.forEach(function(message) {
+                alert(message.textContent);
+            });
+            if (performance.navigation.type === 2) {
+                location.reload(true);
+            }
+        });
+    </script>
 {% endblock %}

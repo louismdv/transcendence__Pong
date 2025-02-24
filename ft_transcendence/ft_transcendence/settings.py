@@ -83,9 +83,9 @@ WSGI_APPLICATION = 'ft_transcendence.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': config('POSTGRES_DB', default='your_db_name'),
-        'USER': config('POSTGRES_USER', default='your_db_user'),
-        'PASSWORD': config('POSTGRES_PASSWORD', default='your_db_password'),
+        'NAME': config('POSTGRES_DB', default='ft_ficello'),
+        'USER': config('POSTGRES_USER', default='latranscenderie'),
+        'PASSWORD': config('POSTGRES_PASSWORD', default='lazigouingouinerie42'),
         'HOST': 'db',
         'PORT': '5432',
     }
