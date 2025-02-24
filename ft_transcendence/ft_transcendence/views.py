@@ -6,10 +6,10 @@ from django.contrib import messages
 from django.contrib.auth import get_user_model
 from django.contrib.auth.backends import ModelBackend
 
-def home(request):
+def main(request):
     return render(request, 'main.html')
 
-def home2(request):
+def home(request):
     return render(request, 'home.html')
 
 
