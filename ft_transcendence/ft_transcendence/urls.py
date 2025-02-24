@@ -7,11 +7,11 @@ from django.conf.urls.static import static
 urlpatterns = [
    path('', views.home, name='home'),  # Accueil
    path('login/', views.login_view, name='login'),  # Page de login, crée une vue dédiée
-   path('register/', views.register, name='register'), # Page d'inscription
+   path('register/', views.register, name='register'),
    path('livechat/', views.livechat, name='livechat'),
-   path('api/auth/', include('dj_rest_auth.urls')),  # API d'authentification
-   path('api/auth/registration/', include('dj_rest_auth.registration.urls')),  
-   path('home/', views.home, name='home')
+   path('api/auth/', include('dj_rest_auth.urls')),
+   path('api/auth/registration/', include('dj_rest_auth.registration.urls')),
+   path('home/', views.home, name='home')  
 ]
 
 if settings.DEBUG:

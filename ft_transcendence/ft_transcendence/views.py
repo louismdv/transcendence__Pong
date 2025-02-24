@@ -12,6 +12,8 @@ def main(request):
 def home(request):
     return render(request, 'home.html')
 
+def livechat(request):
+    return render(request, 'livechat.html')
 
 def register(request):
     if request.method == 'POST':
