@@ -1,54 +1,29 @@
-body{
-    margin: 0;
-    padding: 0;
-    font-family: 'Poppins', sans-serif;
-    overflow-x: hidden;
-}
-main {
-    display: block;
-    justify-content: center;
-    align-items: center;
-	width: 100%;
-    min-height: calc(100vh - 100px);
-   
-}
 
-section {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 0;
-    box-sizing: border-box;
-}
-
-#login{
-    /* display: flex; */
+#login, #register{
     justify-content: center;
     align-items: center;
     width: 100%;
     height: 100%;
-    /* background-color: blue; */
-    /* max-width: 800px; */
     justify-content: center;
     gap: 40px;
     flex-direction: row-reverse;
 }
 
 .login-content{
-    background-color: aqua;
+    background-color: var(--primary-color);
     width:400px;
     height:600px;
     justify-content: center;
-    border-color: rgb(0, 0, 0);
     border: solid;
     align-items: center;
     border-radius: 20px;
+    color: var(--text-color);
 }
 
 .h2-login{
     font-weight: 600; /* ou 700 pour un aspect encore plus épais */
     font-size: 2rem; /* Ajustez la taille selon vos besoins */
-    color: #fff; /* Couleur blanche comme sur l'image */
+
 }
 
 .login-content {
@@ -57,27 +32,6 @@ section {
     flex-direction: column;
 }
 
-form {
-    display: flex;
-    flex-direction: column;
-    gap: 20px; 
-    width: 100%; /* Adapter à la largeur du conteneur */
-    max-width: 80%;
-    margin-top: 80px;
-}
-
-input, button {
-    border: none;
-    background-color: aqua;
-    border-bottom-style: solid;
-	border-bottom-width: 10px;
-    justify-content: center;
-    border-width: 0.3px;
-	margin-top: 10px;
-    width: 100%; /* Ajustement automatique de la largeur */
-    border-color: blue;
-	color: red;
-}
 
 
 .login-form {
@@ -87,21 +41,41 @@ input, button {
     justify-content: center;
 }
 
-button {
-    background-color: red;
-    color: black;
-    border-radius: 30px;
-	text-align: center;
-    cursor: pointer;
-	display: flex;
-	justify-content: center;
-	/* padding: 5em; */
-    padding: 12px;
-    font-size: 25px;
-	width: 8em;
+
+.styled-text {
+    display: inline-block;
+    position: relative;
+    padding: 0 10px; /* Espacement entre le texte et les traits */
+    font-weight: bold;
+    font-family: Arial, sans-serif;
 }
 
-.a {
-	display: flex;
-	justify-self: center;
+.styled-text::before,
+.styled-text::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    width: 50px;
+    height: 1px;
+    background-color: var(--secondary-color);
+}
+
+.styled-text::before {
+    left: 0;
+    transform: translateX(-100%);
+}
+
+.styled-text::after {
+    right: 0;
+    transform: translateX(100%);
+}
+
+
+.register {
+    width: auto;
+    justify-content: center;
+    text-align: center;
+    flex-direction: column;
+	margin-top: 50px;
+
 }

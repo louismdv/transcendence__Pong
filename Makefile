@@ -15,3 +15,9 @@ migrate:
 
 collectstatic:
 	docker-compose run web python ft_transcendence/manage.py collectstatic --noinput
+
+reboot :
+	docker system prune -a --volumes
+
+down-server :
+	sudo pkill -f runserver
