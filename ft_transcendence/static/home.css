@@ -17,7 +17,6 @@
     font-family:Fugaz One;
     font-size:50px;
     cursor:pointer;
-    color: var(--text-color);
     height: 100%;
     margin-left: 20px;
 }
@@ -64,12 +63,12 @@ aside:hover .sidebar-links {
     transition: all 0.4s ease;
     width: 170px;
 }
-.sidebar-links h4 span{
+.sidebar-links h4{
     margin: 15px 0 5px;
     font-size: 1.2em;
     opacity: 0;
 }
-aside:hover .sidebar-links h4 span{
+aside:hover .sidebar-links h4 {
     transition: all 0.4s ease;
     opacity: 1;
 }
@@ -77,8 +76,8 @@ aside:hover .sidebar-links h4 span{
     margin: 10px 0;
 }
 .sidebar-links a {
-    color: var(--text-color);
     text-decoration: none;
+    color: #000;
     display: flex;
     align-items: center;
     margin-right: 10px;
@@ -86,7 +85,6 @@ aside:hover .sidebar-links h4 span{
 .sidebar-links li a{
     
     display: flex;
-    color: var(--text-color)e;
     align-items: center;
     gap: 0 20px;
     padding: 15px 10px;
@@ -96,13 +94,6 @@ aside:hover .sidebar-links h4 span{
 }
 .sidebar-links li a:hover {
   border-radius: 10px;
-}
-
-.sidebar-links h4 {
-    color: var(--text-color);
-    font-weight: 500;
-    margin: 10px 0;
-    white-space: nowrap;
 }
 
 
@@ -119,33 +110,35 @@ aside:hover .sidebar-links h4 span{
     font-size: 30px;
 }
 .gameMode {
-    grid-column: span 4; /* Span across all three columns */
+    grid-column: span 4; 
     border-radius: 5px;
     margin: 0;
 }
 .gameMode h3 {
-    text-align: center;
+    text-align: left;
     margin-bottom: 0 5px;
 }
 .flex-container {
     display: flex;
     flex-direction: row;
-    grid-column: span 4; /* Span across all three columns */
-    gap: 20px; /* Space between cards */
+    grid-column: span 4;
+    gap: 20px;
     padding: 20px;
 }
+
 .card {
 /*    border: 2px solid green; */
     display: flex;
     flex-direction: column;
     align-items: center;
-    background-color: #070707; /* Semi-transparent gray background */
+    background-color:#d7d5d4;
     border-radius: 10px;
-    flex: 1 1 300px; /* Flex-grow, flex-shrink, flex-basis */
-    max-height: 500px; /* Set a maximum height for the card */
-    overflow: auto; /* Add scrollbars if content overflows */
-    position: relative; /* Ensure the card is a positioned container */
+    flex: 1 1 300px;
+    max-height: 500px;
+    overflow: auto;
+    position: relative;
 }
+
 .centeredTextonImage {
     font-family: "Pixelify Sans", serif;
     z-index: 3;
@@ -157,26 +150,26 @@ aside:hover .sidebar-links h4 span{
     transform: translate(-50%, -50%);
 }
 .glow-on-hover {
-    position: absolute; /* Position the button absolutely within the card-image */
-    top: 80%; /* Center vertically */
-    left: 50%; /* Center horizontally */
-    transform: translate(-50%, -50%); /* Adjust for the button's own dimensions */
-    z-index: 2; /* Ensure the button is above the image */
-    border: none; /* Remove default button border */
-    cursor: pointer; /* Pointer cursor on hover */
+    position: absolute;
+    top: 80%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 2;
+    border: none;
+    cursor: pointer;
 
     font-family: 'Alata', serif;
     font-size: 30px;
     text-align: center;
-    color: black; /* Text color */
-    background-color: #F3F9FE; /* Semi-transparent background */
+    color: black;
+    background-color: #F3F9FE;
     
     width: 220px;
     height: 50px;
     border-radius: 10px;
 }
 .dash {
-    grid-column: span 4; /* Span across all three columns */
+    grid-column: span 4;
     text-align: center;
     padding: 10px;
     border-radius: 5px;
@@ -222,7 +215,7 @@ aside:hover .sidebar-links h4 span{
     position: absolute;
     width: 100%;
     height: 100%;
-    background: #F3F9FE;
+    background: #008cff;
     left: 0;
     top: 0;
     border-radius: 10px;
@@ -285,8 +278,12 @@ aside:hover .sidebar-links h4 span{
 }
 /* -------------- DARKMODE -------------- */
 body.darkmode {
-  background-color: var(--dark-color);
-  
+  background-color: var(--primary-color);
+  color: var(--text-color);
+}
+
+.darkmode .sidebar-links a{
+    color: var(--text-color);
 }
 .darkmode .btn {
   box-shadow: inset 0 8px 60px var(--dark-shadow),
@@ -301,6 +298,18 @@ body.darkmode {
 .darkmode .btn__icon {
   color: var(--dark-icon-color);
 }
+.darkmode .card {
+    /*    border: 2px solid green; */
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        background-color:var(--dark-color);
+        border-radius: 10px;
+        flex: 1 1 300px;
+        max-height: 500px;
+        overflow: auto;
+        position: relative;
+    }
 /* -------------- RESPONSIVE DESIGN ------------ */
 @media (max-width: 600px) {
   :root {
