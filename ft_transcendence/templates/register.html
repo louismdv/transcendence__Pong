@@ -1,6 +1,7 @@
-{% extends 'main.html' %}
-
-{% block content %}
+{% load static %}
+<link rel="stylesheet" href="{% static 'login.css' %}">
+<link rel="stylesheet" href="{% static 'register.css' %}">
+<link rel="stylesheet" href="{% static 'style.css' %}">
    <section id="register">
         <div class="login-content">
             <h2 class="h2-login">Sign Up</h2>
@@ -36,4 +37,3 @@
             </form>
         </div>
     </section>
-{% endblock %}

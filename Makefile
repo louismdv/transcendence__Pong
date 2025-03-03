@@ -2,7 +2,7 @@ build:
 	docker-compose build
 
 up:
-	docker-compose up 
+	docker-compose up -d
 
 down:
 	docker-compose down && rm -rf ft_transcendence/ft_transcendence/__pycache__ && rm -rf ft_transcendence/ft_transcendence/migrations
@@ -15,3 +15,9 @@ migrate:
 
 collectstatic:
 	docker-compose run web python ft_transcendence/manage.py collectstatic --noinput
+
+reboot :
+	docker system prune -a --volumes
+
+down-server :
+	sudo pkill -f runserver
