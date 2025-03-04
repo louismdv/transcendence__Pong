@@ -6,7 +6,7 @@ services:
     command: sh -c "python ft_transcendence/manage.py migrate && python ft_transcendence/manage.py runserver 0.0.0.0:8000"
     volumes:
       - .:/app
-      - ./staticfiles:/app/staticfiles
+      - ./static:/app/static
     ports:
       - "8000:8000"
     environment:

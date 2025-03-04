@@ -2,7 +2,7 @@ build:
 	docker-compose build
 
 up:
-	docker-compose up -d
+	docker-compose up
 
 down:
 	docker-compose down && rm -rf ft_transcendence/ft_transcendence/__pycache__ && rm -rf ft_transcendence/ft_transcendence/migrations
