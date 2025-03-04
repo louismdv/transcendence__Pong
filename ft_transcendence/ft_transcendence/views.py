@@ -1,5 +1,6 @@
 from django.shortcuts import render, redirect
 from django.views.decorators.csrf import csrf_protect
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth import login, authenticate
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib import messages
@@ -9,6 +10,7 @@ from django.contrib.auth.backends import ModelBackend
 def main(request):
     return render(request, 'main.html')
 
+@login_required(login_url='/login')
 def home(request):
     return render(request, 'home.html')
 
