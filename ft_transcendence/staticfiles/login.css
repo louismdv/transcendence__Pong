@@ -1,81 +1,109 @@
-
-#login, #register{
+/* login.css */
+.logo-login {
+    color: #007bff;
+}
+#login, #register {
+    display: flex;
     justify-content: center;
     align-items: center;
-    width: 100%;
-    height: 100%;
-    justify-content: center;
-    gap: 40px;
-    flex-direction: row-reverse;
-}
-
-.login-content{
-    background-color: var(--primary-color);
-    width:400px;
-    height:600px;
-    justify-content: center;
-    border: solid;
-    align-items: center;
-    border-radius: 20px;
-    color: var(--text-color);
-}
-
-.h2-login{
-    font-weight: 600; /* ou 700 pour un aspect encore plus épais */
-    font-size: 2rem; /* Ajustez la taille selon vos besoins */
-
+    height: 100vh;
+    background-color: var(--background-color);
 }
 
 .login-content {
-    justify-content: center;
-    display: flex;
-    flex-direction: column;
+    background: var(--text-color);
+    padding: 2rem;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    width: 350px;
 }
 
+.h2-login {
+    font-size: 2em;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
 
+.login-content p {
+    color: #6c757d;
+    font-size: 0.9rem;
+    margin-bottom: 20px;
+}
 
 .login-form {
-    flex: 1; /* Égalité des largeurs entre Nom et Email */
     display: flex;
-    flex-direction: column; /* Permet au label de rester au-dessus de l'input */
-    justify-content: center;
+    flex-direction: column;
+    text-align: left;
+    margin-bottom: 15px;
 }
 
+.login-form label {
+    font-weight: bold;
+    font-size: 0.9rem;
+    margin-bottom: 5px;
+}
+
+.login-form input {
+    padding: 10px;
+    border: 1px solid #ced4da;
+    border-radius: 5px;
+    font-size: 1rem;
+    outline: none;
+}
+
+.login-form input:focus {
+    border-color: #007bff;
+}
+
+.button-login {
+    width: 100%;
+    padding: 10px;
+    background-color: #000;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    font-size: 1rem;
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+.button-login:hover {
+    background-color: #333;
+}
+
+.register p {
+    font-size: 0.9rem;
+    margin: 15px 0;
+}
+
+.register a {
+    color: #000;
+    font-weight: bold;
+    text-decoration: none;
+}
+
+.register a:hover {
+    text-decoration: underline;
+}
 
 .styled-text {
-    display: inline-block;
-    position: relative;
-    padding: 0 10px; /* Espacement entre le texte et les traits */
-    font-weight: bold;
-    font-family: Arial, sans-serif;
-}
-
-.styled-text::before,
-.styled-text::after {
-    content: "";
-    position: absolute;
-    top: 50%;
-    width: 50px;
-    height: 1px;
-    background-color: var(--secondary-color);
-}
-
-.styled-text::before {
-    left: 0;
-    transform: translateX(-100%);
-}
-
-.styled-text::after {
-    right: 0;
-    transform: translateX(100%);
-}
-
-
-.register {
-    width: auto;
+    display: flex;
+    align-items: center;
     justify-content: center;
-    text-align: center;
-    flex-direction: column;
-	margin-top: 50px;
+    margin: 10px 0;
+}
 
+.styled-text span {
+    font-size: 0.9rem;
+    color: #6c757d;
+}
+
+.messages {
+    background: #ffdddd;
+    color: #d8000c;
+    padding: 10px;
+    border-radius: 5px;
+    margin-bottom: 15px;
+    font-size: 0.9rem;
 }
