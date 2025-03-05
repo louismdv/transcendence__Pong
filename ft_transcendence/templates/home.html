@@ -35,7 +35,7 @@
     <audio id="hitSoundR" src="../media/novakR.mp3" preload="auto"></audio>
 
     <!-- <script src="https://unpkg.com/htmx.org@2.0.4" integrity="sha384-HGfztofotfshcF7+8n44JQL2oJmowVChPTg48S+jvZoztPfvwD79OC/LTtG6dMp+" crossorigin="anonymous"></script> -->
-{% block title %} <title>Pong Game</title> {% endblock title %}
+{% block title %} <title>Pong Game Home</title> {% endblock title %}
 {% block extra-head %} <!-- Placehoder for extra head files -->{% endblock extra-head %}
 </head>
 
@@ -83,9 +83,7 @@
             <li><a href="#"><span class="material-symbols-outlined" style="color: #96725F;">leaderboard
                 </span>Board</a>
             </li>
-            <h4>
-                <span>Account</span>
-            </h4>
+            <h4>Account</h4>
             <li><a href="#"><span class="material-symbols-outlined">settings
                 </span>Settings</a>
             </li>
@@ -95,12 +93,12 @@
         </ul>
     </aside>
  
+    {% block game-section %}
     <div class="main-grid">
         <div class="gameMode">
             <h3 style="text-align: left;">Game mode</h3>
         </div>
         <div class="flex-container">
-            {% block game-section %}
             <div class="card">
                 <a href="{% url 'localgame' %}" class="glow-on-hover">
                     Play local
@@ -111,13 +109,20 @@
             </div>
             <div class="card">
                 <img src="../media/pong.gif" alt="pongGIF" width="75%">
+                <div class="centeredTextonImage">AI</div>
+                <button class="glow-on-hover" type="button">
+                    Play vs. ai
+                    <span class="material-symbols-outlined" style="font-weight: 600;">Slideshow</span>
+                </button>
+            </div>
+            <div class="card">
+                <img src="../media/pong.gif" alt="pongGIF" width="75%">
                 <div class="centeredTextonImage">duo</div>
                 <button class="glow-on-hover" type="button">
                     Play online
                     <span class="material-symbols-outlined" style="font-weight: 600;">Slideshow</span>
                 </button>
             </div>
-            {% endblock game-section %}
         </div>
         <div class="gameMode">
             <h3>DashBoard</h3>
@@ -126,7 +131,10 @@
             <span class="material-symbols-outlined" style="font-weight: 600;text-align:end;">Open_in_new</span>
         </div>
     </div>
-    
+    {% endblock game-section %}
+    <footer>
+        42Transcendence
+    </footer>
 </div>
 {% include 'livechat.html' %}
 
@@ -134,9 +142,6 @@
 <script src="{% static 'js/livechat.js' %}"></script>
 <script src="{% static 'js/localgame.js' %}"></script>
 
-<footer>
-    42Transcendence
-</footer>
 </body>
 
 

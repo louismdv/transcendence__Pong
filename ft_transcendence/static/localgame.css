@@ -8,13 +8,17 @@
 
 }
 #gameCanvas {
-    border: 10px solid green;
     position: relative;
+    width: 80%;
+    /* height: 25%; */
+    border-radius: 10px;
+    border: 10px solid #451b96;
 }
 
 button {
-    background-color: #451b96;
     margin: 10px;
     width: 100px;
     height: 45px;
+    border-radius: 10px;
+    background-color: #451b96;
 }

@@ -71,6 +71,8 @@ aside:hover .sidebar-links {
 aside:hover .sidebar-links h4 {
     transition: all 0.4s ease;
     opacity: 1;
+    width: auto; /* removes the issue of text overlapping */
+    white-space: nowrap;
 }
 .sidebar-links li {
     margin: 10px 0;
