@@ -17,6 +17,9 @@ def home(request):
 def livechat(request):
     return render(request, 'livechat.html')
 
+def localgame(request):
+    return render(request, 'localgame.html')
+
 def register(request):
     if request.method == 'POST':
         form = UserCreationForm(request.POST)

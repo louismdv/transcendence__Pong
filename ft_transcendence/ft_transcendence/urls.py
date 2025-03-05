@@ -9,6 +9,7 @@ urlpatterns = [
    path('login/', views.login_view, name='login'),  # Page de login, crée une vue dédiée
    path('register/', views.register, name='register'),
    path('livechat/', views.livechat, name='livechat'),
+   path('local-game/', views.localgame, name='localgame'),
    path('api/auth/', include('dj_rest_auth.urls')),
    path('api/auth/registration/', include('dj_rest_auth.registration.urls')),
    path('home/', views.home, name='home')  
