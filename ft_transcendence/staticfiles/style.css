@@ -86,15 +86,18 @@ input, button {
     border-bottom-width: 10px;
     justify-content: center;
     border-width: 0.3px;
-    width: 100%; /* Ajustement automatique de la largeur */
+    width: 100%;
     border-color: var(--secondary-color);
 }
 .button-login {
     background-color: var(--text-color);
     border-radius: 20px;
     cursor: pointer;
+    width: 100px;
+    height: 30px;
 	margin-top: 10px;
     margin-bottom: 10px;
+    width: 80px;
     padding: 8px;
 }
 
@@ -104,6 +107,6 @@ form {
     gap: 20px; 
     width: 100%;
     max-width: 80%;
-    margin-top: 80px;
+    margin-top: 870px;
 }
 

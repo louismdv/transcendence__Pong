@@ -14,7 +14,7 @@ migrate:
 	docker-compose run web python ft_transcendence/manage.py migrate --noinput
 
 collectstatic:
-	docker-compose run web python ft_transcendence/manage.py collectstatic --noinput
+	docker-compose run web python ft_transcendence/manage.py collectstatic --noinput --clear
 
 reboot :
 	docker system prune -a --volumes
