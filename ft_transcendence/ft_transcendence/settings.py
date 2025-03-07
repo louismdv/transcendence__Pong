@@ -1,6 +1,16 @@
-import os
 from pathlib import Path
+import os
 from decouple import config
+from django.contrib.messages import constants as messages
+
+
+MESSAGE_TAGS = {
+    messages.DEBUG: 'debug',
+    messages.INFO: 'info',
+    messages.SUCCESS: 'success',
+    messages.WARNING: 'warning',
+    messages.ERROR: 'error',
+}
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
