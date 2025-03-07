@@ -1,21 +1,12 @@
-from pathlib import Path
 import os
+from pathlib import Path
 from decouple import config
-from django.contrib.messages import constants as messages
-
-MESSAGE_TAGS = {
-    messages.DEBUG: 'debug',
-    messages.INFO: 'info',
-    messages.SUCCESS: 'success',
-    messages.WARNING: 'warning',
-    messages.ERROR: 'error',
-}
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = 'django-insecure-x=&ot3)u%h9r96@7#0&e3#w-b(t$d#uzyi4lu6optmh(bp#4*k'
+SECRET_KEY = config('SECRET_KEY', default='django-insecure-x=&ot3)u%h9r96@7#0&e3#w-b(t$d#uzyi4lu6optmh(bp#4*k')
 
-DEBUG = True
+DEBUG = config('DEBUG', default=True, cast=bool)
 
 ALLOWED_HOSTS = ['*']
 
@@ -57,7 +48,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'allauth.account.middleware.AccountMiddleware',  # Ajoutez cette ligne
+    'allauth.account.middleware.AccountMiddleware',
 ]
 
 ROOT_URLCONF = 'ft_transcendence.urls'
@@ -78,6 +69,7 @@ TEMPLATES = [
     },
 ]
 
+ASGI_APPLICATION = 'ft_transcendence.asgi.application'
 WSGI_APPLICATION = 'ft_transcendence.wsgi.application'
 
 DATABASES = {
@@ -126,7 +118,6 @@ STATICFILES_DIRS = [
     BASE_DIR / "static",
     BASE_DIR / "js",
 ]
-
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
