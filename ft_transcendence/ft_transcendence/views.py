@@ -17,6 +17,7 @@ def home(request):
 def livechat(request):
     return render(request, 'livechat.html')
 
+@login_required(login_url='/login')
 def localgame(request):
     return render(request, 'localgame.html')
 
