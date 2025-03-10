@@ -3,3 +3,4 @@
 git rm -r --cached **/__pycache__/
 .DS_Store
 .vscode/
+staticfiles/
