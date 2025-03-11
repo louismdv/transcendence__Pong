@@ -79,6 +79,7 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'ft_transcendence.wsgi.application'
+ASGI_APPLICATION = 'ft_transcendence.asgi.application'
 
 DATABASES = {
     'default': {
@@ -120,13 +121,13 @@ USE_TZ = True
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 STATIC_URL = '/static/'
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
-
 STATICFILES_DIRS = [
-    BASE_DIR / "static",
-    BASE_DIR / "js",
+    os.path.join(BASE_DIR, "static"),
 ]
+STATIC_ROOT = os.path.join(BASE_DIR.parent, 'staticfiles')
 
-
+WHITENOISE_MIDDLEWARE = ['whitenoise.middleware.WhiteNoiseMiddleware']
+MIDDLEWARE = WHITENOISE_MIDDLEWARE + MIDDLEWARE
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
