@@ -5,3 +5,5 @@ django-allauth
 psycopg2-binary
 python-decouple
 requests
+uvicorn
+whitenoise

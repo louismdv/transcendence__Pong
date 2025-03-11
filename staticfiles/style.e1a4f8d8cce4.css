@@ -1,0 +1,117 @@
+
+:root{
+    /* COLORS */
+    --primary-color: #313131;
+    --background-color: #f2f0ef;
+    --text-color: #fff;
+    --secondary-color:#451b96;
+    --color: #9176FF;
+    --dark-color: #141414;
+    --full-black:#171719;
+    --dark-mode:#3e4147;
+    --dark-icon-color: #fff;
+    --light-color: #f7f7f7;
+    --light-icon-color: #FFDE59;
+    --btn-size: 100px;
+    --indicator-size: 50px;
+}
+
+body{
+    margin: 0;
+    padding: 0;
+    background-color: var(--background-color);
+    font-family: 'Poppins', sans-serif;
+    color: var(--dark-color);
+    overflow-x: hidden;
+}
+
+/* body {
+    margin: 0;
+    font-family: 'Fugaz One', sans-serif;
+    background-color: #1e1e1e;
+    color: #f0f0f0;
+    min-height: 100vh;
+}
+
+body {
+    margin-top: 20px;
+    margin: 0;
+    background-color: #1D1D1D;
+    font-family: "Alata", sans-serif;
+} */
+
+main {
+    display: block;
+    justify-content: center;
+    align-items: center;
+	width: 100%;
+    min-height: calc(100vh - 100px);
+   
+}
+
+section {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+header {
+    grid-area: header;
+    display: grid;
+    grid-template-columns: auto auto auto;
+    padding: 10px;
+    height: 100px;
+}
+aside {
+    grid-area: aside;
+    border-right: 1px solid grey; 
+    padding:20px;
+    grid-column: 1/2;
+    grid-row: 2/3;
+}
+
+footer {
+    grid-area: footer;
+    background-color: #451b96;
+    text-align: center;
+    padding: 5px;
+}
+
+input, button {
+    border: none;
+    background-color: var(--background-color);
+    border-bottom-style: solid;
+    border-bottom-width: 10px;
+    justify-content: center;
+    border-width: 0.3px;
+    width: 100%;
+    border-color: var(--secondary-color);
+}
+.button-login {
+    background-color: #000; /* Couleur noire */
+    color: var(--text-color); /* Texte blanc */
+    border: none;
+    border-radius: 8px; /* Coins arrondis */
+    cursor: pointer;
+    width: 100%; /* Prend toute la largeur disponible */
+    height: 40px; /* Hauteur adaptée */
+    font-size: 1rem; /* Taille du texte */
+    font-weight: bold;
+    transition: background 0.3s ease-in-out;
+}
+
+.button-login:hover {
+    background-color: var(--primary-color); /* Légère variation au survol */
+}
+
+
+form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px; 
+    width: 100%;
+    margin-top: 70px;
+}
+

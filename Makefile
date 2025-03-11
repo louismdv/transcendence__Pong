@@ -5,7 +5,7 @@ up:
 	docker-compose up -d
 
 down:
-	docker-compose down && rm -rf ft_transcendence/ft_transcendence/__pycache__ && rm -rf ft_transcendence/ft_transcendence/migrations
+	docker-compose down && rm -rf ft_transcendence/ft_transcendence/__pycache__ && rm -rf ft_transcendence/ft_transcendence/migrations && rm -rf staticfiles
 
 logs:
 	docker-compose logs -f

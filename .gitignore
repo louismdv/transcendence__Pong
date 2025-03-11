@@ -1,3 +1,6 @@
 .env
-**/__pycache__/
-# git rm -r --cached **/__pycache__/
+git rm -r --cached **/__pycache__/
+.DS_Store
+.vscode/
+rm -rf staticfiles
+rm -rf ft_transcendence/ft_transcendence/migrations
