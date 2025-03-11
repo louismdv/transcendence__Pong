@@ -67,6 +67,8 @@ aside:hover .sidebar-links {
     margin: 15px 0 5px;
     font-size: 1.2em;
     opacity: 0;
+    width: auto;
+    white-space: nowrap;
 }
 aside:hover .sidebar-links h4 {
     transition: all 0.4s ease;
