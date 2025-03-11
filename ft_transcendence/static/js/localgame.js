@@ -157,11 +157,8 @@ class Ball {
 
 // FUNCTIONS
 function setupEventListeners() {
-    document.getElementById('muteButton').addEventListener('click', (event) => {
-        console.log("click");
-        hitSoundL.muted = !hitSoundL.muted;
-        hitSoundR.muted = !hitSoundR.muted;
-        muteButton.textContent = isMuted ? 'Unmute' : 'Mute';
+    muteButton.addEventListener('click', (event) => {
+        toggleMute();
     });
     document.addEventListener('keydown', (event) => {
         keysPressed[event.code] = true;
@@ -180,6 +177,13 @@ function setupEventListeners() {
     document.addEventListener('keyup', (event) => {
         keysPressed[event.code] = false;
     });
+}
+
+function toggleMute() {
+    isMuted = !isMuted;
+    hitSoundL.muted = !hitSoundL.muted;
+    hitSoundR.muted = !hitSoundR.muted;
+    muteButton.textContent = isMuted ? 'Unmute 🔉' : 'Mute 🔇';
 }
 
 function drawScores() {

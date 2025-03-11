@@ -158,7 +158,7 @@ class Ball {
 // FUNCTIONS
 function setupEventListeners() {
     document.getElementById('muteButton').addEventListener('click', (event) => {
-        console.log("click");
+        console.log("ok");
         hitSoundL.muted = !hitSoundL.muted;
         hitSoundR.muted = !hitSoundR.muted;
         muteButton.textContent = isMuted ? 'Unmute' : 'Mute';
