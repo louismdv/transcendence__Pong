@@ -1,0 +1,192 @@
+/* Styles pour la page de paramètres */
+#settingspage {
+    padding: 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.settings-content {
+    background-color: #fff;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Personnalisation des onglets */
+#settingspage .nav-tabs .nav-link {
+    color: #333;
+    font-weight: 500;
+    border: none;
+    border-bottom: 2px solid transparent;
+    padding: 10px 15px;
+    transition: all 0.3s ease;
+}
+
+#settingspage .nav-tabs .nav-link:hover {
+    color: #F75A6A;
+    background-color: rgba(247, 90, 106, 0.05);
+}
+
+#settingspage .nav-tabs .nav-link.active {
+    color: #F75A6A;
+    font-weight: 600;
+    border-bottom: 2px solid #F75A6A;
+    background-color: transparent;
+}
+
+/* Personnalisation des cartes */
+#settingspage .card {
+    border: 1px solid rgba(0, 0, 0, 0.125);
+    border-radius: 8px;
+    overflow: hidden;
+    transition: box-shadow 0.3s ease;
+}
+
+#settingspage .card:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+/* Personnalisation des en-têtes de carte par onglet */
+#profile .card-header {
+    background-color: #62E573;  /* Vert comme dans votre sidebar */
+    color: white;
+    border-bottom: none;
+}
+
+#account .card-header {
+    background-color: #628BE5;  /* Bleu comme dans votre sidebar */
+    color: white;
+    border-bottom: none;
+}
+
+#preferences .card-header {
+    background-color: #E5C462;  /* Jaune comme dans votre sidebar */
+    color: white;
+    border-bottom: none;
+}
+
+/* Zone de danger */
+#settingspage .border-danger {
+    border-color: #CF0E0F !important;
+}
+
+#settingspage .card-header.bg-danger.bg-opacity-10 {
+    background-color: rgba(207, 14, 15, 0.1) !important;
+    border-bottom: 1px solid rgba(207, 14, 15, 0.2);
+}
+
+#settingspage .text-danger {
+    color: #CF0E0F !important;
+}
+
+/* Personnalisation des boutons */
+#settingspage .btn-primary {
+    background-color: #F75A6A;
+    border-color: #F75A6A;
+    transition: all 0.3s ease;
+}
+
+#settingspage .btn-primary:hover {
+    background-color: #e04050;
+    border-color: #e04050;
+    box-shadow: 0 2px 8px rgba(247, 90, 106, 0.3);
+}
+
+#settingspage .btn-outline-secondary {
+    color: #6c757d;
+    border-color: #6c757d;
+    transition: all 0.3s ease;
+}
+
+#settingspage .btn-outline-secondary:hover {
+    background-color: #6c757d;
+    color: #fff;
+}
+
+#settingspage .btn-danger {
+    background-color: #CF0E0F;
+    border-color: #CF0E0F;
+    transition: all 0.3s ease;
+}
+
+#settingspage .btn-danger:hover {
+    background-color: #b30d0e;
+    border-color: #b30d0e;
+    box-shadow: 0 2px 8px rgba(207, 14, 15, 0.3);
+}
+
+/* Styles pour l'avatar */
+#settingspage .avatar {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    overflow: hidden;
+    background-color: #f8f9fa;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 3px solid #fff;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+#settingspage .avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* Styles pour le sélecteur de fichier */
+#settingspage .file-input-wrapper {
+    position: relative;
+    overflow: hidden;
+    display: inline-block;
+}
+
+#settingspage .file-input-wrapper input[type=file] {
+    position: absolute;
+    left: 0;
+    top: 0;
+    opacity: 0;
+    width: 100%;
+    height: 100%;
+    cursor: pointer;
+}
+
+/* Styles pour les formulaires */
+#settingspage .form-control:focus,
+#settingspage .form-select:focus {
+    border-color: #F75A6A;
+    box-shadow: 0 0 0 0.25rem rgba(247, 90, 106, 0.25);
+}
+
+/* Styles pour les icônes */
+#settingspage .bi {
+    color: #F75A6A;
+}
+
+/* Styles pour le modal */
+#settingspage .modal-header {
+    background-color: #f8f9fa;
+    border-bottom: 1px solid #e9ecef;
+}
+
+#settingspage .modal-footer {
+    background-color: #f8f9fa;
+    border-top: 1px solid #e9ecef;
+}
+
+/* Styles pour les boutons d'action */
+#settingspage .d-grid {
+    margin-top: 2rem;
+}
+
+/* Adaptation pour les écrans mobiles */
+@media (max-width: 576px) {
+    #settingspage .d-grid {
+        flex-direction: column;
+    }
+    
+    #settingspage .btn {
+        margin-bottom: 0.5rem;
+    }
+}
