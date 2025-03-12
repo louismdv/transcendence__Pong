@@ -1,4 +1,3 @@
-import random
 from django.shortcuts import render, redirect
 from django.views.decorators.csrf import csrf_protect
 from django.contrib.auth.decorators import login_required
@@ -29,7 +28,7 @@ def register(request):
             user = form.save()
             user.backend = 'django.contrib.auth.backends.ModelBackend'
             login(request, user)
-            return redirect('home')
+            return redirect('login')
         else:
             for field, errors in form.errors.items():
                 for error in errors:
