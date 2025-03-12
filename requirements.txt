@@ -7,3 +7,4 @@ python-decouple
 requests
 uvicorn
 whitenoise
+channels
