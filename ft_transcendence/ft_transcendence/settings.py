@@ -33,8 +33,6 @@ INSTALLED_APPS = [
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
-    'channels',
-    'onlinePong',
 ]
 
 AUTHENTICATION_BACKENDS = (
@@ -133,9 +131,3 @@ MIDDLEWARE = WHITENOISE_MIDDLEWARE + MIDDLEWARE
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
-
-CHANNEL_LAYERS = {
-    'default': {
-        'BACKEND': 'channels.layers.InMemoryChannelLayer',
-    },
-}

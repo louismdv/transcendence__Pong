@@ -7,16 +7,6 @@
     margin: auto;
 
 }
-#gameWrapperHead {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    width: 80%;
-    justify-content: space-between;
-}
-#gameWrapperHead p {
-    margin: 0;
-}
 #gameCanvas {
     position: relative;
     width: 80%;
@@ -24,10 +14,10 @@
     border-radius: 10px;
     border: 10px solid #451b96;
 }
-#muteButton {
+
+button {
     margin: 10px;
-    padding: 10px;
-    width: 120px;
+    width: 100px;
     height: 45px;
     border-radius: 10px;
     color: white;

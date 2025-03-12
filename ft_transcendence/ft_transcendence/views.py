@@ -1,4 +1,3 @@
-import random
 from django.shortcuts import render, redirect
 from django.views.decorators.csrf import csrf_protect
 from django.contrib.auth.decorators import login_required
@@ -18,13 +17,6 @@ def home(request):
 def livechat(request):
     return render(request, 'livechat.html')
 
-def create_room(request):
-    game_code = str(random.randint(111111,999999))
-    return redirect('game_room', game_code=game_code)
-
-def game_room(request, game_code):
-    return render(request, 'onlinegame.html', {'game_code': game_code})
-
 @login_required(login_url='/login')
 def localgame(request):
     return render(request, 'localgame.html')
@@ -36,7 +28,7 @@ def register(request):
             user = form.save()
             user.backend = 'django.contrib.auth.backends.ModelBackend'
             login(request, user)
-            return redirect('home')
+            return redirect('login')
         else:
             for field, errors in form.errors.items():
                 for error in errors:
