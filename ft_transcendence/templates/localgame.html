@@ -7,8 +7,10 @@
 {% block game-section %}
 
     <div id="gameWrapper">
-        <p>Weclome {{ request.user.username }}</p>
-        <button id="muteButton">Mute 🔇</button>
+        <div id="gameWrapperHead">
+            <p>Welcome {{ request.user.username }}!</p>
+            <button id="muteButton">Mute 🔇</button>
+        </div>
         <canvas id="gameCanvas" width="1080" height="720"></canvas>
     </div>
 

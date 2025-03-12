@@ -102,26 +102,23 @@
             <div class="card">
                 <a href="{% url 'localgame' %}" class="glow-on-hover">
                     Play local
-                    <span class="material-symbols-outlined" style="font-weight: 600;">Slideshow</span>
                 </a>
-                <img src="../media/pong.gif" alt="pongGIF" width="75%">
+                <!-- <img src="../media/pong.gif" alt="pongGIF" width="75%"> -->
                 <div class="centeredTextonImage">solo</div>
             </div>
             <div class="card">
-                <img src="../media/pong.gif" alt="pongGIF" width="75%">
-                <div class="centeredTextonImage">AI</div>
-                <button class="glow-on-hover" type="button">
+                <a class="glow-on-hover" type="button">
                     Play vs. ai
-                    <span class="material-symbols-outlined" style="font-weight: 600;">Slideshow</span>
-                </button>
+                </a>
+                <!-- <img src="../media/pong.gif" alt="pongGIF" width="75%"> -->
+                <div class="centeredTextonImage">AI</div>
             </div>
             <div class="card">
-                <img src="../media/pong.gif" alt="pongGIF" width="75%">
-                <div class="centeredTextonImage">duo</div>
-                <button class="glow-on-hover" type="button">
+                <a href="{% url 'createroom' %}" class="glow-on-hover">
                     Play online
-                    <span class="material-symbols-outlined" style="font-weight: 600;">Slideshow</span>
-                </button>
+                </a>
+                <!-- <img src="../media/pong.gif" alt="pongGIF" width="75%"> -->
+                <div class="centeredTextonImage">duo</div>
             </div>
         </div>
         <div class="gameMode">

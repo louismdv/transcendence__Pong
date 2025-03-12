@@ -1,0 +1,63 @@
+
+{% extends 'home.html' %}
+
+{% block title %} <title>Local Game Mode</title> {% endblock title %}
+{% block extra-head %}
+        <title>Multiplayer Pong</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #222;
+            color: white;
+            text-align: center;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        h1 {
+            color: #4CAF50;
+        }
+        .btn {
+            display: inline-block;
+            padding: 10px 20px;
+            margin: 10px;
+            background-color: #4CAF50;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        input {
+            padding: 10px;
+            font-size: 16px;
+            border-radius: 5px;
+            border: none;
+            margin-right: 10px;
+        }
+    </style>
+{% endblock %}
+
+{% block game-section %}
+
+    <div id="gameWrapper">
+        <h1>Multiplayer Pong</h1>
+        <p>Create a new game or join an existing one!</p>
+        
+        <a href="{% url 'create_room' %}" class="btn">Create New Game</a>
+        
+        <form method="GET" action="{% url 'home' %}">
+            <input type="text" name="room_code" placeholder="Enter Room Code">
+            <button type="submit" class="btn">Join Game</button>
+        </form>
+        
+        {% if error %}
+        <p style="color: red;">{{ error }}</p>
+        {% endif %}
+    </div>
+     <script src="{% static 'js/onlinegame.js' %}"></script>
+
+{% endblock game-section %}
