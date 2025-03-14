@@ -44,10 +44,9 @@
 {% block game-section %}
 
     <div id="gameWrapper">
-        <h1>Multiplayer Pong</h1>
-        <p>Create a new game:</p>
+        <h1>Create a new game:</h1>
         
-        What chat room would you like to enter?<br>
+        What chat room would you like to enter?<br><br>
         <input id="room-name-input" type="text" size="100"><br>
         <input id="room-name-submit" type="button" value="Enter">
 
@@ -66,9 +65,8 @@
 
         document.querySelector('#room-name-submit').onclick = function(e) {
             var roomName = document.querySelector('#room-name-input').value;
-            window.location.pathname = '/game_room/' + roomName + '/';
+            window.location.pathname = '/online-game/game_room/' + roomName + '/';
         };
     </script>
-     <!-- <script src="{% static 'js/onlinegame.js' %}"></script> -->
 
 {% endblock game-section %}

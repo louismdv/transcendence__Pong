@@ -20,8 +20,7 @@ DEBUG = True
 ALLOWED_HOSTS = ['*']
 
 INSTALLED_APPS = [
-    # 'online_game',
-    # 'daphne',
+    'online_game',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',

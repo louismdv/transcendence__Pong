@@ -1,29 +1,9 @@
 
 {% extends 'home.html' %}
 
-{% block title %} <title>Pong Game - Room {{ room_code }}</title> {% endblock title %}
+{% block title %} <title>Pong Game - Room {{ room_name }}</title> {% endblock title %}
 {% block extra-head %}
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #222;
-            color: white;
-            text-align: center;
-            margin: 0;
-            padding: 0;
-        }
-        .container {
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 20px;
-        }
-        h1 {
-            color: #4CAF50;
-        }
-        canvas {
-            background-color: #000;
-            border: 2px solid #4CAF50;
-        }
         .room-info {
             margin: 20px 0;
             padding: 10px;
@@ -42,21 +22,19 @@
 {% block game-section %}
 
     <div id="gameWrapper">
-        <div class="container">
-            <h1>Multiplayer Pong</h1>
-            
-            <div class="room-info">
-                Room Code: <span id="roomCode">{{ room_code }}</span>
-            </div>
-            
-            <div id="gameStatus">Waiting for players...</div>
-            
-            <canvas id="gameCanvas"></canvas>
-            
-            <div class="instructions">
-                <p>Move your mouse up and down to control the paddle</p>
-            </div>
+
+        <h1>Multiplayer Pong</h1>
+        
+        <div class="room-info">
+            Room Code: <span id="roomCode">{{ room_name }}</span>
         </div>
+        
+        <div id="gameStatus">Waiting for players...</div>
+        <button id="muteButton">Mute 🔇</button>
+        <canvas id="gameCanvas" width="1080" height="720"></canvas>
+        
+        <div class="instructions"></div>
+
     </div>
 
 {% endblock game-section %}
