@@ -1,5 +1,5 @@
 
-const canvas = document.getElementById('localgameCanvas');
+const canvas = document.getElementById('onlinegameCanvas');
 const ctx = canvas.getContext('2d');
 
 let msPrev = window.performance.now();

@@ -7,7 +7,7 @@
     margin: auto;
 
 }
-#gameCanvas {
+#localgameCanvas {
     position: relative;
     width: 80%;
     /* height: 25%; */

@@ -146,6 +146,17 @@ aside:hover .sidebar-links h4 {
     position: relative;
 }
 
+.card::before {
+    content: "";
+    position: absolute;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background-image: url("../media/pong.gif");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    opacity: 0.35;
+}
+
 .centeredTextonImage {
     font-family: "Pixelify Sans", serif;
     z-index: 3;
