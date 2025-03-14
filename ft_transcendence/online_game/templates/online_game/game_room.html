@@ -1,4 +1,3 @@
-
 {% extends 'home.html' %}
 
 {% block title %} <title>Pong Game - Room {{ room_name }}</title> {% endblock title %}
@@ -31,10 +30,9 @@
         
         <div id="gameStatus">Waiting for players...</div>
         <button id="muteButton">Mute 🔇</button>
-        <canvas id="gameCanvas" width="1080" height="720"></canvas>
+        <canvas id="onlinegameCanvas" width="1080" height="720"></canvas>
         
         <div class="instructions"></div>
-
     </div>
-
+    
 {% endblock game-section %}

@@ -146,6 +146,17 @@ aside:hover .sidebar-links h4 {
     position: relative;
 }
 
+.card::before {
+    content: "";
+    position: absolute;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background-image: url("../media/pong.gif");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    opacity: 0.35; /* 45% opacity */
+}
+
 .centeredTextonImage {
     font-family: "Pixelify Sans", serif;
     z-index: 3;
@@ -178,13 +189,7 @@ aside:hover .sidebar-links h4 {
     padding: 10px;
     border-radius: 5px;
 }
-.card img {
-    opacity:45%;
-    border-radius: 10px;
-    z-index: 1;
-    position: relative;
-    height: 100%;
-}
+
 
 /* glowy button */
 /* https://dev.to/webdeasy/top-20-css-buttons-animations-f41 */
