@@ -18,13 +18,6 @@ def home(request):
 def livechat(request):
     return render(request, 'livechat.html')
 
-def create_room(request):
-    game_code = str(random.randint(111111,999999))
-    return redirect('game_room', game_code=game_code)
-
-def game_room(request, game_code):
-    return render(request, 'onlinegame.html', {'game_code': game_code})
-
 @login_required(login_url='/login')
 def localgame(request):
     return render(request, 'localgame.html')

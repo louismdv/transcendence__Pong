@@ -14,8 +14,8 @@ urlpatterns = [
     path('api/auth/', include('dj_rest_auth.urls')),
     path('api/auth/registration/', include('dj_rest_auth.registration.urls')),
     path('home/', views.home, name='home'),
-    path('create_room/', views.create_room, name='createroom'),
-    path('game_room/<str:game_code>/', views.game_room, name='game_room'),
+    
+    # path('online_game/', include('online_game.urls')),
 ]
 
 if settings.DEBUG:
