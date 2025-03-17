@@ -14,4 +14,4 @@ RUN pip install --no-cache-dir -r requirements.txt
 EXPOSE 8000
 
 # Lancer le serveur ASGI avec daphne
-CMD ["sh", "-c", "python manage.py migrate && daphne ft_transcendence.asgi:application -b 0.0.0.0 -p 8000"]
+CMD ["sh", "-c", "python manage.py migrate && daphne -p 8000 -b 0.0.0.0 ft_transcendence.asgi:application"]

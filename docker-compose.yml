@@ -6,7 +6,7 @@ services:
     command: sh -c "cd /app/ft_transcendence && 
                     python manage.py migrate && 
                     python manage.py collectstatic --noinput --clear && 
-                    daphne ft_transcendence.asgi:application -b 0.0.0.0 -p 8000"
+                    daphne -p 8000 -b 0.0.0.0 ft_transcendence.asgi:application"
     volumes:
       - .:/app
     ports:
@@ -19,9 +19,9 @@ services:
       - PYTHONPATH=/app/ft_transcendence
     depends_on:
       - db
+      - redis
     networks:
       - backend
-
 
   db:
     image: postgres:latest
@@ -31,6 +31,15 @@ services:
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
     volumes:
       - postgres_data:/var/lib/postgresql/data/
+    networks:
+      - backend
+
+  redis:
+    image: "redis:alpine"
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data  # Persist Redis data
     networks:
       - backend
 
@@ -61,3 +70,4 @@ networks:
 
 volumes:
   postgres_data:
+  redis_data:

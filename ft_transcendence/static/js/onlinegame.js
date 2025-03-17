@@ -1,7 +1,5 @@
 
 
-const gameSocket = new WebSocket(`ws://${window.location.host}/ws/online-game/${roomName}/`);
-
 console.log(roomName);
 console.log(userName);
 
@@ -20,12 +18,11 @@ document.addEventListener("DOMContentLoaded", function() {
     gameSocket.onmessage = function(event) {
         const data = JSON.parse(event.data);
         console.log("Message from server:", data);
-        sendMessage("This is me!");
         updateGameState(data);
     };
 
     gameSocket.onclose = function(event) {
-        console.log("WebSocket is closed now.");
+        console.log("WebSocket closed:", event.code, event.reason);
     };
     gameSocket.onerror = function(event) {
         console.error("WebSocket error observed:", event);
