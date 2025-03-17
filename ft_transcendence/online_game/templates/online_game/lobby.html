@@ -1,9 +1,8 @@
 
 {% extends 'home.html' %}
 
-{% block title %} <title>Local Game Mode</title> {% endblock title %}
+{% block title %} <title>Multiplayer Pong - Lobby</title> {% endblock title %}
 {% block extra-head %}
-        <title>Multiplayer Pong</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -37,6 +36,11 @@
             border-radius: 5px;
             border: none;
             margin-right: 10px;
+            width: auto;
+        }
+        #input-container {
+            display: flex;
+            justify-content: center;
         }
     </style>
 {% endblock %}
@@ -46,10 +50,12 @@
     <div id="gameWrapper">
         <h1>Create a new game:</h1>
         
-        What chat room would you like to enter?<br><br>
-        <input id="room-name-input" type="text" size="100"><br>
-        <input id="room-name-submit" type="button" value="Enter">
-
+        What game room would you like to join/create?<br><br>
+        <div id="input-container">
+            <input id="room-name-input" type="text" size="100"><br>
+            <input id="room-name-submit" type="button" value="Enter">
+        </div>
+        
         {% if error %}
         <p style="color: red;">{{ error }}</p>
         {% endif %}
@@ -65,7 +71,7 @@
 
         document.querySelector('#room-name-submit').onclick = function(e) {
             var roomName = document.querySelector('#room-name-input').value;
-            window.location.pathname = '/online-game/game_room/' + roomName + '/';
+            window.location.pathname = '/online-game/' + roomName + '/';
         };
     </script>
 

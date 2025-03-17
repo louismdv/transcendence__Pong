@@ -1,4 +1,53 @@
 
+
+const gameSocket = new WebSocket(`ws://${window.location.host}/ws/online-game/${roomName}/`);
+
+console.log(roomName);
+console.log(userName);
+
+
+document.addEventListener("DOMContentLoaded", function() {
+
+    const gameSocket = new WebSocket(`ws://${window.location.host}/ws/online-game/${roomName}/`);
+
+    // Event handler for when the connection is successfully opened
+    gameSocket.onopen = function(event) {
+        console.log("WebSocket is open now.");
+        gameSocket.send(JSON.stringify({ type: 'initial_message', data: 'Hello Server!' }));
+    };
+
+    // Event handler for receiving messages from the server
+    gameSocket.onmessage = function(event) {
+        const data = JSON.parse(event.data);
+        console.log("Message from server:", data);
+        sendMessage("This is me!");
+        updateGameState(data);
+    };
+
+    gameSocket.onclose = function(event) {
+        console.log("WebSocket is closed now.");
+    };
+    gameSocket.onerror = function(event) {
+        console.error("WebSocket error observed:", event);
+    };
+
+    // Function to send a message to the server
+    function sendMessage(message) {
+        gameSocket.send(JSON.stringify(message));
+    }
+
+    // Function to update the game state based on received messages
+    function updateGameState(data) {
+        // Implement your logic to update the game state based on the received data
+        console.log("Updating game state with data:", data);
+        // Example: Update the UI or game state variables
+    }
+
+});
+
+
+
+
 const canvas = document.getElementById('onlinegameCanvas');
 const ctx = canvas.getContext('2d');
 

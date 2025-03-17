@@ -21,7 +21,7 @@
 
 {% block game-section %}
 
-    <div id="gameWrapper">
+    <div class="gameWrapper">
 
         <h1>Multiplayer Pong</h1>
         
@@ -31,9 +31,14 @@
         
         <div id="gameStatus">Waiting for players...</div>
         <button id="muteButton">Mute 🔇</button>
-        <canvas id="onlinegameCanvas" width="1080" height="720"></canvas>
+        <canvas id="onlinegameCanvas" class="gamebox" width="1080" height="720"></canvas>
         
         <div class="instructions"></div>
+
+        <script>
+            const roomName =  "{{ room_name }}"
+            const userName =  "{{ request.user.username }}"
+        </script>
 
     </div>
 

@@ -9,6 +9,6 @@ def lobby(request):
         return redirect('game_room', room_name=room_name)
     return render(request, 'online_game/lobby.html')
 
-def game_room(request, room_name):
+def gameroom(request, room_name):
     # If the room exists, the players can join. You can also handle matchmaking here.
-    return render(request, 'online_game/game_room.html', {'room_name': room_name})
+    return render(request, 'online_game/gameroom.html', {'room_name': room_name})
