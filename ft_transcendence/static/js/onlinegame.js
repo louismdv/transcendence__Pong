@@ -35,17 +35,24 @@ document.addEventListener("DOMContentLoaded", function() {
     // Event handler for when the connection is successfully opened
     gameSocket.onopen = function(event) {
         console.log("WebSocket is open now.");
-        if (gameSocket.readyState === WebSocket.OPEN) {
-            gameSocket.send(JSON.stringify({ type: 'initial_message', data: userName }));
-        } else {
-            console.error("WebSocket is not open. Message not sent.");
-        }
+        sendMessage({ type: 'initial_message', data: userName });
     };
     // Event handler for receiving messages from the server
     gameSocket.onmessage = function(event) {
         const data = JSON.parse(event.data);
-        console.log("Message from server:", data);
-        pullGameState(data);
+        // console.log("Message from server:", data);
+
+        if (data.type === "start_game") {
+            console.log("Starting game via ws!");
+            resetGame();
+            gameLoop();
+        }
+        else if (data.type === "update_game") {
+            console.log("Updating game via ws!");
+            pullGameState(data);
+        }
+        else
+            console.log("Unknown message type:", data.type);
     };
     gameSocket.onclose = function(event) {
         console.log("WebSocket closed:", event.code, event.reason);
@@ -55,7 +62,7 @@ document.addEventListener("DOMContentLoaded", function() {
     };
     function pushGameState() {
         if (gameSocket.readyState === WebSocket.OPEN) {
-            gameSocket.send(JSON.stringify({
+            sendMessage({
                 type: 'game_state',
                 data: {
                     left_player: {
@@ -78,23 +85,21 @@ document.addEventListener("DOMContentLoaded", function() {
                         }
                     }
                 }
-            }));
+            });
         }
     };
-    // Function to update the game state based on received messages
+    // Abstracted code for both players. Each user gets a player obj and an opponent obj
     function pullGameState(data) {
-        if (userName === data.left_player.player_id) {
-            playerL.update();
-            point = ball.update();
+        if (userName === data.left_player.player_id || userName === data.right_player.player_id) {
+            const player = userName === data.left_player.player_id ? playerL : playerR;
+            const opponent = userName === data.left_player.player_id ? playerR : playerL;
 
-            playerR.y = data.right_player.y;
-            playerR.score = data.right_player.score;
-        }
-        else if (userName === data.right_player.player_id) {
-            playerR.update();
+            player.y = userName === data.left_player.player_id ? data.left_player.y : data.right_player.y;
+            player.score = userName === data.left_player.player_id ? data.left_player.score : data.right_player.score;
+            player.update();
 
-            playerL.y = data.left_player.y;
-            playerL.score = data.left_player.score;
+            opponent.y = userName === data.left_player.player_id ? data.right_player.y : data.left_player.y;
+            opponent.score = userName === data.left_player.player_id ? data.right_player.score : data.left_player.score;
 
             ball.x = data.ball.x;
             ball.y = data.ball.y;
@@ -103,7 +108,16 @@ document.addEventListener("DOMContentLoaded", function() {
             ball.yFac = data.ball.direction.yFac;
         }
     }
+    function sendMessage(data) {
+    if (gameSocket.readyState === WebSocket.OPEN) {
+        gameSocket.send(JSON.stringify(data));
+    } else {
+        console.warn("WebSocket not ready, retrying...");
+        setTimeout(() => sendMessage(data), 500); // Retry after 500ms
+    }
+    }
 });
+
 
 
 // ************ GAME ************ //
@@ -247,10 +261,6 @@ function setupEventListeners() {
     });
     document.addEventListener('keydown', (event) => {
         keysPressed[event.code] = true;
-        if (event.code === 'Space' && !gameRunning) {
-            resetGame();
-            gameLoop();
-        }
         if (event.code == 'KeyM') {
             toggleMute();
         }
@@ -358,36 +368,33 @@ function gameLoop() {
         if (!gameRunning || (msPassed < msPerFrame))
             return;
 
-        pullGameState(); // calling the pull ws functoin
-        
         // check missed balls for scoring
-        if (point === 1) {
-            playerL.score += 1;
-            ball.reset();
-        } else if (point === -1) {
-            playerR.score += 1;
-            ball.reset();
-        }
+        // if (point === 1) {
+        //     playerL.score += 1;
+        //     ball.reset();
+        // } else if (point === -1) {
+        //     playerR.score += 1;
+        //     ball.reset();
+        // }
 
         // check end game conditions
-        if (playerL.score >= WINNING_SCORE || playerR.score >= WINNING_SCORE){
-            resetGame();
-            return;
-        }
+        // if (playerL.score >= WINNING_SCORE || playerR.score >= WINNING_SCORE){
+        //     resetGame();
+        //     return;
+        // }
 
         // Collision detection and response
-        if (ball.left <= playerL.x + playerL.width
-            && ball.y >= playerL.y && ball.y <= playerL.y + playerL.height) {
-            ball.x = ball.x + playerL.width/2;
-            handleCollision(ball, playerL, false);
-        } else if (ball.right >= playerR.x
-            && ball.y >= playerR.y && ball.y <= playerR.y + playerR.height) {
-            ball.x = ball.x - playerR.width/2;
-            handleCollision(ball, playerR, true);
-        }
+        // if (ball.left <= playerL.x + playerL.width
+        //     && ball.y >= playerL.y && ball.y <= playerL.y + playerL.height) {
+        //     ball.x = ball.x + playerL.width/2;
+        //     handleCollision(ball, playerL, false);
+        // } else if (ball.right >= playerR.x
+        //     && ball.y >= playerR.y && ball.y <= playerR.y + playerR.height) {
+        //     ball.x = ball.x - playerR.width/2;
+        //     handleCollision(ball, playerR, true);
+        // }
         // Draw the canvas
         drawCanvas();
-        pushGameState(); // calling the ws push function
         
         let excessTime = msPassed % msPerFrame;
         msPrev = msNow - excessTime;

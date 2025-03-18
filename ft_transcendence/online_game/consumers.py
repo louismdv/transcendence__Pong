@@ -14,7 +14,6 @@ class GameConsumer(AsyncWebsocketConsumer):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.player_id = None
-        self.player_id = None
     
     async def connect(self):
         print("GameConsumer: Trying to connect...", flush=True)
@@ -27,7 +26,8 @@ class GameConsumer(AsyncWebsocketConsumer):
                 "left_player": json.dumps({"player_id": "", "y": 0, "score": 0, "player_type": "left"}),
                 "right_player": json.dumps({"player_id": "", "y": 0, "score": 0, "player_type": "right"}),
                 "ball": json.dumps({"x": 100, "y": 50, "speed": 5, "direction": {"xFac": 1, "yFac": 1}}),
-                "player_count": 0
+                "player_count": 0,
+                "game_status": "waiting"
             })
             print(redis_client.hgetall(f"room:{self.room_name}"))
             
@@ -49,17 +49,20 @@ class GameConsumer(AsyncWebsocketConsumer):
         await self.accept()
         print(f"WebSocket connected: {self.room_name}")
 
+            
         # Increment player count
-        print(f"bef player_count: {self.player_count}")
         redis_client.hincrby(f"room:{self.room_name}", "player_count", 1)
         self.player_count += 1
         print(f"after player_count: {self.player_count}")
-        
         # Join room group
         await self.channel_layer.group_add(
             self.room_group_name, #group to which the channel should be added
             self.channel_name #unique identifier created by channels for each websocket connection
         )
+        if (self.player_count == 2):
+            # Set game status to playing
+            redis_client.hset(f"room:{self.room_name}", "game_status", "playing")
+            await self.start_game()
 
     async def disconnect(self, close_code):
         # Leave room group
@@ -100,7 +103,8 @@ class GameConsumer(AsyncWebsocketConsumer):
             # Optionally, log or print the updated player_id
             print(f"Updated player_id for player_count {self.player_count}: {username}")
             print(redis_client.hgetall(f"room:{self.room_name}"))
-        if data.get('type') == 'game_state':
+
+        elif data.get('type') == 'game_state':
             # DATA EXTRACTION player and ball data from the received message
             right_player = data.get("right_player")
             left_player = data.get("left_player")
@@ -121,7 +125,7 @@ class GameConsumer(AsyncWebsocketConsumer):
             await self.channel_layer.group_send( 
                 self.room_group_name,
                 {
-                    'type': 'update_game', #type key specifies method to be called on each consumer receiving message
+                    'type': 'update.game', #type key specifies method to be called on each consumer receiving message
                     'game_state': game_state
                 }
             )
@@ -130,7 +134,21 @@ class GameConsumer(AsyncWebsocketConsumer):
             # Handle other message types if needed
             print(f"Received message of type: {data.get('type')}")
 
-    # Is called as soon as a conumer recieves a message
+    async def start_game(self):        
+        await self.channel_layer.group_send(
+            self.room_group_name,
+            {
+                "type": "game.start",
+                "message": "start",
+            }
+        )
+        
+    async def game_start(self, event):
+        """Send game start signal to clients"""
+        await self.send(text_data=json.dumps({"type": "start_game"}))
+
+    # Is called as soon as a consumer recieves a message
     # Sends the updated game state to the client
     async def update_game(self, event):
         await self.send(text_data=json.dumps(event['game_state']))
+
