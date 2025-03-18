@@ -63,9 +63,11 @@ class GameConsumer(AsyncWebsocketConsumer):
 
     async def disconnect(self, close_code):
         # Leave room group
+        if (self.channel_name not in self.channel_layer.groups.get(self.room_group_name, set())):
+            return
         redis_client.hincrby(f"room:{self.room_name}", "player_count", -1)
         self.player_count -= 1
-        print(f"player_count: {self.player_count}")
+        print(f"after disconnect player_count: {self.player_count}")
         await self.channel_layer.group_discard(
             self.room_group_name,
             self.channel_name
@@ -74,11 +76,12 @@ class GameConsumer(AsyncWebsocketConsumer):
     async def receive(self, text_data):
     
         # Parse the incoming JSON message
-        message = json.loads(text_data)
-        print("message recieved")
+        data = json.loads(text_data)
+        print("data recieved")
+        
         # Check the type of message
-        if message.get('type') == 'initial_message':
-            username = message.get('data')
+        if data.get('type') == 'initial_message':
+            username = data.get('data')
             self.player_id = username
 
             # Determine which player to update based on player_count
@@ -96,38 +99,38 @@ class GameConsumer(AsyncWebsocketConsumer):
 
             # Optionally, log or print the updated player_id
             print(f"Updated player_id for player_count {self.player_count}: {username}")
+            print(redis_client.hgetall(f"room:{self.room_name}"))
+        if data.get('type') == 'game_state':
+            # DATA EXTRACTION player and ball data from the received message
+            right_player = data.get("right_player")
+            left_player = data.get("left_player")
+            ball = data.get("ball")
+
+            # REDIS UPDATING game state in Redis
+            if left_player:
+                redis_client.hset(f"room:{self.room_name}", "left_player", json.dumps(left_player))
+            if right_player:
+                redis_client.hset(f"room:{self.room_name}", "right_player", json.dumps(right_player))
+            if ball:
+                redis_client.hset(f"room:{self.room_name}", "ball", json.dumps(ball))
+
+            # Retrieve the entire game state from Redis
+            game_state = redis_client.hgetall(f"room:{self.room_name}")
+
+            # BROADCASTING update to consumers in the room group
+            await self.channel_layer.group_send( 
+                self.room_group_name,
+                {
+                    'type': 'update_game', #type key specifies method to be called on each consumer receiving message
+                    'game_state': game_state
+                }
+            )
+            
         else:
             # Handle other message types if needed
-            print(f"Received message of type: {message.get('type')}")
+            print(f"Received message of type: {data.get('type')}")
 
-
-    #     # DATA EXTRACTION player and ball data from the received message
-    #     right_player_data = data.get("right_player")
-    #     left_player_data = data.get("left_player")
-    #     ball_data = data.get("ball")
-
-    #     # REDIS UPDATING game state in Redis
-        
-    #     if right_player_data:
-    #         redis_client.hset(f"room:{self.room_name}", "right_player", json.dumps(right_player_data))
-    #     if left_player_data:
-    #         redis_client.hset(f"room:{self.room_name}", "left_player", json.dumps(left_player_data))
-    #     if ball_data:
-    #         redis_client.hset(f"room:{self.room_name}", "ball", json.dumps(ball_data))
-
-    #     # Retrieve the entire game state from Redis
-    #     game_state = redis_client.hgetall(f"room:{self.room_name}")
-
-    #     # BROADCASTING update to consumers in the room group
-    #     await self.channel_layer.group_send( 
-    #         self.room_group_name,
-    #         {
-    #             'type': 'update_game', #type key specifies method to be called on each consumer receiving message
-    #             'game_state': game_state
-    #         }
-    #     )
-
-    # # Is called as soon as a conumer recieves a message
-    # # Sends the updated game state to the client
-    # async def update_game(self, event):
-    #     await self.send(text_data=json.dumps(event['game_state']))
+    # Is called as soon as a conumer recieves a message
+    # Sends the updated game state to the client
+    async def update_game(self, event):
+        await self.send(text_data=json.dumps(event['game_state']))

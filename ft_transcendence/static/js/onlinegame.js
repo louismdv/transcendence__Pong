@@ -1,62 +1,7 @@
 
+// ************ SETUP ************ //
 
-console.log(roomName);
-console.log(userName);
-
-
-document.addEventListener("DOMContentLoaded", function() {
-
-    const gameSocket = new WebSocket(`ws://${window.location.host}/ws/online-game/${roomName}/`);
-
-    // Event handler for when the connection is successfully opened
-    gameSocket.onopen = function(event) {
-        console.log("WebSocket is open now.");
-        gameSocket.send(JSON.stringify({ type: 'initial_message', data: userName }));
-    };
-
-    // Event handler for receiving messages from the server
-    gameSocket.onmessage = function(event) {
-        const data = JSON.parse(event.data);
-        console.log("Message from server:", data);
-        updateGameState(data);
-    };
-
-    gameSocket.onclose = function(event) {
-        console.log("WebSocket closed:", event.code, event.reason);
-    };
-    gameSocket.onerror = function(event) {
-        console.error("WebSocket error observed:", event);
-    };
-
-    // Function to send a message to the server
-    function sendMessage(message) {
-        if (gameSocket.readyState === WebSocket.OPEN) {
-            gameSocket.send(JSON.stringify(message));
-        } else {
-            console.error("WebSocket is not open. Message not sent.");
-        }
-    }
-
-    // Function to update the game state based on received messages
-    function updateGameState(data) {
-        console.log("Updating game state with data:", data);
-    }
-
-});
-
-
-
-
-const canvas = document.getElementById('onlinegameCanvas');
-const ctx = canvas.getContext('2d');
-
-let msPrev = window.performance.now();
-const hitSoundL = document.getElementById('hitSoundL');
-const hitSoundR = document.getElementById('hitSoundR');
-const muteButton = document.getElementById('muteButton');
-
-// CONSTANTS
-    // COLORS
+// COLORS
 const RED = '#ff0000';
 const GREY = '#1c1c1c';
 const BLUE = '#0000ff';
@@ -64,7 +9,8 @@ const WHITE = '#ffffff';
 const BLACK = '#000000';
 const YELLOW = '#ffff00';
 const ORANGE = '#ffa500';
-    // SETTING
+
+// SETTINGS
 const FPS = 60;
 const WINNING_SCORE = 5;
 const msPerFrame = 1000 / FPS; // time required for one frame to complete
@@ -77,15 +23,107 @@ const FONT_SIZE_XL = 500, FONT_SIZE_L = 200, FONT_SIZE_M = 50;
 let isMuted = false;
 let gameRunning = false;
 let playerL, playerR, ball, keysPressed = {};
+let point = 0;
+
+
+// ************ WEBSOCKETS ************ //
+
+document.addEventListener("DOMContentLoaded", function() {
+
+    const gameSocket = new WebSocket(`ws://${window.location.host}/ws/online-game/${roomName}/`);
+
+    // Event handler for when the connection is successfully opened
+    gameSocket.onopen = function(event) {
+        console.log("WebSocket is open now.");
+        if (gameSocket.readyState === WebSocket.OPEN) {
+            gameSocket.send(JSON.stringify({ type: 'initial_message', data: userName }));
+        } else {
+            console.error("WebSocket is not open. Message not sent.");
+        }
+    };
+    // Event handler for receiving messages from the server
+    gameSocket.onmessage = function(event) {
+        const data = JSON.parse(event.data);
+        console.log("Message from server:", data);
+        pullGameState(data);
+    };
+    gameSocket.onclose = function(event) {
+        console.log("WebSocket closed:", event.code, event.reason);
+    };
+    gameSocket.onerror = function(event) {
+        console.error("WebSocket error observed:", event);
+    };
+    function pushGameState() {
+        if (gameSocket.readyState === WebSocket.OPEN) {
+            gameSocket.send(JSON.stringify({
+                type: 'game_state',
+                data: {
+                    left_player: {
+                        player_id: userName,
+                        y: playerL.y,
+                        score: playerL.score
+                    },
+                    right_player: {
+                        player_id: userName,
+                        y: playerR.y,
+                        score: playerR.score
+                    },
+                    ball: {
+                        x: ball.x,
+                        y: ball.y,
+                        speed: ball.speed,
+                        direction: {
+                            xFac: ball.xFac,
+                            yFac: ball.yFac
+                        }
+                    }
+                }
+            }));
+        }
+    };
+    // Function to update the game state based on received messages
+    function pullGameState(data) {
+        if (userName === data.left_player.player_id) {
+            playerL.update();
+            point = ball.update();
+
+            playerR.y = data.right_player.y;
+            playerR.score = data.right_player.score;
+        }
+        else if (userName === data.right_player.player_id) {
+            playerR.update();
+
+            playerL.y = data.left_player.y;
+            playerL.score = data.left_player.score;
+
+            ball.x = data.ball.x;
+            ball.y = data.ball.y;
+            ball.speed = data.ball.speed;
+            ball.xFac = data.ball.direction.xFac;
+            ball.yFac = data.ball.direction.yFac;
+        }
+    }
+});
+
+
+// ************ GAME ************ //
+
+const canvas = document.getElementById('onlinegameCanvas');
+const ctx = canvas.getContext('2d');
+
+let msPrev = window.performance.now();
+const hitSoundL = document.getElementById('hitSoundL');
+const hitSoundR = document.getElementById('hitSoundR');
+const muteButton = document.getElementById('muteButton');
 
 // CLASSES: Player and Ball
 class Player {
-    constructor(x, y, color, upKey, downKey) {
+    constructor(x, y, color) {
         this.x = x;
         this.y = y;
         this.color = color;
-        this.upKey = upKey;
-        this.downKey = downKey;
+        this.upKey = 'arrowUp';
+        this.downKey = 'arrowDown';
         this.speed = 15;
         this.score = 0;
         this.width = PLAYER_W;
@@ -142,7 +180,6 @@ class Ball {
     update() {
         // Apply deceleration
         this.speed *= this.deceleration;
-        // console.log(this.speed)
         if (this.speed < this.minSpeed) {
             this.speed = this.minSpeed;
         }
@@ -282,8 +319,8 @@ function drawCanvas() {
 function resetGame() {
     gameRunning = false;
         
-    playerL = new Player(50, WIN_H / 2 - 175 / 2, 'orange', 'KeyA', 'KeyD');
-    playerR = new Player(WIN_W - 50 - 30, WIN_H / 2 - 175 / 2, 'red', 'ArrowRight', 'ArrowLeft');
+    playerL = new Player(50, WIN_H / 2 - 175 / 2, 'orange');
+    playerR = new Player(WIN_W - 50 - 30, WIN_H / 2 - 175 / 2, 'red');
     ball    = new Ball(WIN_W / 2, WIN_H / 2, 'blue');
 }
 function randNumBtw(min, max) {
@@ -321,11 +358,8 @@ function gameLoop() {
         if (!gameRunning || (msPassed < msPerFrame))
             return;
 
-        // update game state
-        playerL.update();
-        playerR.update();
-        let point = ball.update();
-
+        pullGameState(); // calling the pull ws functoin
+        
         // check missed balls for scoring
         if (point === 1) {
             playerL.score += 1;
@@ -353,6 +387,7 @@ function gameLoop() {
         }
         // Draw the canvas
         drawCanvas();
+        pushGameState(); // calling the ws push function
         
         let excessTime = msPassed % msPerFrame;
         msPrev = msNow - excessTime;
