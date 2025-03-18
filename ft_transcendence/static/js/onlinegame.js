@@ -11,7 +11,7 @@ document.addEventListener("DOMContentLoaded", function() {
     // Event handler for when the connection is successfully opened
     gameSocket.onopen = function(event) {
         console.log("WebSocket is open now.");
-        gameSocket.send(JSON.stringify({ type: 'initial_message', data: 'Hello Server!' }));
+        gameSocket.send(JSON.stringify({ type: 'initial_message', data: userName }));
     };
 
     // Event handler for receiving messages from the server
@@ -30,14 +30,16 @@ document.addEventListener("DOMContentLoaded", function() {
 
     // Function to send a message to the server
     function sendMessage(message) {
-        gameSocket.send(JSON.stringify(message));
+        if (gameSocket.readyState === WebSocket.OPEN) {
+            gameSocket.send(JSON.stringify(message));
+        } else {
+            console.error("WebSocket is not open. Message not sent.");
+        }
     }
 
     // Function to update the game state based on received messages
     function updateGameState(data) {
-        // Implement your logic to update the game state based on the received data
         console.log("Updating game state with data:", data);
-        // Example: Update the UI or game state variables
     }
 
 });
