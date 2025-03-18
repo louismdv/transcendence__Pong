@@ -99,18 +99,17 @@
         </div>
         <div class="flex-container">
             <div class="card">
+                <div class="centeredTextonImage">solo</div>
                 <button onclick="window.location.href='{% url 'localgame' %}';" class="glow-on-hover" type="button" >
                     Play local
-                    <span class="material-symbols-outlined" style="font-weight: 600;">Slideshow</span>
+                    <span class="material-symbols-outlined" style="font-weight: 600;">arrow_forward</span>
                 </button>
-                <img src="../media/pong.gif" alt="pongGIF" width="75%">
-                <div class="centeredTextonImage">solo</div>
             </div>
             <div class="card">
                 <div class="centeredTextonImage">AI</div>
                 <button class="glow-on-hover" type="button">
                     Play vs. ai
-                    <span class="material-symbols-outlined" style="font-weight: 600;">robot</span>
+                    <span class="material-symbols-outlined" style="font-weight: 600;">smart_toy</span>
                 </button>
                 <img src="../media/pong.gif" alt="pongGIF" width="75%">
             </div>
@@ -135,6 +134,7 @@
         42Transcendence
     </footer>
 </div>
+
 {% include 'livechat.html' %}
 
 <script src="{% static 'js/home.js' %}"></script>
