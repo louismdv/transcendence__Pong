@@ -15,7 +15,9 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400..700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
-    
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Alata&family=Fugaz+One&family=Funnel+Display:wght@300&display=swap" rel="stylesheet">
@@ -30,28 +32,30 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.2/css/all.min.css" integrity="sha512-1sCRPdkRXhBV2PBLUdRb4tMg1w2YPf37qatUFeS7zlBy7jJI8Lf4VHwWfZZfpXtYSLy85pkm9GaYVYMfw5BC1A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 <section id="settingspage">
     <div class="gameMode">
-        <h3 style="text-align: left;">Paramètres du profil</h3>
+        <h4>Paramètres du profil</h4>
+        <h5>Gérez vos informations personnels et vos préferences</h5>
     </div>
+    <div class="nav nav-tabs mb-4 custom-nav" id="settingsTabs" role="tablist">
+        <div class="nav-item" role="presentation">
+            <button class="nav-link active" id="profile-tab" data-bs-toggle="tab" data-bs-target="#profile" type="button" role="tab" aria-controls="profile" aria-selected="true">Profil</button>
+        </div>
+        <div class="nav-item" role="presentation">
+            <button class="nav-link" id="account-tab" data-bs-toggle="tab" data-bs-target="#account" type="button" role="tab" aria-controls="account" aria-selected="false">Compte</button>
+        </div>
+        <div class="nav-item" role="presentation">
+            <button class="nav-link" id="preferences-tab" data-bs-toggle="tab" data-bs-target="#preferences" type="button" role="tab" aria-controls="preferences" aria-selected="false">Préférences</button>
+        </div>
+    </div>
+    
         <div class="settings-content">
-        <ul class="nav nav-tabs mb-4" id="settingsTabs" role="tablist">
-            <li class="nav-item" role="presentation">
-                <button class="nav-link active" id="profile-tab" data-bs-toggle="tab" data-bs-target="#profile" type="button" role="tab" aria-controls="profile" aria-selected="true">Profil</button>
-            </li>
-            <li class="nav-item" role="presentation">
-                <button class="nav-link" id="account-tab" data-bs-toggle="tab" data-bs-target="#account" type="button" role="tab" aria-controls="account" aria-selected="false">Compte</button>
-            </li>
-            <li class="nav-item" role="presentation">
-                <button class="nav-link" id="preferences-tab" data-bs-toggle="tab" data-bs-target="#preferences" type="button" role="tab" aria-controls="preferences" aria-selected="false">Préférences</button>
-            </li>
-        </ul>
         <div class="tab-content" id="settingsTabsContent">
             <div class="tab-pane fade show active" id="profile" role="tabpanel" aria-labelledby="profile-tab">
-                <div class="card mb-4">
-                    <div class="card-header">
-                        <h5 class="card-title mb-0">Informations du profil</h5>
+                <div class="my-card mb-4">
+                    <div class="my-card-header">
+                        <h5 class="my-card-title mb-0">Informations du profil</h5>
                         <div class="text-muted small">Modifiez vos informations personnelles</div>
                     </div>
-                    <div class="card-body">
+                    <div class="my-card-body">
                         <div class="d-flex flex-column flex-sm-row align-items-center mb-4">
                             <div class="avatar me-sm-4 mb-3 mb-sm-0">
                                 <img id="avatar-preview" src="../media/ficello.png" alt="Avatar">
@@ -59,7 +63,7 @@
                             <div>
                                 <label for="avatar" class="form-label">Photo de profil</label>
                                 <div class="file-input-wrapper">
-                                    <button class="btn btn-outline-secondary">
+                                    <button class="btn-settings btn-outline-secondary">
                                         <i class="bi bi-upload me-2"></i>
                                         Changer l'avatar
                                     </button>
@@ -81,12 +85,12 @@
             
             <!-- Onglet Compte -->
             <div class="tab-pane fade" id="account" role="tabpanel" aria-labelledby="account-tab">
-                <div class="card mb-4">
-                    <div class="card-header">
-                        <h5 class="card-title mb-0">Informations du compte</h5>
+                <div class="my-card mb-4">
+                    <div class="my-card-header">
+                        <h5 class="my-card-title mb-0">Informations du compte</h5>
                         <div class="text-muted small">Modifiez votre email et mot de passe</div>
                     </div>
-                    <div class="card-body">
+                    <div class="my-card-body">
                         <div class="mb-3">
                             <label for="email" class="form-label">
                                 <i class="bi bi-envelope me-2"></i>
@@ -115,25 +119,25 @@
                     </div>
                 </div>
                 
-                <div class="card border-danger mb-4">
-                    <div class="card-header bg-danger bg-opacity-10 text-danger">
-                        <h5 class="card-title mb-0">Zone de danger</h5>
+                <div class="my-card border-danger mb-4">
+                    <div class="my-card-header bg-danger bg-opacity-10 text-danger">
+                        <h5 class="my-card-title mb-0">Zone de danger</h5>
                         <div class="text-muted small">Actions irréversibles pour votre compte</div>
                     </div>
-                    <div class="card-body">
-                        <button id="delete-account-btn" class="btn btn-danger">Supprimer le compte</button>
+                    <div class="my-card-body">
+                        <button id="delete-account-btn" class="btn-settings btn-danger">Supprimer le compte</button>
                     </div>
                 </div>
             </div>
             
             <!-- Onglet Préférences -->
             <div class="tab-pane fade" id="preferences" role="tabpanel" aria-labelledby="preferences-tab">
-                <div class="card mb-4">
-                    <div class="card-header">
-                        <h5 class="card-title mb-0">Préférences d'affichage</h5>
+                <div class="my-card mb-4">
+                    <div class="my-card-header">
+                        <h5 class="my-card-title mb-0">Préférences d'affichage</h5>
                         <div class="text-muted small">Personnalisez vos préférences d'affichage</div>
                     </div>
-                    <div class="card-body">
+                    <div class="my-card-body">
                         <div class="mb-3">
                             <label for="time-format" class="form-label">
                                 <i class="bi bi-clock me-2"></i>
@@ -177,8 +181,8 @@
         
         <!-- Boutons d'action -->
         <div class="d-grid gap-2 d-md-flex mt-4">
-            <button id="save-btn" class="btn btn-primary flex-fill">Sauvegarder les modifications</button>
-            <button id="reset-btn" class="btn btn-outline-secondary flex-fill">Réinitialiser les paramètres</button>
+            <button id="save-btn" class="btn-settings btn-primary flex-fill">Sauvegarder les modifications</button>
+            <button id="reset-btn" class="btn-settings btn-outline-secondary flex-fill">Réinitialiser les paramètres</button>
         </div>
     </div>
 <!-- Modal de confirmation pour la suppression du compte -->
@@ -193,8 +197,8 @@
                 <p>Cette action est irréversible. Elle supprimera définitivement votre compte et toutes les données associées de nos serveurs.</p>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
-                <button type="button" id="confirm-delete" class="btn btn-danger">Supprimer le compte</button>
+                <button type="button" class="btn-settings btn-secondary" data-bs-dismiss="modal">Annuler</button>
+                <button type="button" id="confirm-delete" class="btn-settings btn-danger">Supprimer le compte</button>
             </div>
         </div>
     </div>
