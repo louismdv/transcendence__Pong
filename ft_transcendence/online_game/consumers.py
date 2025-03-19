@@ -23,9 +23,9 @@ class GameConsumer(AsyncWebsocketConsumer):
         # Create redis_client hash structure if it doesn't exist
         if not redis_client.exists(f"room:{self.room_name}"):
             redis_client.hset(f"room:{self.room_name}", mapping={
-                "left_player": json.dumps({"player_id": "", "y": 0, "score": 0, "player_type": "left"}),
-                "right_player": json.dumps({"player_id": "", "y": 0, "score": 0, "player_type": "right"}),
-                "ball": json.dumps({"x": 100, "y": 50, "speed": 5, "direction": {"xFac": 1, "yFac": 1}}),
+                "playerL": json.dumps({"id": "", "y": None, "score": None, "type": "left"}),
+                "playerR": json.dumps({"id": "", "y": None, "score": None, "type": "right"}),
+                "ball": json.dumps({"x": None, "y": None, "speed": None, "direction": {"xFac": None, "yFac": None}}),
                 "player_count": 0,
                 "game_status": "waiting"
             })
@@ -80,8 +80,8 @@ class GameConsumer(AsyncWebsocketConsumer):
     
         # Parse the incoming JSON message
         data = json.loads(text_data)
-        print("data recieved")
-        
+        print(f"data recieved type: {data.get('type')}")
+        print(f"data recieved: {data}")
         # Check the type of message
         if data.get('type') == 'initial_message':
             username = data.get('data')
@@ -90,31 +90,31 @@ class GameConsumer(AsyncWebsocketConsumer):
             # Determine which player to update based on player_count
             # Update players with the their player_id
             if self.player_count == 1:
-                left_player_json = redis_client.hget(f"room:{self.room_name}", "left_player")
-                left_player_data = json.loads(left_player_json)
-                left_player_data['player_id'] = self.player_id
-                redis_client.hset(f"room:{self.room_name}", "left_player", json.dumps(left_player_data))
+                playerL_json = redis_client.hget(f"room:{self.room_name}", "playerL")
+                playerL_data = json.loads(playerL_json)
+                playerL_data['id'] = self.player_id
+                redis_client.hset(f"room:{self.room_name}", "playerL", json.dumps(playerL_data))
             elif self.player_count == 2:
-                right_player_json = redis_client.hget(f"room:{self.room_name}", "right_player")
-                right_player_data = json.loads(right_player_json)
-                right_player_data['player_id'] = self.player_id
-                redis_client.hset(f"room:{self.room_name}", "right_player", json.dumps(right_player_data))
+                playerR_json = redis_client.hget(f"room:{self.room_name}", "playerR")
+                playerR_data = json.loads(playerR_json)
+                playerR_data['id'] = self.player_id
+                redis_client.hset(f"room:{self.room_name}", "playerR", json.dumps(playerR_data))
 
             # Optionally, log or print the updated player_id
-            print(f"Updated player_id for player_count {self.player_count}: {username}")
+            print(f"Updated id for player_count {self.player_count}: {username}")
             print(redis_client.hgetall(f"room:{self.room_name}"))
 
         elif data.get('type') == 'game_state':
             # DATA EXTRACTION player and ball data from the received message
-            right_player = data.get("right_player")
-            left_player = data.get("left_player")
+            playerR = data.get("playerR")
+            playerL = data.get("playerL")
             ball = data.get("ball")
 
             # REDIS UPDATING game state in Redis
-            if left_player:
-                redis_client.hset(f"room:{self.room_name}", "left_player", json.dumps(left_player))
-            if right_player:
-                redis_client.hset(f"room:{self.room_name}", "right_player", json.dumps(right_player))
+            if playerL:
+                redis_client.hset(f"room:{self.room_name}", "playerL", json.dumps(playerL))
+            if playerR:
+                redis_client.hset(f"room:{self.room_name}", "playerR", json.dumps(playerR))
             if ball:
                 redis_client.hset(f"room:{self.room_name}", "ball", json.dumps(ball))
 

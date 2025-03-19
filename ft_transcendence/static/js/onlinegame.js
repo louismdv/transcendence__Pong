@@ -25,17 +25,24 @@ let gameRunning = false;
 let playerL, playerR, ball, keysPressed = {};
 let point = 0;
 
+const canvas = document.getElementById('onlinegameCanvas');
+const ctx = canvas.getContext('2d');
+
+let msPrev = window.performance.now();
+const hitSoundL = document.getElementById('hitSoundL');
+const hitSoundR = document.getElementById('hitSoundR');
+const muteButton = document.getElementById('muteButton');
+const players = { me: null, opponent: null };
 
 // ************ WEBSOCKETS ************ //
 
-document.addEventListener("DOMContentLoaded", function() {
 
     const gameSocket = new WebSocket(`ws://${window.location.host}/ws/online-game/${roomName}/`);
 
     // Event handler for when the connection is successfully opened
     gameSocket.onopen = function(event) {
         console.log("WebSocket is open now.");
-        sendMessage({ type: 'initial_message', data: userName });
+        sendMessage({ type: 'initial_message', data: clientName });
     };
     // Event handler for receiving messages from the server
     gameSocket.onmessage = function(event) {
@@ -45,6 +52,7 @@ document.addEventListener("DOMContentLoaded", function() {
         if (data.type === "start_game") {
             console.log("Starting game via ws!");
             resetGame();
+            setupEventListeners();
             gameLoop();
         }
         else if (data.type === "update_game") {
@@ -60,18 +68,48 @@ document.addEventListener("DOMContentLoaded", function() {
     gameSocket.onerror = function(event) {
         console.error("WebSocket error observed:", event);
     };
+    function sendMessage(data) {
+        if (gameSocket.readyState === WebSocket.OPEN) {
+            gameSocket.send(JSON.stringify(data));
+        } else {
+            console.warn("WebSocket not ready, retrying...");
+            setTimeout(() => sendMessage(data), 500); // Retry after 500ms
+        }
+    }
+    // Abstracted code for both players. Each user gets a player obj and an opponent obj
+    function pullGameState(data) {
+        if (clientName === data.playerL.id || clientName === data.playerR.id) {
+
+            // define me and opponent references to local playerR and playerL player objects
+            players.me = clientName === data.playerL.id ? playerL : playerR;
+            players.opponent = clientName === data.playerL.id ? playerL : playerR;
+
+            players.me.update();
+            // ball.update();
+
+            // pulling opponent data from Redis
+            players.opponent.y = clientName === data.playerL.id ? data.playerR.y : data.playerL.y;
+            players.opponent.score = clientName === data.playerL.id ? data.playerR.score : data.playerL.score;
+
+            // ball.x = data.ball.x;
+            // ball.y = data.ball.y;
+            // ball.speed = data.ball.speed;
+            // ball.xFac = data.ball.direction.xFac;
+            // ball.yFac = data.ball.direction.yFac;
+        }
+    }
     function pushGameState() {
         if (gameSocket.readyState === WebSocket.OPEN) {
             sendMessage({
                 type: 'game_state',
                 data: {
-                    left_player: {
-                        player_id: userName,
+                    playerL: {
+                        id: players.me === playerL ? players.me.id : players.opponent.id,
                         y: playerL.y,
                         score: playerL.score
                     },
-                    right_player: {
-                        player_id: userName,
+                    playerR: {
+                        id: players.me === playerR ? players.me.id : players.opponent.id,
                         y: playerR.y,
                         score: playerR.score
                     },
@@ -88,47 +126,8 @@ document.addEventListener("DOMContentLoaded", function() {
             });
         }
     };
-    // Abstracted code for both players. Each user gets a player obj and an opponent obj
-    function pullGameState(data) {
-        if (userName === data.left_player.player_id || userName === data.right_player.player_id) {
-            const player = userName === data.left_player.player_id ? playerL : playerR;
-            const opponent = userName === data.left_player.player_id ? playerR : playerL;
-
-            player.y = userName === data.left_player.player_id ? data.left_player.y : data.right_player.y;
-            player.score = userName === data.left_player.player_id ? data.left_player.score : data.right_player.score;
-            player.update();
-
-            opponent.y = userName === data.left_player.player_id ? data.right_player.y : data.left_player.y;
-            opponent.score = userName === data.left_player.player_id ? data.right_player.score : data.left_player.score;
-
-            ball.x = data.ball.x;
-            ball.y = data.ball.y;
-            ball.speed = data.ball.speed;
-            ball.xFac = data.ball.direction.xFac;
-            ball.yFac = data.ball.direction.yFac;
-        }
-    }
-    function sendMessage(data) {
-    if (gameSocket.readyState === WebSocket.OPEN) {
-        gameSocket.send(JSON.stringify(data));
-    } else {
-        console.warn("WebSocket not ready, retrying...");
-        setTimeout(() => sendMessage(data), 500); // Retry after 500ms
-    }
-    }
-});
-
-
 
 // ************ GAME ************ //
-
-const canvas = document.getElementById('onlinegameCanvas');
-const ctx = canvas.getContext('2d');
-
-let msPrev = window.performance.now();
-const hitSoundL = document.getElementById('hitSoundL');
-const hitSoundR = document.getElementById('hitSoundR');
-const muteButton = document.getElementById('muteButton');
 
 // CLASSES: Player and Ball
 class Player {
@@ -136,8 +135,8 @@ class Player {
         this.x = x;
         this.y = y;
         this.color = color;
-        this.upKey = 'arrowUp';
-        this.downKey = 'arrowDown';
+        this.upKey = 'ArrowUp';
+        this.downKey = 'ArrowDown';
         this.speed = 15;
         this.score = 0;
         this.width = PLAYER_W;
@@ -259,8 +258,18 @@ function setupEventListeners() {
     muteButton.addEventListener('click', (event) => {
         toggleMute();
     });
+    gameSocket.onmessage = function(event) {
+        const data = JSON.parse(event.data);
+        if (data && data.type === "game_state") {
+            console.log("Received game state data:", data);
+            pullGameState(data.data);  // Pass the data part to pullGameState
+        }
+    }
     document.addEventListener('keydown', (event) => {
         keysPressed[event.code] = true;
+        if (event.code === 'ArrowUp' || event.code === 'ArrowDown') {
+            pushGameState();
+        }
         if (event.code == 'KeyM') {
             toggleMute();
         }
@@ -273,14 +282,12 @@ function setupEventListeners() {
         keysPressed[event.code] = false;
     });
 }
-
 function toggleMute() {
     isMuted = !isMuted;
     hitSoundL.muted = !hitSoundL.muted;
     hitSoundR.muted = !hitSoundR.muted;
     muteButton.textContent = isMuted ? 'Unmute 🔉' : 'Mute 🔇';
 }
-
 function drawScores() {
 
     ctx.fillStyle = WHITE;
@@ -351,9 +358,6 @@ function handleCollision(ball, player, side) {
     }
 }
 
-// Start the pregame
-pregameLoop(); 
-setupEventListeners();
 
 // Game loop
 function gameLoop() {
@@ -395,6 +399,8 @@ function gameLoop() {
         // }
         // Draw the canvas
         drawCanvas();
+
+        // Push the updated game state to the server
         
         let excessTime = msPassed % msPerFrame;
         msPrev = msNow - excessTime;
