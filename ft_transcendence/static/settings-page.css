@@ -6,13 +6,12 @@
 }
 
 .settings-content {
-    background-color: #fff;
+    background-color: var(--text-color);
     border-radius: 8px;
     padding: 20px;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 }
 
-/* Personnalisation des onglets */
 .tabs {
     display: flex;
     margin-bottom: 20px;
@@ -20,7 +19,7 @@
 
 .tab {
     padding: 10px 15px;
-    background-color: #f1f1f1;
+    background-color: var(--text-color);
     margin-right: 10px;
     cursor: pointer;
     transition: all 0.3s ease;
@@ -28,15 +27,15 @@
 
 .tab:hover {
     background-color: #f75a6a;
-    color: white;
+    color: var(--text-color);
 }
 
 .tab.active {
     background-color: #f75a6a;
-    color: white;
+    color: var(--text-color);
 }
 
-/* Personnalisation des cartes */
+
 .my-card {
     border: 1px solid rgba(0, 0, 0, 0.125);
     border-radius: 8px;
@@ -46,7 +45,7 @@
 
 .my-card-header {
     background-color: var(--background-color);
-    color: white;
+    color: var(--text-color);
     border-bottom: 1px solid rgba(0, 0, 0, 0.125);
     padding: 10px;
 }
@@ -66,6 +65,7 @@
     align-items: center;
     position: relative;
     background-color: var(--primary-color);
+    color: var(--text-color);
     width: auto;
     height: 40px;
     border-radius: 10px;
@@ -77,23 +77,28 @@
     cursor: pointer;
 }
 
+
 .btn-primary {
-    background-color: #f75a6a;
-    color: white;
+    background-color: var(--secondary-color);
+    transition: transform 0.3s, box-shadow 0.3s;
 }
 
-.btn-primary:hover {
-    background-color: #e04050;
+.btn-settings:hover {
+    transform: translateY(-2px); /* Légère translation vers le haut */
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2); /* Ombre douce */
 }
 
 .btn-outline-secondary {
-    border: 1px solid #6c757d;
-    color: #6c757d;
+    border: 1px solid var(--dark-mode);
+}
+.btn-outline-secondary:hover {
+    background-color: #cf0e0f;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2); /* Ombre douce */
+
 }
 
 .btn-danger {
     background-color: #cf0e0f;
-    color: white;
 }
 
 .btn-danger:hover {
@@ -106,7 +111,6 @@
     height: 100px;
     border-radius: 50%;
     overflow: hidden;
-    background-color: #f8f9fa;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -119,7 +123,6 @@
     object-fit: cover;
 }
 
-/* Modal */
 .modal {
     display: none;
     position: fixed;
@@ -133,9 +136,18 @@
 }
 
 .modal-content {
-    background-color: white;
+    background-color: var(--text-color);
     padding: 20px;
     border-radius: 8px;
+}
+.inline-block-button {
+    display: inline-block;
+    padding: 4px 8px;
+}
+
+.custom-nav .nav-link{
+    min-width: 150px;
+    text-align: center;
 }
 
 /* Responsive */
