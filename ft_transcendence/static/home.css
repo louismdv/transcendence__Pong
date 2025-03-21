@@ -116,11 +116,21 @@ aside:hover .sidebar-links h4 {
 .gameMode {
     grid-column: span 4; 
     border-radius: 5px;
+    text-align: left;
     margin: 0;
 }
 .gameMode h3 {
-    text-align: left;
     margin-bottom: 0 5px;
+}
+.gameMode h4{
+    margin-bottom: 10px;
+    font-size: 40px;;
+}
+.gameMode h5{
+    font-size: 15px;
+    margin-bottom: 20px;
+
+
 }
 .flex-container {
     display: flex;
