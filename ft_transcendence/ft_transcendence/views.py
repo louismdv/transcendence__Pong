@@ -14,6 +14,7 @@ def main(request):
 def home(request):
     return render(request, 'home.html')
 
+
 def livechat(request):
     return render(request, 'livechat.html')
 
@@ -24,6 +25,10 @@ def localgame(request):
 def settingspage(request):
     return render(request, 'settingspage.html')
 
+@login_required(login_url='/login')
+def friendspage(request):
+    return render(request, 'friendspage.html')
+    
 def register(request):
     if request.method == 'POST':
         form = UserCreationForm(request.POST)

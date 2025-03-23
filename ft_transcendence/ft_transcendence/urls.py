@@ -11,6 +11,7 @@ urlpatterns = [
     path('register/', views.register, name='register'),
     path('livechat/', views.livechat, name='livechat'),
     path('local-game/', views.localgame, name='localgame'),
+    path('friendspage/', views.friendspage, name='friendspage'),
     path('settingspage/', views.settingspage, name='settingspage'),
     path('api/auth/', include('dj_rest_auth.urls')),
     path('api/auth/registration/', include('dj_rest_auth.registration.urls')),
