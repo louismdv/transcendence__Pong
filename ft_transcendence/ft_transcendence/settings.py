@@ -20,7 +20,6 @@ DEBUG = True
 ALLOWED_HOSTS = ['*']
 
 INSTALLED_APPS = [
-    'daphne',
     'channels',
     'channels_redis',
     'online_game',
