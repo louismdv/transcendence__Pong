@@ -90,14 +90,12 @@ document.addEventListener('DOMContentLoaded', function() {
                         data = await sendFormData('/settingspage/', formData);
                         
                         if (data.status === 'success' && data.avatar_url) {
-                            const avatars = document.querySelectorAll('.user-avatar');
-                            avatars.forEach(avatar => {
+                            const allAvatars = document.querySelectorAll('.user-avatar');
+                            allAvatars.forEach(avatar => {
                                 avatar.src = data.avatar_url;
                             });
-                            window.location.reload(); // Recharger pour voir les changements
                         }
                         break;
-
                     case 'account':
                         const newPassword = document.getElementById('new-password').value;
                         const confirmPassword = document.getElementById('confirm-password').value;
