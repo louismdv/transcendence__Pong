@@ -63,7 +63,6 @@ class GameConsumer(AsyncWebsocketConsumer):
             self.channel_name #unique identifier created by channels for each websocket connection
         )
 
-
     async def disconnect(self, close_code):
         # Leave room group
         if self.room_group_name:
@@ -85,27 +84,7 @@ class GameConsumer(AsyncWebsocketConsumer):
         
         match data.get('type'):
             case 'move_up' | 'move_down':
-                player_data = data.get("data")  # Extract "data" object
-
-                if not player_data:
-                    print("No player data received.")
-                    return
-                # Determine if the player is playerL or playerR dynamically
-                player_side = next(iter(player_data), None)
-
-                await self.update_player_position(player_side, data["type"])
-                    
-                # Broadcast updated player state
-                player_state = redis_client.hget(self.room_name, player_side)
-                
-                await self.channel_layer.group_send(
-                self.room_group_name,
-                {
-                    "type": "update.player",
-                    "player_side": player_side,
-                    "new_y": player_state["y"]
-                }
-)
+                await self.handle_move(data)
             case 'initial_message':
                 username = data.get('data')
 
@@ -170,6 +149,8 @@ class GameConsumer(AsyncWebsocketConsumer):
                 # Handle other message types if needed
                 print(f"Received message of type: {data.get('type')}")
 
+## **************** HANDLER METHODS **************** ##
+
     async def start_game(self, event):
         game_state = event['game_state']
         print(f"Game started! Initial game state: {game_state}")
@@ -194,11 +175,13 @@ class GameConsumer(AsyncWebsocketConsumer):
 
             # Send the update to WebSocket clients
             await self.send(text_data=json.dumps({
-                "type": "update.player",
+                "type": "update_player",
                 "player_side": player_side,
                 "new_y": new_y
             }))
-        
+
+## **************** UTILS Fn **************** ##
+
     async def game_loop(self):
         while True:
             # await asyncio.sleep(0.03)  # 30ms per frame (~33 FPS)
@@ -244,7 +227,8 @@ class GameConsumer(AsyncWebsocketConsumer):
                     "game_state": game_state
                 }
             )
-        
+
+    # fn to assign a player object to a specific key in Redis using id
     async def assign_player_to_redis(self, player_key, player_obj):
         """ Store player object in Redis """
         print("Assigning playerL to Redis...")
@@ -276,10 +260,39 @@ class GameConsumer(AsyncWebsocketConsumer):
             print(f"Redis key {self.room_name} not found.")
             return
 
-async def update_player_position(self, player_side, move_type):
-    player_data = await redis_client.hget(self.room_name, player_side)
-    if player_data:
+    async def handle_move(self, data):
+        """Handles player movement updates."""
+        
+        player_to_update = data.get("data")  # Extract player side (e.g., "left" or "right")
+        if not player_to_update:
+            print("No player data received.")
+            return
+        
+        print(player_to_update)
+        # Fetch player data from Redis
+        player_data = redis_client.hget(self.room_name, player_to_update)
+        
+        if not player_data:
+            print(f"Player {side_to_update} not found in Redis.")
+            return
+
+        # Convert JSON data from Redis
         player_state = json.loads(player_data)
-        player_state["y"] += -20 if move_type == "move_up" else 15
-        await redis_client.hset(self.room_name, player_side, json.dumps(player_state))
-        # print(f"{player_side} moved {'up' if data['type'] == 'move_up' else 'down'}")
+
+        # Update Y position based on move type
+        move_type = data.get("type")
+        y_offset = -20 if move_type == "move_up" else 20
+        player_state["y"] += y_offset
+
+        # Save updated state back to Redis
+        redis_client.hset(self.room_name, player_to_update, json.dumps(player_state))
+
+        # Broadcast the updated player state. Sending player_state to update_player handler
+        await self.channel_layer.group_send(
+            self.room_group_name,
+            {
+                "type": "update.player",
+                "player_side": player_to_update,
+                "new_y": player_state["y"]
+            }
+        )

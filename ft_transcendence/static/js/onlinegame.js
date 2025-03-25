@@ -61,8 +61,12 @@ const players = { me: null, opponent: null };
                 gameLoop();
                 break;
             case 'update_game':
-                console.log("Received game state:", data);
+                console.log("Received GAME state:", data);
                 pullGameState(data.game_state, false);
+                break;
+            case 'update_player':
+                console.log("Received PLAYER state:", data);
+                pullPlayerState(data.player_side, data.new_y);
                 break;
             default:
                 console.log("Unknown message type:", data.type);
@@ -111,13 +115,18 @@ const players = { me: null, opponent: null };
             // ball.yFac = data.ball.direction.yFac;
         }
     }
+    function pullPlayerState(player_side, new_y) {
+        if (players.me.side === player_side) {
+            players.me.y = new_y;
+        } else if (players.opponent.side === player_side) {
+            players.opponent.y = new_y;
+        }
+    }
 function pushMove(type) {
     if (gameSocket.readyState === WebSocket.OPEN) {
         sendMessage({
             type: type,
-            data: {
-                [players.me.side]: { y: players.me.y }
-            }
+            data: players.me.side,
         });
     }
 };
