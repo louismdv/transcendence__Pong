@@ -10,11 +10,10 @@ PLAYER_W, PLAYER_H = 30, 175
 WIN_H, WIN_W = 720, 1080
 
 class Player:
-    def __init__(self, x, y, color):
+    def __init__(self, x, y):
         self.id = None  # Unique identifier for the player
         self.x = x
         self.y = y
-        self.color = color
         self.score = 0
         self.width = PLAYER_W
         self.height = PLAYER_H
