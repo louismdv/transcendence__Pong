@@ -35,12 +35,12 @@ const players = { me: null, opponent: null };
     // Event handler for when the connection is successfully opened
     gameSocket.onopen = function(event) {
         console.log("WebSocket is open now.");
-        sendMessage({ type: 'initial_message', data: clientName });
+        sendMessage({ type: 'initial_message', username: clientName });
     };
     // Event handler for receiving messages from the server
     gameSocket.onmessage = function(event) {
         const data = JSON.parse(event.data);
-            // Check if game_state is present
+
         if (data.game_state) {
             // Parse the individual fields in game_state if they are strings
             if (typeof data.game_state.playerL === "string") {
@@ -100,7 +100,7 @@ const players = { me: null, opponent: null };
                 players.me = new Player(WIN_W - 50 - 30, WIN_H / 2 - 175 / 2, 'red', clientName, 'playerR');
                 players.opponent = new Player(50, WIN_H / 2 - 175 / 2, 'orange', data.playerL.id, 'playerL');
             }
-            // ball    = new Ball(WIN_W / 2, WIN_H / 2, 'blue');
+            ball    = new Ball(WIN_W / 2, WIN_H / 2, 'blue');
         }
             // updating aleady existing in-memory player object with game_state
         else if (players.me.id === data.playerL.id || players.me.id === data.playerR.id) {
@@ -108,11 +108,11 @@ const players = { me: null, opponent: null };
             Object.assign(players.me, players.me.id === data.playerL.id ? data.playerL : data.playerR);
             Object.assign(players.opponent, players.me.id === data.playerL.id ? data.playerR : data.playerL);
 
-            // ball.x = data.ball.x;
-            // ball.y = data.ball.y;
-            // ball.speed = data.ball.speed;
-            // ball.xFac = data.ball.direction.xFac;
-            // ball.yFac = data.ball.direction.yFac;
+            ball.x = data.ball.x;
+            ball.y = data.ball.y;
+            ball.speed = data.ball.speed;
+            ball.xFac = data.ball.direction.xFac;
+            ball.yFac = data.ball.direction.yFac;
         }
     }
     function pullPlayerState(player_side, new_y) {
@@ -242,7 +242,7 @@ function drawCanvas() {
     // draw players and ball
     players.me.draw();
     players.opponent.draw();
-    // ball.draw();
+    ball.draw();
 }
 // function resetGame() {
         
@@ -285,7 +285,6 @@ function gameLoop() {
     }
     requestAnimationFrame(updateGame);
 }
-
 
 
 

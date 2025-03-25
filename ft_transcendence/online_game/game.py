@@ -8,10 +8,11 @@ BALL_SIZE = 30
 BALL_RADIUS = BALL_SIZE // 2
 PLAYER_W, PLAYER_H = 30, 175
 WIN_H, WIN_W = 720, 1080
+MARGIN = 50
 
 class Player:
-    def __init__(self, x, y):
-        self.id = None  # Unique identifier for the player
+    def __init__(self, x, y, id):
+        self.id = id  # Unique identifier for the player
         self.x = x
         self.y = y
         self.score = 0
@@ -29,19 +30,7 @@ class Player:
             self.y = 0
         if self.y + self.height > WIN_H:
             self.y = WIN_H - self.height
-            
-    def to_dict(self):
-        return {
-            "id": self.id,
-            "x": self.x,
-            "y": self.y,
-            "color": self.color,
-            "score": self.score,
-            "width": self.width,
-            "height": self.height,
-            "direction": self.direction,
-            "movetype": self.movetype
-        }
+
 
 class Ball:
     def __init__(self, x, y, speed=5, direction=None):
@@ -103,21 +92,3 @@ class Ball:
         self.right = self.x + self.radius
         self.top = self.y - self.radius
         self.bottom = self.y + self.radius
-
-    def to_dict(self):
-        return {            
-            "x": self.x,
-            "y": self.y,
-            "xFac": self.xFac,
-            "yFac": self.yFac,
-            "speed": self.speed,
-            "radius": self.radius,
-            "left": self.left,
-            "right": self.right,
-            "top": self.top,
-            "bottom": self.bottom,
-            "randAngle": self.randAngle,
-            "deceleration": self.deceleration,
-            "minSpeed": self.minSpeed,
-            "hitCount": self.hitCount
-        }

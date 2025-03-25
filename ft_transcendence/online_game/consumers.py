@@ -1,4 +1,3 @@
-# consumers.py
 import json
 import redis
 import random
@@ -6,8 +5,7 @@ import asyncio
 
 from asgiref.sync import sync_to_async
 from channels.generic.websocket import AsyncWebsocketConsumer
-from .game import Player, Ball
-from .game import WIN_W, WIN_H
+from .game import Player, Ball, WIN_W, WIN_H, PLAYER_W, PLAYER_H, MARGIN
 
 # creating a redis connection for storing the game room data shared among all consumer instances
 redis_client = redis.Redis(host='redis', port=6379, db=0, decode_responses=True)
@@ -25,14 +23,7 @@ class GameConsumer(AsyncWebsocketConsumer):
     
         # Create redis_client hash structure if it doesn't exist
         if not redis_client.exists(self.room_name):
-            redis_client.hset(self.room_name, mapping={
-                "playerL": json.dumps({"id": None, "x": 50, "y": WIN_H / 2 - 175 / 2, "score": 0}),
-                "playerR": json.dumps({"id": None, "x": WIN_W - 50 - 30, "y": WIN_H / 2 - 175 / 2, "score": 0}),
-                "ball": json.dumps({"x": WIN_W / 2, "y": WIN_H / 2, "speed": 5, "direction": {"xFac": 1, "yFac": 1}}),
-                "player_count": 0,
-                "game_status": "waiting"
-            })
-            print(redis_client.hgetall(self.room_name))
+            redis_client.hset(self.room_name, "player_count", 0)
             
         # Retrieve the current player count
         player_count = redis_client.hget(self.room_name, "player_count")
@@ -45,6 +36,7 @@ class GameConsumer(AsyncWebsocketConsumer):
                 "type": "error",
                 "message": "Game is full"
             }))
+            self.disconnect(1000)
             await self.close(code=1000)  # 1000 is a normal closure status code
             print("Connection refused: Maximum number of players reached.")
             return
@@ -55,7 +47,7 @@ class GameConsumer(AsyncWebsocketConsumer):
         # Increment player count
         redis_client.hincrby(self.room_name, "player_count", 1)
         self.player_count += 1
-        print(f"after player_count: {self.player_count}")
+        print(f"updated player_count: {self.player_count}")
         
         # Join room group
         await self.channel_layer.group_add(
@@ -77,114 +69,79 @@ class GameConsumer(AsyncWebsocketConsumer):
     
     async def receive(self, text_data):
     
-        # Parse the incoming JSON message
         data = json.loads(text_data)
-        # Check the type of message
         print(f"data recieved type: {data.get('type')}")
         
         match data.get('type'):
             case 'move_up' | 'move_down':
                 await self.handle_move(data)
             case 'initial_message':
-                username = data.get('data')
-
-                # update redis players dict with player id
-                if self.player_count == 1:
-                    self.playerL = Player(50, WIN_H / 2 - 175 / 2)
-                    self.playerL.id = username
-                    await self.assign_player_to_redis("playerL", self.playerL)
-                
-                elif self.player_count == 2:
-                    self.playerR = Player(WIN_W - 50 - 30, WIN_H / 2 - 175 / 2)
-                    self.playerR.id = username
-                    await self.assign_player_to_redis("playerR", self.playerR)
-                    ball = {
-                        "x": WIN_W / 2,
-                        "y": WIN_H / 2,
-                        "xFac": 1 if random.choice([True, False]) else -1,  # Random direction
-                        "yFac": 1 if random.choice([True, False]) else -1,
-                        "speed": 5
-                    }
-                    redis_client.hset(self.room_name, "ball", json.dumps(ball))
-                    
-                    # Broadcast a start_game message with the initial game state
-                    redis_client.hset(self.room_name, "game_status", "playing")
-                    game_state = redis_client.hgetall(self.room_name)
-                    await self.channel_layer.group_send(
-                        self.room_group_name,  # Send to all connected players in this game room
-                        {
-                            "type": "start.game",  # Type of message for the consumers to handle
-                            "game_state": game_state  # Send the game state to start the game
-                        }
-                    )
-                    # asyncio.create_task(self.game_loop())  # Run the ball movement loop
-                # Optionally, log or print the updated player_id
-                game_state = redis_client.hgetall(self.room_name)
-                print(game_state)    
-            case 'game_state':
-
-                # DATA EXTRACTION player and ball data from the received message
-                playerL = data.get("playerL")
-                print("playerL", playerL)
-                playerR = data.get("playerR")
-                print("playerR", playerR)
-                # ball = data.get("ball")
-                
-                # REDIS UPDATING game state in Redis
-                if playerL:
-                    redis_client.hset(self.room_name, "playerL", json.dumps(playerL))
-                if playerR:
-                    redis_client.hset(self.room_name, "playerR", json.dumps(playerR))
-                # if ball:
-                #     redis_client.hset(self.room_name, "ball", json.dumps(ball))
-
-                # Retrieve the entire game state from Redis
-                game_state = redis_client.hgetall(self.room_name)
-
-                # BROADCASTING update to consumers in the room group
-                await self.channel_layer.group_send( 
-                    self.room_group_name, { 'type': 'update.game', 'game_state': game_state }
-                )
+                await self.handle_initial_message(data)
             case _:
-                # Handle other message types if needed
                 print(f"Received message of type: {data.get('type')}")
 
-## **************** HANDLER METHODS **************** ##
+## **************** HANDLERs **************** ##
 
     async def start_game(self, event):
         game_state = event['game_state']
         print(f"Game started! Initial game state: {game_state}")
-        # You can now update the game view (player positions, ball, scores, etc.) based on the game state
+      
         await self.send(text_data=json.dumps({
             'type': 'start_game',
             'game_state': game_state
         }))
         
-    async def update_game(self, event):
-        game_state = event['game_state']
-        print(f"Player_moved: {game_state}")
-        # You can now update the game view (player positions, ball, scores, etc.) based on the game state
-        await self.send(text_data=json.dumps({
-            'type': 'update_game',
-            'game_state': game_state
-        }))
-        
     async def update_player(self, event):
-            player_side = event["player_side"]
-            new_y = event["new_y"]
+        player_side = event["player_side"]
+        new_y = event["new_y"]
 
-            # Send the update to WebSocket clients
-            await self.send(text_data=json.dumps({
-                "type": "update_player",
-                "player_side": player_side,
-                "new_y": new_y
-            }))
+        await self.send(text_data=json.dumps({
+            "type": "update_player",
+            "player_side": player_side,
+            "new_y": new_y
+        }))
+
+    async def update_ball(self, event):
+
+
+        await self.send(text_data=json.dumps({
+            "type": "update_player",
+            "player_side": player_side,
+            "new_y": new_y
+        }))
+
+    async def handle_initial_message(self, data):
+        id = data.get('username')
+
+        # update redis players dict with player id
+        if self.player_count == 1:
+            self.playerL = Player(MARGIN, WIN_H / 2 - PLAYER_H / 2, id)
+            await self.assign_player_to_redis("playerL", self.playerL)
+        
+        elif self.player_count == 2:
+            self.playerR = Player(WIN_W - MARGIN - PLAYER_W, WIN_H / 2 - PLAYER_H / 2, id)
+            await self.assign_player_to_redis("playerR", self.playerR)
+            
+            # change game status to 'playing'
+            redis_client.hset(self.room_name, "game_status", "playing")
+
+            # Get initial game state and broadcast it to all players
+            game_state = redis_client.hgetall(self.room_name)
+            await self.channel_layer.group_send(
+                self.room_group_name,
+                {
+                    "type": "start.game",
+                    "game_state": game_state
+                }
+            )
+            asyncio.create_task(self.game_loop())  # Run the ball movement loop
+
 
 ## **************** UTILS Fn **************** ##
 
     async def game_loop(self):
         while True:
-            # await asyncio.sleep(0.03)  # 30ms per frame (~33 FPS)
+            await asyncio.sleep(0.03)  # 30ms per frame (~33 FPS)
 
             ball_data = redis_client.hget(self.room_name, "ball")
             playerL_data = redis_client.hget(self.room_name, "playerL")
@@ -197,41 +154,47 @@ class GameConsumer(AsyncWebsocketConsumer):
             playerL = json.loads(playerL_data)
             playerR = json.loads(playerR_data)
 
-            # Update Ball Position
-            ball["x"] += ball["xFac"] * ball["speed"]
-            ball["y"] += ball["yFac"] * ball["speed"]
+            if (ball["left"] <= playerL["x"] + playerL["width"]
+                and ball["y"] >= playerL["y"] and ball["y"] <= playerL["y"] + playerL["height"]): # ball hit playerL
+                ball["x"] = ball["x"] + playerL["width"] / 2
+                handleCollision(ball, playerL, playerR, false)
 
-            # Wall Collision (Top/Bottom)
-            if ball["y"] <= 0 or ball["y"] >= WIN_H:
-                ball["yFac"] *= -1  # Reverse Y direction
+            elif (ball["right"] >= playerR["x"]
+                and ball["y"] >= playerR["y"] and ball["y"] <= playerR["y"] + playerR["height"]): # ball hit playerR
+                ball["x"] = ball["x"] - playerR["width"] / 2
+                handleCollision(ball, playerL, playerR, true)
+                
+            
+            # Check if ball hits top or bottom wall
+            ball.update()
 
             # Paddle Collision (Player L)
-            if (ball["x"] <= playerL["x"] + 30 and 
-                playerL["y"] <= ball["y"] <= playerL["y"] + 175):
+            if (ball["x"] <= playerL["x"] + PLAYER_W / 2 and 
+                playerL["y"] <= ball["y"] <= playerL["y"] + PLAYER_H):
                 ball["xFac"] *= -1  # Reverse X direction
 
             # Paddle Collision (Player R)
-            if (ball["x"] >= playerR["x"] - 30 and 
-                playerR["y"] <= ball["y"] <= playerR["y"] + 175):
+            if (ball["x"] >= playerR["x"] - PLAYER_W / 2 and 
+                playerR["y"] <= ball["y"] <= playerR["y"] + PLAYER_H):
                 ball["xFac"] *= -1  # Reverse X direction
 
             # Update Ball in Redis
             redis_client.hset(self.room_name, "ball", json.dumps(ball))
 
             # Broadcast Updated Game State
-            game_state = redis_client.hgetall(self.room_name)
+            ball_state = redis_client.hget(self.room_name, "ball")
             await self.channel_layer.group_send(
                 self.room_group_name,
                 {
-                    "type": "update.game",
-                    "game_state": game_state
+                    "type": "update.ball",
+                    "ball_state": ball_state
                 }
             )
 
     # fn to assign a player object to a specific key in Redis using id
     async def assign_player_to_redis(self, player_key, player_obj):
         """ Store player object in Redis """
-        print("Assigning playerL to Redis...")
+
         redis_client.hset(self.room_name, player_key, json.dumps({
             "id": player_obj.id,  # Assigns player ID
             "x": player_obj.x,
@@ -287,7 +250,7 @@ class GameConsumer(AsyncWebsocketConsumer):
         # Save updated state back to Redis
         redis_client.hset(self.room_name, player_to_update, json.dumps(player_state))
 
-        # Broadcast the updated player state. Sending player_state to update_player handler
+        # Broadcast the updated player y value. Sending player_state to update_player handler
         await self.channel_layer.group_send(
             self.room_group_name,
             {
@@ -296,3 +259,17 @@ class GameConsumer(AsyncWebsocketConsumer):
                 "new_y": player_state["y"]
             }
         )
+
+    async def handle_collision(self, ball, playerL, playerR, isPlayerR):
+        
+        const paddleThird = PLAYER_H / 3
+        
+        if ball["y"] >= player["y"] and ball["y"] <= player["y"] + paddleThird:
+            ball["randAngle"] = random.uniform(20, 45) if side else random.uniform(-45, -20)   # Top third
+            ball.hit()
+        elif ball["y"] > player["y"] + paddleThird and ball["y"] < player["y"] + 2 * paddleThird:
+            ball["randAngle"] = random.uniform(-10, 10);                                       # Middle third
+            ball.hit()
+        elif ball["y"] >= player["y"] + 2 * paddleThird and ball["y"] <= player["y"] + playerL["height"]:
+            ball["randAngle"] = = random.uniform(-45, -20) if side else random.uniform(45, 20) # Bottom third
+            ball.hit()
