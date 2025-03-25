@@ -10,6 +10,7 @@ urlpatterns = [
     path('register/', views.register, name='register'),
     path('livechat/', views.livechat, name='livechat'),
     path('local-game/', views.localgame, name='localgame'),
+    path('friendspage/', views.friendspage, name='friendspage'),
     path('settingspage/', views.settingspage, name='settingspage'),
     path('settingspage/update-profile/', views.settingspage, name='update_profile'),
     path('settingspage/update-account/', views.settingspage, name='update_account'),

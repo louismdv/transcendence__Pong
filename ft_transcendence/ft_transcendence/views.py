@@ -21,6 +21,7 @@ def main(request):
 def home(request):
     return render(request, 'home.html')
 
+
 def livechat(request):
     return render(request, 'livechat.html')
 
@@ -187,6 +188,10 @@ def settingspage(request):
         messages.error(request, f"Erreur lors du chargement des paramètres: {str(e)}")
         return redirect('home')
 
+@login_required(login_url='/login')
+def friendspage(request):
+    return render(request, 'friendspage.html')
+    
 def register(request):
     if request.method == 'POST':
         form = UserCreationForm(request.POST)
