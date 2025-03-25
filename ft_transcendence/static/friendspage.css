@@ -41,251 +41,261 @@
     font-weight: 500;
 }
 
-
-
-
 /* Conteneur principal de la grille d'amis */
 .friends-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
     gap: 16px;
 }
-
+.custom-dropdown {
+    /* Vos styles ici */
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  }
+  
+  .custom-dropdown .dropdown-item {
+    padding: 10px 16px;
+    transition: background-color 0.2s ease;
+  }
+  
+  .custom-dropdown .dropdown-item:hover {
+    background-color: #e9ecef;
+  }
+  
 /* Style moderne pour les cartes d'amis */
 .friend-card {
+    border: none;
+    border-radius: 16px;
     background-color: #fff;
-    border-radius: 12px;
-    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
-    padding: 16px;
-    transition: all 0.2s ease;
-    border: 1px solid rgba(0, 0, 0, 0.05);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    transition: all 0.3s ease;
+    overflow: hidden;
+    margin-bottom: 20px;
 }
 
-.friend-card:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
-}
+.friend-card  .card-body {
+    padding: 20px;
+    background-color: #ffffff;
 
-.friend-card-content {
-    display: flex;
-    align-items: center;
+}
+.card-custom{
+    background-color: #ffffff;
+    height: 180px;
+    width:360px;
+}
+/* Avatar et statut */
+.friend-avatar-wrapper {
     position: relative;
 }
 
-/* Avatar et indicateur de statut */
 .friend-avatar {
-    position: relative;
-    margin-right: 16px;
-    flex-shrink: 0;
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    overflow: hidden;
+    background-color: #f0f0f0;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    border: 3px solid #fff;
+    transition: all 0.3s ease;
 }
 
+.friend-card:hover .friend-avatar {
+    transform: scale(1.05);
+}
+.status-text{
+    display: flex;
+    margin-left: 20px;
+}
 .friend-avatar img {
-    width: 50px;
-    height: 50px;
-    border-radius: 50%;
+    width: 100%;
+    height: 100%;
     object-fit: cover;
-    border: 2px solid #f8f9fa;
 }
 
 .status-indicator {
     position: absolute;
-    bottom: 0;
-    right: 0;
-    width: 12px;
-    height: 12px;
+    width: 16px;
+    height: 16px;
     border-radius: 50%;
     border: 2px solid #fff;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
 .status-indicator.online {
-    background-color: #10b981;
+    background-color: #4CAF50;
 }
 
 .status-indicator.offline {
-    background-color: #9ca3af;
+    background-color: #9e9e9e;
+}
+
+.status-indicator.in-game {
+    background-color: #F75A6A;
+}
+
+.status-indicator.away {
+    background-color: #FFC107;
 }
 
 /* Informations de l'ami */
 .friend-info {
-    flex-grow: 1;
-    min-width: 0; /* Pour que le texte puisse être tronqué */
+    flex: 1;
 }
 
 .friend-name {
-    font-size: 1rem;
+    font-size: 1.1rem;
     font-weight: 600;
-    margin: 0;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    color: #1e293b;
+    margin-bottom: 4px;
+    color: #333;
 }
 
 .friend-status {
-    display: flex;
+    /* display: flex; */
     align-items: center;
     font-size: 0.85rem;
-    margin: 0;
-    color: #64748b;
+    color: #666;
 }
 
-.status-dot {
-    display: inline-block;
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    margin-right: 6px;
-}
 
-.status-dot.online {
-    background-color: #10b981;
-}
 
-.status-dot.offline {
-    background-color: #9ca3af;
-}
-
-.last-seen {
-    margin-left: 4px;
-    color: #94a3b8;
-}
-
-/* Menu d'actions */
+/* Menu d'options */
 .friend-menu {
-    margin-left: auto;
+    position: relative;
 }
 
-.btn-menu {
+.menu-button {
     background: transparent;
     border: none;
-    width: 32px;
-    height: 32px;
+    width: 36px;
+    height: 36px;
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
-    color: #64748b;
+    color: #666;
     transition: all 0.2s ease;
+    cursor: pointer;
 }
 
-.btn-menu:hover {
-    background-color: #f1f5f9;
-    color: #0f172a;
+.menu-button:hover {
+    background-color: rgba(0, 0, 0, 0.05);
+    color: #333;
 }
 
 .dropdown-menu {
+    border-radius: 12px;
     border: none;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    border-radius: 8px;
+    box-shadow: 0 5px 25px rgba(0, 0, 0, 0.15);
     padding: 8px 0;
+    min-width: 180px;
 }
 
 .dropdown-item {
-    padding: 8px 16px;
     display: flex;
     align-items: center;
+    padding: 10px 16px;
     font-size: 0.9rem;
+    transition: background-color 0.2s ease;
 }
 
-.dropdown-item i {
-    margin-right: 8px;
-    font-size: 1rem;
+.dropdown-item .material-symbols-outlined {
+    margin-right: 10px;
+    font-size: 20px;
 }
 
-.dropdown-divider {
-    margin: 4px 0;
+.dropdown-item:hover {
+    background-color: rgba(0, 0, 0, 0.04);
+}
+
+.dropdown-item.text-danger {
+    color: #F75A6A !important;
+}
+
+.dropdown-item.text-danger:hover {
+    background-color: rgba(247, 90, 106, 0.08);
 }
 
 /* Boutons d'action */
 .friend-actions {
     display: flex;
-    gap: 8px;
-    margin-top: 16px;
-    padding-top: 12px;
-    border-top: 1px solid #f1f5f9;
+    gap: 10px;
+    margin-top: 20px;
 }
 
-.btn-action {
+.action-button {
     flex: 1;
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 8px;
-    padding: 8px 16px;
-    border-radius: 8px;
+    padding: 10px;
+    border-radius: 12px;
+    border: none;
     font-size: 0.9rem;
     font-weight: 500;
     transition: all 0.2s ease;
-    border: none;
     cursor: pointer;
+    gap: 8px;
 }
 
-.btn-message {
-    background-color: #eff6ff;
-    color: #3b82f6;
+.action-button .material-symbols-outlined {
+    font-size: 18px;
 }
 
-.btn-message:hover {
-    background-color: #dbeafe;
+.message-button {
+    background-color: #f0f0f0;
+    color: #333;
 }
 
-.btn-invite {
-    background-color: #ecfdf5;
-    color: #10b981;
+.message-button:hover {
+    background-color: #e0e0e0;
 }
 
-.btn-invite:hover {
-    background-color: #d1fae5;
+.invite-button {
+    background-color: #62E573;
+    color: white;
 }
 
-/* Barre de recherche */
-.search-container {
-    max-width: 400px;
-    margin-bottom: 20px;
+.invite-button:hover:not(:disabled) {
+    background-color: #50c961;
 }
 
-.search-container .input-group-text {
-    color: #64748b;
+.invite-button:disabled {
+    background-color: #e0e0e0;
+    color: #999;
+    cursor: not-allowed;
+    opacity: 0.8;
 }
 
-.search-container .form-control:focus {
-    box-shadow: none;
-    border-color: #ced4da;
+/* Animation pour les statuts */
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+    100% { transform: scale(1); }
 }
 
-/* État vide */
-.empty-state {
-    text-align: center;
-    padding: 40px 20px;
-    background-color: #f8fafc;
-    border-radius: 12px;
+.status-indicator.online {
+    animation: pulse 2s infinite;
 }
 
-.empty-icon {
-    font-size: 3rem;
-    color: #cbd5e1;
-    margin-bottom: 16px;
+.status-indicator.in-game {
+    animation: pulse 1.5s infinite;
 }
 
-.empty-state h6 {
-    font-weight: 600;
-    margin-bottom: 8px;
-}
-
-/* Responsive */
-@media (max-width: 768px) {
-    .friends-grid {
-        grid-template-columns: 1fr;
-    }
-}
-
+/* Adaptation pour les écrans mobiles */
 @media (max-width: 576px) {
     .friend-actions {
         flex-direction: column;
     }
     
-    .btn-action {
-        width: 100%;
+    .friend-name {
+        font-size: 1rem;
+    }
+    
+    .friend-avatar {
+        width: 50px;
+        height: 50px;
     }
 }
 /* Personnalisation des en-têtes de carte par onglet */
@@ -421,11 +431,11 @@
 
 /* Modal */
 .modal-header {
-    background-color: #f8f9fa;
+    background-color:var(--background-color);
     border-bottom: 1px solid #e9ecef;
 }
 
 .modal-footer {
-    background-color: #f8f9fa;
+    background-color:var(--background-color);
     border-top: 1px solid #e9ecef;
 }

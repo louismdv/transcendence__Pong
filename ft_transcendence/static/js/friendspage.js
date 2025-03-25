@@ -1,4 +1,5 @@
 // Fonction de recherche d'amis
+console.log('test');
 document.addEventListener('DOMContentLoaded', function() {
     const searchInput = document.getElementById('friendSearch');
     if (searchInput) {
