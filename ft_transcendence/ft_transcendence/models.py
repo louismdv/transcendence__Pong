@@ -1,0 +1,118 @@
+from django.db import models
+from django.contrib.auth.models import User
+from django.db.models.signals import post_save
+from django.dispatch import receiver
+from django.core.exceptions import ObjectDoesNotExist
+
+class UserProfile(models.Model):
+    user = models.OneToOneField(
+        User,
+        on_delete=models.CASCADE,
+        related_name='userprofile'
+    )
+    avatar = models.ImageField(
+        upload_to='avatars/',
+        null=True,
+        blank=True,
+        default='avatars/default.png'
+    )
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        verbose_name = 'User Profile'
+        verbose_name_plural = 'User Profiles'
+
+    def __str__(self):
+        return f"{self.user.username}'s profile"
+
+    def save(self, *args, **kwargs):
+        try:
+            # Check if there's an existing profile
+            old_profile = UserProfile.objects.get(user=self.user)
+            if old_profile.avatar != self.avatar:
+                # Delete old avatar file if it's different from the new one
+                old_profile.avatar.delete(save=False)
+        except UserProfile.DoesNotExist:
+            pass
+        super().save(*args, **kwargs)
+
+class UserPreferences(models.Model):
+    TIME_FORMAT_CHOICES = [
+        ('12h', '12 heures'),
+        ('24h', '24 heures'),
+    ]
+    
+    LANGUAGE_CHOICES = [
+        ('fr', 'Français'),
+        ('en', 'English'),
+    ]
+
+    TIMEZONE_CHOICES = [
+        ('Europe/Paris', 'Paris (UTC+1)'),
+        ('Europe/London', 'London (UTC+0)'),
+        ('America/New_York', 'New York (UTC-5)'),
+        ('Asia/Tokyo', 'Tokyo (UTC+9)'),
+    ]
+
+    user = models.OneToOneField(
+        User,
+        on_delete=models.CASCADE,
+        related_name='preferences'
+    )
+    time_format = models.CharField(
+        max_length=3,
+        choices=TIME_FORMAT_CHOICES,
+        default='24h'
+    )
+    timezone = models.CharField(
+        max_length=50,
+        choices=TIMEZONE_CHOICES,
+        default='Europe/Paris'
+    )
+    language = models.CharField(
+        max_length=2,
+        choices=LANGUAGE_CHOICES,
+        default='fr'
+    )
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        verbose_name = 'User Preferences'
+        verbose_name_plural = 'User Preferences'
+
+    def __str__(self):
+        return f"{self.user.username}'s preferences"
+
+@receiver(post_save, sender=User)
+def create_user_profile_and_preferences(sender, instance, created, **kwargs):
+    if created:
+        try:
+            UserProfile.objects.create(user=instance)
+        except Exception as e:
+            print(f"Error creating UserProfile: {e}")
+
+        try:
+            UserPreferences.objects.create(user=instance)
+        except Exception as e:
+            print(f"Error creating UserPreferences: {e}")
+
+@receiver(post_save, sender=User)
+def save_user_profile_and_preferences(sender, instance, **kwargs):
+
+    try:
+        if not hasattr(instance, 'userprofile'):
+            UserProfile.objects.create(user=instance)
+        else:
+            instance.userprofile.save()
+    except Exception as e:
+        print(f"Error saving UserProfile: {e}")
+
+    try:
+        if not hasattr(instance, 'preferences'):
+            UserPreferences.objects.create(user=instance)
+        else:
+            instance.preferences.save()
+    except Exception as e:
+        print(f"Error saving UserPreferences: {e}")

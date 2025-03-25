@@ -33,6 +33,7 @@ INSTALLED_APPS = [
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
+    'ft_transcendence',
 ]
 
 AUTHENTICATION_BACKENDS = (
@@ -131,3 +132,9 @@ MIDDLEWARE = WHITENOISE_MIDDLEWARE + MIDDLEWARE
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+FILE_UPLOAD_PERMISSIONS = 0o644
+FILE_UPLOAD_MAX_MEMORY_SIZE = 5242880
+
+AVATAR_MAX_SIZE = 2 * 1024 * 1024  # 2MB
+AVATAR_ALLOWED_FILE_EXTS = ('.jpg', '.jpeg', '.png', '.gif')
