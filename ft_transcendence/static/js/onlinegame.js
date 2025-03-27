@@ -18,7 +18,7 @@ const BALL_SIZE = 30, BALL_RADIUS = BALL_SIZE / 2;
 const FONT_SIZE_XL = 500, FONT_SIZE_L = 200, FONT_SIZE_M = 50;
 
 // VARIABLES
-let playerL, playerR, ball, keysPressed = {}, point = 0, isMuted = false;
+let ball, winner, keysPressed = {}, point = 0, isMuted = false;
 
 const canvas = document.getElementById('onlinegameCanvas');
 const ctx = canvas.getContext('2d');
@@ -32,6 +32,20 @@ const players = { me: null, opponent: null };
 
     const gameSocket = new WebSocket(`ws://${window.location.host}/ws/online-game/${roomName}/`);
 
+    gameSocket.onclose = function(event) {
+        console.log("WebSocket closed:", event.code, event.reason);
+    };
+    gameSocket.onerror = function(event) {
+        console.error("WebSocket error observed:", event);
+    };
+    function sendMessage(data) {
+        if (gameSocket.readyState === WebSocket.OPEN) {
+            gameSocket.send(JSON.stringify(data));
+        } else {
+            console.warn("WebSocket not ready, retrying...");
+            setTimeout(() => sendMessage(data), 500); // Retry after 500ms
+        }
+    }
     // Event handler for when the connection is successfully opened
     gameSocket.onopen = function(event) {
         console.log("WebSocket is open now.");
@@ -55,42 +69,26 @@ const players = { me: null, opponent: null };
         }
         switch (data.type) {
             case 'start_game':
-                console.log("Starting game via ws!");
                 pullGameState(data.game_state, true);
                 setupEventListeners();
                 gameLoop();
                 break;
-            case 'update_game':
-                console.log("Received GAME state:", data);
-                pullGameState(data.game_state, false);
-                break;
             case 'update_player':
-                console.log("Received PLAYER state:", data);
                 pullPlayerState(data.player_side, data.new_y);
+                break;
+            case 'update_ball':
+                pullBallState(data.ball_state);
+                console.log("Received BALL state:", data.ball_state);
                 break;
             default:
                 console.log("Unknown message type:", data.type);
         }
     };
-    gameSocket.onclose = function(event) {
-        console.log("WebSocket closed:", event.code, event.reason);
-    };
-    gameSocket.onerror = function(event) {
-        console.error("WebSocket error observed:", event);
-    };
-    function sendMessage(data) {
-        if (gameSocket.readyState === WebSocket.OPEN) {
-            gameSocket.send(JSON.stringify(data));
-        } else {
-            console.warn("WebSocket not ready, retrying...");
-            setTimeout(() => sendMessage(data), 500); // Retry after 500ms
-        }
-    }
+
     // Abstracted code for both players. Each user gets a player obj and an opponent obj
     function pullGameState(data, start_game = false) {
 
-        console.log(data)
-            // creating in-memory player object with pulled game_state
+        // creating in-memory player object with pulled game_state
         if (start_game === true) {
             if (clientName === data.playerL.id) {
                 players.me = new Player(50, WIN_H / 2 - 175 / 2, 'orange', clientName, 'playerL');
@@ -100,19 +98,13 @@ const players = { me: null, opponent: null };
                 players.me = new Player(WIN_W - 50 - 30, WIN_H / 2 - 175 / 2, 'red', clientName, 'playerR');
                 players.opponent = new Player(50, WIN_H / 2 - 175 / 2, 'orange', data.playerL.id, 'playerL');
             }
-            ball    = new Ball(WIN_W / 2, WIN_H / 2, 'blue');
-        }
-            // updating aleady existing in-memory player object with game_state
-        else if (players.me.id === data.playerL.id || players.me.id === data.playerR.id) {
-
-            Object.assign(players.me, players.me.id === data.playerL.id ? data.playerL : data.playerR);
-            Object.assign(players.opponent, players.me.id === data.playerL.id ? data.playerR : data.playerL);
-
+            ball = new Ball(WIN_W / 2, WIN_H / 2, 'blue');
             ball.x = data.ball.x;
             ball.y = data.ball.y;
             ball.speed = data.ball.speed;
-            ball.xFac = data.ball.direction.xFac;
-            ball.yFac = data.ball.direction.yFac;
+            ball.xFac = data.ball.xFac;
+            ball.yFac = data.ball.yFac;
+            ball.point_win = data.ball.point_win;
         }
     }
     function pullPlayerState(player_side, new_y) {
@@ -122,14 +114,27 @@ const players = { me: null, opponent: null };
             players.opponent.y = new_y;
         }
     }
-function pushMove(type) {
-    if (gameSocket.readyState === WebSocket.OPEN) {
-        sendMessage({
-            type: type,
-            data: players.me.side,
-        });
+    function pullBallState(ball_state) {
+        // Check if ball is initialized
+        
+        if (typeof ball_state === "string") {
+            ball_state = JSON.parse(ball_state);
+        }
+        ball.x = ball_state.x;
+        ball.y = ball_state.y;
+        ball.speed = ball_state.speed;
+        ball.xFac = ball_state.xFac;   
+        ball.yFac = ball_state.yFac;
+        ball.point_win = ball_state.point_win;
     }
-};
+    function pushMove(type) {
+        if (gameSocket.readyState === WebSocket.OPEN) {
+            sendMessage({
+                type: type,
+                side: players.me.side,
+            });
+        }
+    };
 
 // ************ GAME ************ //
 
@@ -160,6 +165,7 @@ class Ball {
         this.speed = 5;
         this.radius = BALL_RADIUS;
         this.hitCount = 0;
+        this.point_win = null;
     }
     draw() {
         ctx.beginPath();
@@ -193,6 +199,82 @@ function setupEventListeners() {
         toggleMute();
     });
 }
+
+function disableScrolling() {
+    function preventDefault(e) {
+        e.preventDefault();
+    }
+
+    // Add event listener to prevent default scrolling behavior
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'ArrowUp' || e.key === 'ArrowDown') {
+            preventDefault(e);
+        }
+    });
+}
+
+// Function to enable scrolling
+function enableScrolling() {
+    // Remove the event listener to re-enable scrolling
+    document.removeEventListener('keydown', preventDefault);
+}
+
+function drawCanvas() {
+    // draw window 
+    ctx.fillStyle = GREY;
+    ctx.fillRect(0, 0, WIN_W, WIN_H);
+    // draw scores
+    color = WHITE
+    drawScores();
+    // draw central line
+    drawDottedLine();
+    // draw players and ball
+    players.me.draw();
+    players.opponent.draw();
+    ball.draw();
+}
+
+
+// Game loop
+function gameLoop() {
+    disableScrolling();
+
+    gameRunning = true;
+    function updateGame() {
+
+        if (!gameRunning) {
+            return;
+        }
+        // check missed balls for scoring
+        if (ball.point_win) {
+            if ((ball.point_win === "left" && players.me.side === "playerL") ||
+                (ball.point_win === "right" && players.me.side === "playerR")) {
+                players.me.score += 1;
+                winner = players.me.id;
+            } else {
+                players.opponent.score += 1;
+                winner = players.opponent.id;
+            }
+            ball.point_win = null;
+        }
+
+        if (players.me.score >= WINNING_SCORE || players.opponent.score >= WINNING_SCORE) {
+            gameRunning = false;
+            sendMessage({ type: 'game_over' });
+            winnerAnnouce();
+            return;
+        }
+
+        drawCanvas();
+
+        requestAnimationFrame(updateGame);
+    }
+    requestAnimationFrame(updateGame);
+}
+
+
+////// HELPER FUNCTIONS //////
+
 function toggleMute() {
     isMuted = !isMuted;
     hitSoundL.muted = !hitSoundL.muted;
@@ -230,79 +312,16 @@ function pregameLoop() {
 
     requestAnimationFrame(pregameLoop);
 }
-function drawCanvas() {
-    // draw window 
+function winnerAnnouce() {
+
     ctx.fillStyle = GREY;
     ctx.fillRect(0, 0, WIN_W, WIN_H);
-    // draw scores
-    color = WHITE
-    drawScores();
-    // draw central line
-    drawDottedLine();
-    // draw players and ball
-    players.me.draw();
-    players.opponent.draw();
-    ball.draw();
+    ctx.fillStyle = WHITE;
+    ctx.font = `${FONT_SIZE_M}px PixelifySans`;
+    const winner_name = `${winner} wins!`;
+    // const scores = "${winner} wins!";
+    const textWidth = ctx.measureText(winner_name).width;
+    ctx.fillText(winner_name,  (WIN_W - textWidth) / 2, WIN_H / 2);
+
+    requestAnimationFrame(winnerAnnouce);
 }
-// function resetGame() {
-        
-//     playerL = new Player(50, WIN_H / 2 - 175 / 2, 'orange');
-//     playerR = new Player(WIN_W - 50 - 30, WIN_H / 2 - 175 / 2, 'red');
-//     ball    = new Ball(WIN_W / 2, WIN_H / 2, 'blue');
-// }
-function randNumBtw(min, max) {
-    return Math.random() * (max - min) + min;
-}
-
-
-
-// Game loop
-function gameLoop() {
-
-    function updateGame() {
-
-        // check missed balls for scoring
-        // if (point === 1) {
-        //     playerL.score += 1;
-        //     ball.reset();
-        // } else if (point === -1) {
-        //     playerR.score += 1;
-        //     ball.reset();
-        // }
-
-        // check end game conditions
-        // if (playerL.score >= WINNING_SCORE || playerR.score >= WINNING_SCORE){
-        //     resetGame();
-        //     return;
-        // }
-
-        // Draw the canvas
-        drawCanvas();
-
-        // Push the updated game state to the server
-
-        requestAnimationFrame(updateGame);
-    }
-    requestAnimationFrame(updateGame);
-}
-
-
-
-
-
-
-
-// function handleCollision(ball, player, side) {
-//     const paddleThird = player.height / 3;
-
-//     if (ball.y >= player.y && ball.y <= player.y + paddleThird) {
-//         ball.randAngle = side ? randNumBtw(20, 45) : randNumBtw(-20, -45); // Top third
-//         ball.hit();
-//     } else if (ball.y > player.y + paddleThird && ball.y < player.y + 2 * paddleThird) {
-//         ball.randAngle = randNumBtw(-10, 10); // Middle third
-//         ball.hit();
-//     } else if (ball.y >= player.y + 2 * paddleThird && ball.y <= player.y + player.height) {
-//         ball.randAngle = side ? randNumBtw(-45, -20) : randNumBtw(45, 20); // Bottom third
-//         ball.hit();
-//     }
-// }
