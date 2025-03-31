@@ -21,12 +21,11 @@
     margin-left: 20px;
 }
 .page-index {
-    display: flex;
     text-align: center;
     justify-content: center;
     align-self: center;
+    font-size: 25;
     opacity: 80%;
-    height: 100%;
 }
 .left-account-section {
     display: flex;
@@ -129,8 +128,6 @@ aside:hover .sidebar-links h4 {
 .gameMode h5{
     font-size: 15px;
     margin-bottom: 20px;
-
-
 }
 .flex-container {
     display: flex;
@@ -167,10 +164,7 @@ aside:hover .sidebar-links h4 {
     transform: translate(-50%, -50%);
 }
 .glow-on-hover {
-    position: absolute;
-    top: 80%;
-    left: 50%;
-    transform: translate(-50%, -50%);
+    position: relative;
     z-index: 2;
     border: none;
     cursor: pointer;
@@ -178,9 +172,7 @@ aside:hover .sidebar-links h4 {
     font-size: 30px;
     text-align: center;
     color: var(--text-color);
-    width: 220px;
-    height: 50px;
-    border-radius: 10px;
+    border-radius: 5px;
 }
 .dash {
     grid-column: span 4;
@@ -196,6 +188,13 @@ aside:hover .sidebar-links h4 {
     height: 100%;
     width: 100%;
     object-fit: cover;
+}
+
+#gameBtn {
+    top: 80%;
+    z-index: 3;
+    width: 220px;
+    height: 50px;
 }
 
 /* glowy button */
@@ -214,7 +213,7 @@ aside:hover .sidebar-links h4 {
     animation: glowing 20s linear infinite;
     opacity: 0;
     transition: opacity .3s ease-in-out;
-    border-radius: 10px;
+    border-radius: 5px;
 }
 .glow-on-hover:active {
     color: #000
@@ -234,7 +233,7 @@ aside:hover .sidebar-links h4 {
     background: var(--secondary-color);
     left: 0;
     top: 0;
-    border-radius: 10px;
+    border-radius:5px;
 }
 @keyframes glowing {
     0% { background-position: 0 0; }
@@ -251,7 +250,7 @@ aside:hover .sidebar-links h4 {
   background-color: var(--primary-color);
   width: var(--btn-size);
   height: 50%;
-  border-radius: 10px;
+  border-radius: 5px;
   padding: 2px;
   margin: 5px;
   box-shadow: inset 0 8px 60px var(--light-shadow),
@@ -267,7 +266,7 @@ aside:hover .sidebar-links h4 {
   background-color: #fff;
   max-width: var(--indicator-size);
   max-height: var(--indicator-size);
-  border-radius: 10px;
+  border-radius: 5px;
   position: relative;
   box-shadow: 0 8px 40px rgba(0,0,0, .2);
   transition: transform .3s ease;
@@ -338,7 +337,7 @@ body.darkmode {
         background-color: var(--background-color);
         width: var(--btn-size);
         height: 50%;
-        border-radius: 10px;
+        border-radius: 5px;
         padding: 2px;
         margin: 5px;
         box-shadow: inset 0 8px 60px var(--light-shadow),

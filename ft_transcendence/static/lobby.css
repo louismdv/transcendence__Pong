@@ -1,0 +1,35 @@
+
+#input-container {
+    margin-bottom: 200px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+}
+
+#room-name-input {
+    height: 75px;
+    width: 275px;
+    padding: 10px;
+    border: 5px solid #451b96;
+    border-radius: 5px;
+    font-size: 20px;
+    color: #451b96;
+    background-color: #f9f9f9;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease
+}
+
+#room-name-submit {
+    height: 75px;
+    width: 125px;
+    padding: 10px 20px;
+    margin: 0px 10px;
+    background-color: #451b96;
+    color: white;
+    border-radius: 5px;
+    cursor: pointer; 
+    font-size: 20px;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    font-family: Arial;
+}

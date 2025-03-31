@@ -14,18 +14,17 @@ const ORANGE = '#ffa500';
 const WINNING_SCORE = 5;
 const WIN_H = 720, WIN_W = 1080;
 const PLAYER_W = 30, PLAYER_H = 175;
-const BALL_SIZE = 30, BALL_RADIUS = BALL_SIZE / 2;
+const BALL_SIZE = 40, BALL_RADIUS = BALL_SIZE / 2;
 const FONT_SIZE_XL = 500, FONT_SIZE_L = 200, FONT_SIZE_M = 50;
 
 // VARIABLES
 let ball, winner, keysPressed = {}, point = 0, isMuted = false;
 
+document.getElementById('page-title').textContent = "Online Game Mode";
 const canvas = document.getElementById('onlinegameCanvas');
 const ctx = canvas.getContext('2d');
+let gameStatus = document.getElementById('gameStatus');
 
-const hitSoundL = document.getElementById('hitSoundL');
-const hitSoundR = document.getElementById('hitSoundR');
-const muteButton = document.getElementById('muteButton');
 const players = { me: null, opponent: null };
 
 // ************ WEBSOCKETS ************ //
@@ -67,10 +66,24 @@ const players = { me: null, opponent: null };
                 data.game_state.ball = JSON.parse(data.game_state.ball);
             }
         }
+        console.log("Received type:", data.type);
+
         switch (data.type) {
+            case 'load_player_info':
+                console.log("Received player_info:", data);
+                document.getElementById('username-playerL').textContent = data.playerL_id;
+                startSearch();
+                if (data.playerR_id) {
+                    document.getElementById('username-playerR').textContent = data.playerR_id;
+                    opponentFound();
+                    setupGame(data);
+                }
+                break;
             case 'start_game':
-                pullGameState(data.game_state, true);
-                setupEventListeners();
+                (gameStatus.textContent = "Game started!")
+                && (gameStatus.style.animation = "none")
+                && (gameStatus.style.color = "green");
+                console.log("Received start_game:", data);
                 gameLoop();
                 break;
             case 'update_player':
@@ -86,26 +99,24 @@ const players = { me: null, opponent: null };
     };
 
     // Abstracted code for both players. Each user gets a player obj and an opponent obj
-    function pullGameState(data, start_game = false) {
+    function setupGame(data) {
 
         // creating in-memory player object with pulled game_state
-        if (start_game === true) {
-            if (clientName === data.playerL.id) {
-                players.me = new Player(50, WIN_H / 2 - 175 / 2, 'orange', clientName, 'playerL');
-                players.opponent = new Player(WIN_W - 50 - 30, WIN_H / 2 - 175 / 2, 'red', data.playerR.id, 'playerR');
-            }
-            else if (clientName === data.playerR.id) {
-                players.me = new Player(WIN_W - 50 - 30, WIN_H / 2 - 175 / 2, 'red', clientName, 'playerR');
-                players.opponent = new Player(50, WIN_H / 2 - 175 / 2, 'orange', data.playerL.id, 'playerL');
-            }
-            ball = new Ball(WIN_W / 2, WIN_H / 2, 'blue');
-            ball.x = data.ball.x;
-            ball.y = data.ball.y;
-            ball.speed = data.ball.speed;
-            ball.xFac = data.ball.xFac;
-            ball.yFac = data.ball.yFac;
-            ball.point_win = data.ball.point_win;
+        if (clientName === data.playerL_id) {
+            players.me = new Player(50, WIN_H / 2 - 175 / 2, 'orange', clientName, 'playerL');
+            players.opponent = new Player(WIN_W - 50 - 30, WIN_H / 2 - 175 / 2, 'red', data.playerR_id, 'playerR');
         }
+        else if (clientName === data.playerR_id) {
+            players.me = new Player(WIN_W - 50 - 30, WIN_H / 2 - 175 / 2, 'red', clientName, 'playerR');
+            players.opponent = new Player(50, WIN_H / 2 - 175 / 2, 'orange', data.playerL_id, 'playerL');
+        }
+        ball = new Ball(WIN_W / 2, WIN_H / 2, 'blue');
+        ball.x = data.ball.x;
+        ball.y = data.ball.y;
+        ball.speed = data.ball.speed;
+        ball.xFac = data.ball.xFac;
+        ball.yFac = data.ball.yFac;
+        ball.point_win = data.ball.point_win;
     }
     function pullPlayerState(player_side, new_y) {
         if (players.me.side === player_side) {
@@ -137,6 +148,9 @@ const players = { me: null, opponent: null };
     };
 
 // ************ GAME ************ //
+setupEventListeners();
+pregameLoop();
+
 
 // CLASSES: Player and Ball
 class Player {
@@ -187,6 +201,9 @@ function setupEventListeners() {
                 return pushMove('move_down');
             case 'KeyM':
                 return toggleMute();
+            case 'Space':
+                console.log("Space bar pressed");
+                return sendMessage({ type: 'ready', player_side: players.me.side });
             case 'Escape':
                 resetGame();
                 pregameLoop();
@@ -261,6 +278,8 @@ function gameLoop() {
         if (players.me.score >= WINNING_SCORE || players.opponent.score >= WINNING_SCORE) {
             gameRunning = false;
             sendMessage({ type: 'game_over' });
+            gameStatus.textContent = "Game Over!";
+            gameStatus.style.color = "red";
             winnerAnnouce();
             return;
         }
@@ -279,12 +298,12 @@ function toggleMute() {
     isMuted = !isMuted;
     hitSoundL.muted = !hitSoundL.muted;
     hitSoundR.muted = !hitSoundR.muted;
-    muteButton.textContent = isMuted ? 'Unmute 🔉' : 'Mute 🔇';
+    muteButton.textContent = isMuted ? "volume_mute" : "volume_off";
 }
 function drawScores() {
 
     ctx.fillStyle = WHITE;
-    ctx.font = `${FONT_SIZE_M}px PixelifySans`;
+    ctx.font = `${FONT_SIZE_M}px 'Pixelify Sans', sans-serif`;
     ctx.fillText(players.me.score, WIN_W / 4, WIN_H / 2);
     ctx.fillText(players.opponent.score, WIN_W / 4 * 3, WIN_H / 2);
 }
@@ -305,8 +324,8 @@ function pregameLoop() {
     ctx.fillStyle = GREY;
     ctx.fillRect(0, 0, WIN_W, WIN_H);
     ctx.fillStyle = WHITE;
-    ctx.font = `${FONT_SIZE_M}px PixelifySans`;
-    const text = "Press space bar to start!";
+    ctx.font = `${FONT_SIZE_M}px 'Pixelify Sans', sans-serif`;
+    const text = "Press space bar when you are ready!";
     const textWidth = ctx.measureText(text).width;
     ctx.fillText(text,  (WIN_W - textWidth) / 2, WIN_H / 2);
 
@@ -324,4 +343,25 @@ function winnerAnnouce() {
     ctx.fillText(winner_name,  (WIN_W - textWidth) / 2, WIN_H / 2);
 
     requestAnimationFrame(winnerAnnouce);
+}
+
+
+const loadingElement = document.getElementById('loading');
+let dots = '';
+let intervalId = setInterval(() => {
+  dots = dots.length < 3 ? dots + '.' : '';
+  loadingElement.textContent = `${dots}`;
+}, 500); // Adjust the interval duration to control the speed of the blinking effect
+
+// Optionally, you can clear the interval when loading is complete
+// clearInterval(intervalId);
+
+// When starting to search for an opponent
+function startSearch() {
+    document.querySelector('.avatar-container').classList.add('searching');
+}
+
+// When opponent is found
+function opponentFound() {
+    document.querySelector('.avatar-container').classList.remove('searching');
 }

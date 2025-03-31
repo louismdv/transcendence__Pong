@@ -13,9 +13,10 @@
     <link rel="stylesheet" href="{% static 'liveChat.css' %}">
     <link rel="stylesheet" href="{% static 'home.css' %}">
     <link rel="stylesheet" href="{% static 'style.css' %}">
-    <link rel="stylesheet" href="{% static 'localgame.css' %}">
     <link rel="stylesheet" href="{% static 'settings-page.css' %}">
     <link rel="stylesheet" href="{% static 'friendspage.css' %}">
+    <link rel="stylesheet" href="{% static 'gameroom.css' %}">
+    <link rel="stylesheet" href="{% static 'lobby.css' %}">
 
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -52,7 +53,8 @@
             <img src="../media/logo.svg" alt="Pong logo" width="40" height="40">
             PONG
         </div>
-        <div class=page-index>
+        <div id="page-title" class="page-index">
+            Home
         </div>
         <div  class="left-account-section">
             <div class="btn">
@@ -102,19 +104,19 @@
     {% block game-section %}
     <div class="main-grid">
         <div class="gameMode">
-            <h3 style="text-align: left;">Game mode</h3>
+            <h3 style="text-align: left;">Choose a game mode:</h3>
         </div>
         <div class="flex-container">
             <div class="card">
                 <div class="centeredTextonImage">solo</div>
-                <button onclick="window.location.href='{% url 'localgame' %}';" class="glow-on-hover" type="button" >
+                <button id="gameBtn" onclick="window.location.href='{% url 'localgame' %}';" class="glow-on-hover" type="button" >
                     Play local
                     <span class="material-symbols-outlined" style="font-weight: 600;">arrow_forward</span>
                 </button>
             </div>
             <div class="card">
                 <div class="centeredTextonImage">AI</div>
-                <button class="glow-on-hover" type="button">
+                <button id="gameBtn" class="glow-on-hover" type="button">
                     Play vs. ai
                     <span class="material-symbols-outlined" style="font-weight: 600;">smart_toy</span>
                 </button>
@@ -122,7 +124,7 @@
             </div>
             <div class="card">
                 <div class="centeredTextonImage">duo</div>
-                <button onclick="window.location.href='{% url 'lobby' %}';" class="glow-on-hover" type="button">
+                <button id="gameBtn" onclick="window.location.href='{% url 'lobby' %}';" class="glow-on-hover" type="button">
                     Play online
                     <span class="material-symbols-outlined" style="font-weight: 600;">language</span>
                 </button>

@@ -2,37 +2,39 @@
 
 {% block title %} <title>Pong Game - Room {{ room_name }}</title> {% endblock title %}
 {% block extra-head %}
-    <style>
-        .room-info {
-            margin: 20px 0;
-            padding: 10px;
-            background-color: #333;
-            border-radius: 5px;
-        }
-        #gameStatus {
-            margin: 10px 0;
-            padding: 10px;
-            background-color: #333;
-            border-radius: 5px;
-        }
-    </style>
+
 {% endblock %}
 
 {% block game-section %}
 
-    <div class="gameWrapper">
-
-        <h1>Multiplayer Pong</h1>
+    <div id="gameWrapper">
         
-        <div class="room-info">
-            Room Code: <span id="roomCode">{{ room_name }}</span>
+        <div id="room-info">
+            <div>Room Code: <span id="roomCode">{{ room_name }}</span></div>
+            <div id="gameStatus">Waiting for opponent<span id="loading">...</span></div>
         </div>
         
-        <div id="gameStatus">Waiting for players...</div>
-        <button id="muteButton">Mute 🔇</button>
+        <div id="game-header">
+            <div id="playerL">
+                <img src="/media/avatars/default.png" alt="profilepic_player1" class="user-avatar">
+                <span id="username-playerL">You:</span> 
+            </div>
+            vs.
+            <div id="playerR">
+                <div class="avatar-container">
+                    <img src="/media/avatars/default.png" alt="profilepic_player2" class="user-avatar">
+                    <span class="loader"></span>
+                </div>
+                <span id="username-playerR">Opponent:</span> 
+            </div>
+        </div>
         <canvas id="onlinegameCanvas" class="gamebox" width="1080" height="720"></canvas>
         
-        <div class="instructions"></div>
+        
+        <div id="instructions">
+            Use ↑ and ↓ arrow keys to move your paddle
+            <button id="muteButton" class="material-symbols-outlined">volume_off</button>
+        </div>
 
         <script>
             const roomName =  "{{ room_name }}"

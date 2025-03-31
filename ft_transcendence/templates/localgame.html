@@ -3,12 +3,12 @@
 
 {% block title %} <title>Local Game Mode</title> {% endblock title %}
 
-
 {% block game-section %}
 
-    <div class="gameWrapper">
-        <button id="muteButton">Mute 🔇</button>
+    <div id="gameWrapper">
+        <button id="muteButton" class="material-symbols-outlined">volume_off</button>
         <canvas id="localgameCanvas" class="gamebox" width="1080" height="720"></canvas>
     </div>
 
 {% endblock game-section %}
+
