@@ -85,7 +85,7 @@ class GameConsumer(AsyncWebsocketConsumer):
     async def receive(self, text_data):
     
         data = json.loads(text_data)
-        print(f"data recieved type: {data.get('type')}")
+        # print(f"data recieved type: {data.get('type')}")
         
         match data.get('type'):
             case 'initial_message':
@@ -109,7 +109,6 @@ class GameConsumer(AsyncWebsocketConsumer):
 
         while True:
             game_status = redis_client.hget(self.room_name, "game_status")
-            print(f"Game status: {game_status}")
 
             if game_status != "playing":
                 print("Game status is not 'playing'. Exiting loop.")
@@ -156,7 +155,7 @@ class GameConsumer(AsyncWebsocketConsumer):
                 }
             )
             # reset if ball hits left or right side
-            if self.ball.point_win == "left" or self.ball.point_win == "right":
+            if self.ball.point_win:
                 await self.ball.reset()
 
     async def handle_collision(self, ball, player, side):
@@ -355,6 +354,11 @@ class GameConsumer(AsyncWebsocketConsumer):
                 
         if redis_client.hget(self.room_name, "game_status") == "waiting_for_confirmation" and playerL["confirmed_ready"] == True and playerR["confirmed_ready"] == True:
             # Get initial game state and broadcast it to all players
+            
+            # Create shared ball object
+            self.ball = Ball(WIN_W / 2, WIN_H / 2)
+            redis_client.hset(self.room_name, "ball", json.dumps(self.ball.to_dict()))
+            
             redis_client.hset(self.room_name, "game_status", "playing")
             game_state = redis_client.hgetall(self.room_name)
             print(f"Initial game state: {game_state}")

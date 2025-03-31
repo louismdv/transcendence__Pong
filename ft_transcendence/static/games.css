@@ -22,7 +22,7 @@
     width: 40px;   /* Set width equal to height */
     height: 40px;  /* Set height equal to width */
     border-radius: 25%; /* Create a circular shape */
-    color: white;
+    color: black;
     background-color: #d3d3d3;
     cursor: pointer;
     display: flex;

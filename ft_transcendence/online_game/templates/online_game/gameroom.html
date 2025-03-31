@@ -10,8 +10,11 @@
     <div id="gameWrapper">
         
         <div id="room-info">
-            <div>Room Code: <span id="roomCode">{{ room_name }}</span></div>
-            <div id="gameStatus">Waiting for opponent<span id="loading">...</span></div>
+            Room Code:
+            <span id="roomCode">
+                {{ room_name }}
+                <span id="copy-icon" class="material-symbols-outlined">content_copy</span>
+            </span>
         </div>
         
         <div id="game-header">

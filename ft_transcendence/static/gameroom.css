@@ -1,21 +1,32 @@
 
 #room-info {
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     align-items: center;
     justify-items: center;
     margin: 10px 0;
     padding: 10px;
     border-radius: 5px;
+    font-size: 20px;
 }
 #roomCode {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-items: center;
     color: black;
-    text-align: center;
+    text-align: evenly;
     border-radius: 5px;
     margin-left: 5px;
-    padding: 3px 10px;
+    padding: 5px 15px;
+    font-size: 20px;
     background-color: lightgray;
+    cursor: pointer;
 }
+#copy-icon {
+    margin-left: 5px;
+}
+
 #gameStatus {
     padding: 10px 0;
     border-radius: 5px;

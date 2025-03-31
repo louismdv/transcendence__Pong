@@ -49,9 +49,11 @@ class Ball:
         
         # check ball colision with right/left sides
         if self.right >= WIN_W:
-            self.point_win = "left"
+            self.point_win = "playerL"
+            print("point_win", self.point_win)
         elif self.left <= 0:
-            self.point_win = "right"
+            self.point_win = "playerR"
+            print("point_win", self.point_win)
         return 0
 
     def hit(self):

@@ -23,7 +23,7 @@ let ball, winner, keysPressed = {}, point = 0, isMuted = false;
 document.getElementById('page-title').textContent = "Online Game Mode";
 const canvas = document.getElementById('onlinegameCanvas');
 const ctx = canvas.getContext('2d');
-let gameStatus = document.getElementById('gameStatus');
+let loadingAnimation = writeLoadingText(ORANGE);
 
 const players = { me: null, opponent: null };
 
@@ -66,24 +66,24 @@ const players = { me: null, opponent: null };
                 data.game_state.ball = JSON.parse(data.game_state.ball);
             }
         }
-        console.log("Received type:", data.type);
+        // console.log("Received type:", data.type);
 
         switch (data.type) {
             case 'load_player_info':
-                console.log("Received player_info:", data);
+                // console.log("Received player_info:", data);
                 document.getElementById('username-playerL').textContent = data.playerL_id;
                 startSearch();
                 if (data.playerR_id) {
                     document.getElementById('username-playerR').textContent = data.playerR_id;
+                    clearInterval(loadingAnimation);
                     opponentFound();
                     setupGame(data);
+                    pregameLoop();
                 }
                 break;
             case 'start_game':
-                (gameStatus.textContent = "Game started!")
-                && (gameStatus.style.animation = "none")
-                && (gameStatus.style.color = "green");
-                console.log("Received start_game:", data);
+                writeToCanvas("Game started!", BLUE);
+                // console.log("Received start_game:", data);
                 gameLoop();
                 break;
             case 'update_player':
@@ -91,7 +91,7 @@ const players = { me: null, opponent: null };
                 break;
             case 'update_ball':
                 pullBallState(data.ball_state);
-                console.log("Received BALL state:", data.ball_state);
+                // console.log("Received BALL state:", data.ball_state);
                 break;
             default:
                 console.log("Unknown message type:", data.type);
@@ -149,7 +149,6 @@ const players = { me: null, opponent: null };
 
 // ************ GAME ************ //
 setupEventListeners();
-pregameLoop();
 
 
 // CLASSES: Player and Ball
@@ -204,9 +203,9 @@ function setupEventListeners() {
             case 'Space':
                 console.log("Space bar pressed");
                 return sendMessage({ type: 'ready', player_side: players.me.side });
-            case 'Escape':
-                resetGame();
-                pregameLoop();
+            // case 'Escape':
+            //     resetGame();
+            //     pregameLoop();
         }
     });
     document.addEventListener('keyup', (event) => {
@@ -264,22 +263,20 @@ function gameLoop() {
         }
         // check missed balls for scoring
         if (ball.point_win) {
-            if ((ball.point_win === "left" && players.me.side === "playerL") ||
-                (ball.point_win === "right" && players.me.side === "playerR")) {
+            console.log("point_win:", ball.point_win);
+            if (ball.point_win == players.me.side) {
                 players.me.score += 1;
                 winner = players.me.id;
-            } else {
+            }
+            else if (ball.point_win == players.opponent.side) {
                 players.opponent.score += 1;
                 winner = players.opponent.id;
             }
             ball.point_win = null;
         }
-
         if (players.me.score >= WINNING_SCORE || players.opponent.score >= WINNING_SCORE) {
             gameRunning = false;
             sendMessage({ type: 'game_over' });
-            gameStatus.textContent = "Game Over!";
-            gameStatus.style.color = "red";
             winnerAnnouce();
             return;
         }
@@ -299,6 +296,43 @@ function toggleMute() {
     hitSoundL.muted = !hitSoundL.muted;
     hitSoundR.muted = !hitSoundR.muted;
     muteButton.textContent = isMuted ? "volume_mute" : "volume_off";
+}
+function writeToCanvas(text, color, x=null, y=null) {
+
+    ctx.fillStyle = color;
+    ctx.font = `${FONT_SIZE_M}px 'Pixelify Sans', sans-serif`;
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+    if (x && y) {
+        ctx.fillText(text, x, y);
+        return;
+    }
+    ctx.fillText(text, canvas.width / 2, canvas.height / 2);
+}
+function writeLoadingText(color, x = null, y = null, interval = 500) {
+    const text = "Waiting for challenger";
+    const maxDots = 3; // Maximum number of dots
+    let dotCount = 0;
+
+    ctx.fillStyle = color;
+    ctx.font = `${FONT_SIZE_M}px 'Pixelify Sans', sans-serif`;
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+
+    x = x ?? canvas.width / 2;
+    y = y ?? canvas.height / 2;
+
+    function draw() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height); // Clear canvas
+
+        // Create a fixed-width text by always printing three spaces for the dots
+        const dots = ".".repeat(dotCount) + " ".repeat(maxDots - dotCount);
+        ctx.fillText(text + dots, x, y);
+
+        dotCount = (dotCount + 1) % (maxDots + 1); // Cycle dots from 0 to 3
+    }
+
+    return setInterval(draw, interval); // Store interval ID to clear later
 }
 function drawScores() {
 
@@ -326,9 +360,7 @@ function pregameLoop() {
     ctx.fillStyle = WHITE;
     ctx.font = `${FONT_SIZE_M}px 'Pixelify Sans', sans-serif`;
     const text = "Press space bar when you are ready!";
-    const textWidth = ctx.measureText(text).width;
-    ctx.fillText(text,  (WIN_W - textWidth) / 2, WIN_H / 2);
-
+    writeToCanvas(text, WHITE, WIN_W / 2, WIN_H / 2);
     requestAnimationFrame(pregameLoop);
 }
 function winnerAnnouce() {
@@ -338,23 +370,10 @@ function winnerAnnouce() {
     ctx.fillStyle = WHITE;
     ctx.font = `${FONT_SIZE_M}px PixelifySans`;
     const winner_name = `${winner} wins!`;
-    // const scores = "${winner} wins!";
-    const textWidth = ctx.measureText(winner_name).width;
-    ctx.fillText(winner_name,  (WIN_W - textWidth) / 2, WIN_H / 2);
+    writeToCanvas(winner_name, YELLOW);
 
     requestAnimationFrame(winnerAnnouce);
 }
-
-
-const loadingElement = document.getElementById('loading');
-let dots = '';
-let intervalId = setInterval(() => {
-  dots = dots.length < 3 ? dots + '.' : '';
-  loadingElement.textContent = `${dots}`;
-}, 500); // Adjust the interval duration to control the speed of the blinking effect
-
-// Optionally, you can clear the interval when loading is complete
-// clearInterval(intervalId);
 
 // When starting to search for an opponent
 function startSearch() {
