@@ -49,6 +49,6 @@ btn.addEventListener('click', () => {
   }, 500)
 })
 
-    document.getElementById("playButton").addEventListener("click", function() {
-        window.location.href = this.getAttribute("data-url");
-    });
+    // document.getElementById("playButton").addEventListener("click", function() {
+    //     window.location.href = this.getAttribute("data-url");
+    // });

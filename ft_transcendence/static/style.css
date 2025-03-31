@@ -45,7 +45,7 @@ section {
 header {
     grid-area: header;
     display: grid;
-    grid-template-columns: auto auto auto;
+    grid-template-columns: auto 500px auto;
     padding: 10px;
     height: 100px;
 }
@@ -58,6 +58,7 @@ aside {
 }
 
 footer {
+    color: white;
     grid-area: footer;
     background-color: #451b96;
     text-align: center;
@@ -100,3 +101,9 @@ form {
     margin-top: 70px;
 }
 
+
+.user-avatar {
+    width: 40px; /* Adjust the size as needed */
+    height: 40px;
+    border-radius: 25%; /* Makes the image circular */
+}

@@ -1,0 +1,33 @@
+
+#gameWrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: auto;
+    justify-content: center;
+}
+
+/* class used to design for onlinegameCanvas and localgameCanvas */
+.gamebox {
+    font-family: 'Pixelify Sans', sans-serif;
+    position: relative;
+    max-width: 80%;
+    border-radius: 10px;
+    border: 10px solid #451b96;
+}
+
+#muteButton {
+    flex: 0 0 auto; /* Prevent the button from growing or shrinking */
+    margin: 10px;
+    width: 40px;   /* Set width equal to height */
+    height: 40px;  /* Set height equal to width */
+    border-radius: 25%; /* Create a circular shape */
+    color: black;
+    background-color: #d3d3d3;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: none; /* Remove default border */
+    font-size: 25px; /* Adjust font size if needed */
+}

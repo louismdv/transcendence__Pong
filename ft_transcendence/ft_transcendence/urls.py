@@ -5,8 +5,9 @@ from django.conf import settings
 from django.conf.urls.static import static
 
 urlpatterns = [
-    path('', views.home, name='home'),  # Accueil
-    path('login/', views.login_view, name='login'),  # Page de login, crée une vue dédiée
+    path('', views.home, name='home'),
+    path('online-game/', include('online_game.urls')),
+    path('login/', views.login_view, name='login'),
     path('register/', views.register, name='register'),
     path('livechat/', views.livechat, name='livechat'),
     path('local-game/', views.localgame, name='localgame'),

@@ -5,6 +5,8 @@ django-allauth
 psycopg2-binary
 python-decouple
 requests
-uvicorn
+daphne
 whitenoise
 Pillow==10.2.0
+channels_redis
+channels

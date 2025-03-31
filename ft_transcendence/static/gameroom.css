@@ -1,0 +1,197 @@
+
+#room-info {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-items: center;
+    margin: 10px 0;
+    padding: 10px;
+    border-radius: 5px;
+    font-size: 20px;
+}
+#roomCode {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-items: center;
+    color: black;
+    text-align: evenly;
+    border-radius: 5px;
+    margin-left: 5px;
+    padding: 5px 15px;
+    font-size: 20px;
+    background-color: lightgray;
+    cursor: pointer;
+}
+#copy-icon {
+    margin-left: 5px;
+}
+
+#gameStatus {
+    padding: 10px 0;
+    border-radius: 5px;
+    font-size: 1.5em;
+    white-space: nowrap;
+    overflow: hidden;
+    width: 280px;
+    color: red;
+    text-align: left;
+    justify-content: center;
+    justify-items: center;
+    animation: fadeInOut 3s forwards infinite;
+}
+
+@keyframes fadeInOut {
+    0% {
+    opacity: 0.5;
+    }
+    50% {
+    opacity: 1;
+    }
+    100% {
+    opacity: 0.5;
+    }
+}
+
+#playerL, #playerR {
+    display: flex;
+    align-items: center; /* Vertically center items within playerL and playerR */
+    border: 2px solid;
+    border-radius: 5px;
+    padding: 5px;
+    margin: 10px;
+    width: 35%;
+}
+
+#username-playerL, #username-playerR {
+    font-size: 1.25em;
+    color: white;
+    text-align: center;
+    margin-left: 10px;
+    margin-right: 10px;
+}
+
+#playerL {
+    border-color: #dc3545;
+    margin: 10px;
+    justify-content: center; /* Align items to the left */
+}
+
+#playerR {
+    border-color: #0d6efd;
+    margin: 10px;
+    justify-content: center; /* Align items to the right */
+}
+
+#game-header {
+    display: flex;
+    flex-direction: row;
+    width: 80%;
+    font-size: 20px;
+    justify-content: space-evenly;
+    align-items: center;
+    /* border: 10px solid green; */
+}
+
+#instructions {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+
+.avatar-container {
+  position: relative;
+  display: inline-block;
+  width: 40px; /* Set to your profile picture width */
+  height: 40px; /* Set to your profile picture height */
+  overflow: hidden; /* This will contain the effect within the container */
+  border-radius: 25%; /* If your profile picture is circular */
+}
+
+
+/* This creates the semi-transparent mask */
+/* .loader {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 80%;
+    height: 100%;
+    border-radius: 25%;
+    background-color: rgba(139, 139, 139, 0.563);
+    z-index: 1;
+} */
+
+/* If you still want a spinner on top of the mask */
+/* .loader::after {
+    content: "";
+    position: absolute;
+    top: 5;
+    left: 5;
+    width: 30px;
+    height: 30px;
+    border: 3px solid #f3f3f3;
+    border-top: 3px solid #006eb7;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+
+@keyframes spin {
+  0% { transform: translate(-50%, -50%) rotate(0deg); }
+  100% { transform: translate(-50%, -50%) rotate(360deg); }
+} */
+
+.loader {
+    width: 5px;
+    height: 5px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    border-radius: 25%;
+    background: rgba(255, 255, 255, 0.7);
+    animation: wave 2.5s cubic-bezier(0.28, 0.84, 0.45, 0.85) infinite;
+    z-index: 2;
+    pointer-events: none; /* Ensures clicks pass through to the image */
+    display: none; /* Hide the loader by default */
+}
+
+/* Lighter overlay */
+.avatar-container::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.15);
+    z-index: 1;
+    pointer-events: none; /* Ensures clicks pass through to the image */
+    display: none; /* Hide the overlay by default */
+}
+
+@keyframes wave {
+    0%, 100% {
+        box-shadow:
+            0 0 0 0px rgba(255, 255, 255, 0.6),
+            0 0 0 10px rgba(255, 255, 255, 0.15),
+            0 0 0 20px rgba(255, 255, 255, 0.25),
+            0 0 0 30px rgba(255, 255, 255, 0.15),
+            0 0 0 40px rgba(255, 255, 255, 0.1);
+        }
+    50% {
+        box-shadow:
+            0 0 0 40px rgba(255, 255, 255, 0),
+            0 0 0 30px rgba(255, 255, 255, 0.1),
+            0 0 0 20px rgba(255, 255, 255, 0.15),
+            0 0 0 10px rgba(255, 255, 255, 0.25),
+            0 0 0 0px rgba(255, 255, 255, 0.6);
+        }
+}
+
+/* Show loader and overlay when searching */
+.avatar-container.searching .loader,
+.avatar-container.searching::after {
+  display: inline-block;
+}
