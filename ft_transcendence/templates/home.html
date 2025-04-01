@@ -39,7 +39,7 @@
 
     <audio id="hitSoundL" src="../media/novakL.mp3" preload="auto"></audio>
     <audio id="hitSoundR" src="../media/novakR.mp3" preload="auto"></audio>
-
+    <script src="https://unpkg.com/htmx.org@2.0.4" integrity="sha384-HGfztofotfshcF7+8n44JQL2oJmowVChPTg48S+jvZoztPfvwD79OC/LTtG6dMp+" crossorigin="anonymous"></script>
     <!-- <script src="https://unpkg.com/htmx.org@2.0.4" integrity="sha384-HGfztofotfshcF7+8n44JQL2oJmowVChPTg48S+jvZoztPfvwD79OC/LTtG6dMp+" crossorigin="anonymous"></script> -->
 {% block title %} <title>Pong Game Home</title> {% endblock title %}
 {% block extra-head %} <!-- Placehoder for extra head files -->{% endblock extra-head %}
@@ -92,15 +92,18 @@
                 </span>Board</a>
             </li>
             <h4>Account</h4>
-            <li><a href="{% url 'settingspage' %}" hx-get="{% url 'settingspage' %}" hx-target="#settingspage" hx-push-url="true"><span class="material-symbols-outlined";>Settings
-            </span>Settings</a>
-            </li>
+            <li>
+                <a id="settings-btn" href="#">
+                  <span class="material-symbols-outlined">Settings</span>Settings
+                </a>
+              </li>
+              
             <li><a href="{% url 'login' %}" hx-get="{% url 'login' %}" hx-target="#login" hx-push-url="true"><span class="material-symbols-outlined" style="color: #CF0E0F";>Logout
                 </span>Log out</a>
             </li>
         </ul>
     </aside>
- 
+ <div id="main-content">
     {% block game-section %}
     <div class="main-grid">
         <div class="gameMode">
@@ -139,6 +142,10 @@
         </div>
     </div>
     {% endblock game-section %}
+    <section id="settings-section" style="display: none;">
+        {% include 'settingspage.html' %}
+    </section>
+</div>
     <footer>
         42Transcendence
     </footer>
