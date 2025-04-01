@@ -8,15 +8,16 @@
 {% block game-section %}
 
     <div id="gameWrapper">
-        
-        <div id="room-info">
-            Room Code:
-            <span id="roomCode-container" onclick="copyRoomCode()">
             
-                <input id="roomCode" value='{{ room_name }}' readonly>
-                <span id="copy-icon"  class="material-symbols-outlined">content_copy</span>
-                <p id="copyMessage" style="display: none; color: green;">Copied!</p>
-            </span>
+        <div id="room-info">
+            Room Code :
+            <div id="roomCode-container" onclick="copyRoomCode()">
+                <input id="roomCode" value="{{ room_name }}" readonly>
+                <div id="tooltip-container"  >
+                    <span class="material-symbols-outlined">content_copy</span>
+                    <span id="tooltip-text">Copy room code</span>
+                </div>
+            </div>
         </div>
         
         <div id="game-header">
@@ -30,7 +31,7 @@
                     <img src="/media/avatars/default.png" alt="profilepic_player2" class="user-avatar">
                     <span class="loader"></span>
                 </div>
-                <span id="username-playerR">Opponent:</span> 
+                <span id="username-playerR">loading</span> 
             </div>
         </div>
         <canvas id="onlinegameCanvas" class="gamebox" width="1080" height="720"></canvas>

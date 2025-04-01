@@ -370,12 +370,11 @@ function startSearch() {
 function opponentFound() {
     document.querySelector('.avatar-container').classList.remove('searching');
 }
+
 function copyRoomCode() {
-    const roomCode = document.getElementById("roomCode").value;
-    console.log("Copying room code:", roomCode);
-    navigator.clipboard.writeText(roomCode).then(() => {
-        alert("Copied!");
-    }).catch(err => {
-        console.error("Failed to copy: ", err);
-    });
+    const roomCode = document.getElementById("roomCode");
+    roomCode.setSelectionRange(0, 99999); // For mobile devices
+    navigator.clipboard.writeText(roomCode.value);
+    const tooltip = document.getElementById("tooltip-text");
+    tooltip.innerHTML = "Copied!";
 }
