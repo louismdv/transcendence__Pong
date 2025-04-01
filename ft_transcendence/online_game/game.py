@@ -16,7 +16,7 @@ class Ball:
         self.y = y
         self.xFac = -1 if random.random() < 0.5 else 1
         self.yFac = random.random() * 2 - 1
-        self.speed = 5
+        self.speed = 8
         self.radius = BALL_RADIUS
         self.width = self.radius * 2  # Diameter of the ball
         self.height = self.radius * 2  # Diameter of the ball
@@ -26,7 +26,7 @@ class Ball:
         self.bottom = self.y + self.radius
         self.randAngle = 0
         self.deceleration = 0.998 #deceleration factor
-        self.minSpeed = 5
+        self.minSpeed = 7
         self.point_win = None
         
     async def update(self):

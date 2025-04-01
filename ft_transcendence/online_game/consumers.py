@@ -114,7 +114,7 @@ class GameConsumer(AsyncWebsocketConsumer):
             if game_status != "playing":
                 print("Game status is not 'playing'. Exiting loop.")
                 break
-            await asyncio.sleep(0.03)  # 30ms per frame (~33 FPS)
+            await asyncio.sleep(0.0166)  # 66ms per frame (~60 FPS)
 
             # Update ball movement and store winner
             await self.ball.update()
@@ -187,11 +187,13 @@ class GameConsumer(AsyncWebsocketConsumer):
     async def update_player(self, event):
         player_side = event['player_side']
         new_y = event['new_y']
+        old_y = event['old_y']
 
         await self.send(text_data=json.dumps({
             'type': 'update_player',
             'player_side': player_side,
             'new_y': new_y,
+            'old_y': old_y,
         }))
     async def update_ball(self, event):
         ball_state = event['ball_state']
@@ -258,6 +260,7 @@ class GameConsumer(AsyncWebsocketConsumer):
                 "id": id,
                 "x": MARGIN,
                 "y": WIN_H / 2 - PLAYER_H / 2,
+                "old_y": None,
                 "score": 0,
                 "confirmed_ready": False
             }))
@@ -267,6 +270,7 @@ class GameConsumer(AsyncWebsocketConsumer):
                 "id": id,
                 "x": WIN_W - MARGIN - PLAYER_W,
                 "y": WIN_H / 2 - PLAYER_H / 2,
+                "old_y": None,
                 "score": 0,
                 "confirmed_ready": False
             }))
@@ -328,8 +332,18 @@ class GameConsumer(AsyncWebsocketConsumer):
 
         # Update Y position based on move type
         move_type = data.get("type")
-        y_offset = -20 if move_type == "move_up" else 20
-        player_state["y"] += y_offset
+        
+        player_state["old_y"] = player_state["y"]
+    
+        if move_type == "move_up" and player_state["y"] - 60 > 0:
+            player_state["y"] -= 60
+        elif move_type == "move_up" and player_state["y"] - 60 <= 0:
+            player_state["y"] = 0
+        elif move_type == "move_down" and player_state["y"] + PLAYER_H + 60 < WIN_H:
+            player_state["y"] += 60
+        elif move_type == "move_down" and player_state["y"] + PLAYER_H + 60 >= WIN_H:
+            player_state["y"] = WIN_H - PLAYER_H
+
 
         # Save updated state back to Redis
         redis_client.hset(self.room_name, player_to_update, json.dumps(player_state))
@@ -340,7 +354,8 @@ class GameConsumer(AsyncWebsocketConsumer):
             {
                 "type": "update.player",
                 "player_side": player_to_update,
-                "new_y": player_state["y"]
+                "new_y": player_state["y"],
+                "old_y": player_state["old_y"]
             }
         )
 
