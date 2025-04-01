@@ -19,7 +19,6 @@ const FONT_SIZE_XL = 500, FONT_SIZE_L = 200, FONT_SIZE_M = 50;
 
 // VARIABLES
 let ball, winner, keysPressed = {}, point = 0;
-let countdownActive = false;
 
 document.getElementById('page-title').textContent = "Online Game Mode";
 const canvas = document.getElementById('onlinegameCanvas');
@@ -193,11 +192,6 @@ class Ball {
 setupEventListeners();
 function gameLoop() {
     disableScrolling();
-
-    if (!countdownActive) {
-        countdownActive = true;
-        countdown(3);
-    }
 
     gameRunning = true;
     function updateGame() {
@@ -384,29 +378,4 @@ function copyRoomCode() {
     }).catch(err => {
         console.error("Failed to copy: ", err);
     });
-}
-
-function countdown(seconds) {
-    // Clear the screen
-    ctx.fillStyle = GREY;
-    ctx.fillRect(0, 0, WIN_W, WIN_H);
-    
-    if (seconds > 0) {
-        // Show the current countdown number
-        writeToCanvas(seconds.toString(), WHITE, WIN_W / 2, WIN_H / 2);
-        
-        // Continue countdown after 1 second
-        setTimeout(() => {
-            countdown(seconds - 1);
-        }, 1000);
-    } else if (seconds === 0) {
-        // Show "GO!!!" message
-        writeToCanvas("GO !!!", WHITE, WIN_W / 2, WIN_H / 2);
-        
-        // Start the game after 1 more second
-        setTimeout(() => {
-            countdownActive = false; // Reset the countdown flag
-            gameLoop(); // Start the main game loop only once
-        }, 1000);
-    }
 }
