@@ -26,6 +26,7 @@ const ctx = canvas.getContext('2d');
 let loadingAnimation = writeLoadingText(ORANGE);
 
 const players = { me: null, opponent: null };
+let downcounting = false;
 
 // ************ WEBSOCKETS ************ //
 
@@ -75,7 +76,7 @@ gameSocket.onmessage = function(event) {
             }
             break;
         case 'start_game':
-            gameLoop();
+            countdown(3, gameLoop);
             break;
         case 'update_player':
             pullPlayerState(data.player_side, data.new_y);
@@ -194,9 +195,10 @@ function gameLoop() {
     disableScrolling();
 
     gameRunning = true;
+
     function updateGame() {
 
-        if (!gameRunning) {
+        if (!gameRunning || downcounting) {
             return;
         }
         // check missed balls for scoring
@@ -263,15 +265,11 @@ function enableScrolling() {
     document.removeEventListener('keydown', preventDefault);
 }
 function drawCanvas() {
-    // draw window 
     ctx.fillStyle = GREY;
     ctx.fillRect(0, 0, WIN_W, WIN_H);
-    // draw scores
     color = WHITE
     drawScores();
-    // draw central line
     drawDottedLine();
-    // draw players and ball
     players.me.draw();
     players.opponent.draw();
     ball.draw();
@@ -347,8 +345,7 @@ function pregameMessage() {
     ctx.fillRect(0, 0, WIN_W, WIN_H);
     ctx.fillStyle = WHITE;
     ctx.font = `${FONT_SIZE_M}px 'Pixelify Sans', sans-serif`;
-    const text = "Press space bar when you are ready!";
-    writeToCanvas(text, WHITE, WIN_W / 2, WIN_H / 2);
+    writeToCanvas("Press space bar when you are ready!", WHITE, WIN_W / 2, WIN_H / 2);
 }
 function winnerAnnouce() {
 
@@ -377,4 +374,18 @@ function copyRoomCode() {
     navigator.clipboard.writeText(roomCode.value);
     const tooltip = document.getElementById("tooltip-text");
     tooltip.innerHTML = "Copied!";
+}
+
+function countdown(start, callback) {
+    if (start > 0) {
+        downcounting = true;
+        ctx.clearRect(0, 0, WIN_W, WIN_H);
+        writeToCanvas(start.toString(), WHITE, WIN_W / 2, WIN_H / 2);
+        setTimeout(() => countdown(start - 1, callback), 1000);
+    } else {
+        downcounting = false;
+        ctx.clearRect(0, 0, WIN_W, WIN_H);
+        writeToCanvas("Go", WHITE, WIN_W / 2, WIN_H / 2);
+        setTimeout(callback, 1000); // Start the game after "Go!" is displayed
+    }
 }
