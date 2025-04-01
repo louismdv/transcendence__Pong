@@ -11,32 +11,27 @@
 }
 #roomCode-container {
     display: flex;
-    flex-direction: row;
     align-items: center;
-    justify-content: center; /* Changed from justify-items */
     color: black;
     border-radius: 5px;
     margin-left: 5px;
-    padding: 5px 15px;
+    padding: 5px 10px;
     font-size: 20px;
     background-color: lightgray;
     cursor: pointer;
+}
+#roomCode-container:hover {
+    background-color: rgb(191, 191, 191);
 }
 #roomCode {
     cursor: pointer;
-    width: fit-content;
-    max-width: 200px; /* Adjusts width based on content */
+    max-width: 100px; 
     font-size: 20px;
     color: black;
+    background-color: lightgray;
     text-align: center;
-    margin-left: 5px;
-    margin-right: 5px;
     border-radius: 5px;
     border-width: 0;
-    background-color: lightgray;
-}
-#copy-icon {
-    margin-left: 5px;
 }
 
 #gameStatus {
@@ -77,7 +72,6 @@
 
 #username-playerL, #username-playerR {
     font-size: 1.25em;
-    color: white;
     text-align: center;
     margin-left: 10px;
     margin-right: 10px;
@@ -109,6 +103,7 @@
     display: flex;
     flex-direction: row;
     align-items: center;
+    margin-bottom: 35px;
 }
 
 
@@ -206,4 +201,57 @@
 .avatar-container.searching .loader,
 .avatar-container.searching::after {
   display: inline-block;
+}
+
+
+/* Tooltip container */
+#tooltip-container {
+    position: relative;
+    display: inline-flex;
+    align-items: center;  /* Align elements vertically */
+    gap: 5px; /* Adds space between the icon and tooltip */
+    cursor: pointer;
+}
+
+/* Tooltip text */
+#tooltip-text {
+    visibility: hidden;
+    width: 190px; ;
+    background-color: #555;
+    color: #fff;
+    padding: 5px;
+    border-radius: 6px;
+    text-align: center;
+    font-size: 14px;
+    
+    /* Position the tooltip text */
+    position: absolute;
+    z-index: 1;
+    transform: translateX(-50%);
+    left: 50%;
+    bottom: 100%; /* Position above the icon */
+    margin-bottom: 20px;
+    
+    /* Fade in tooltip */
+    opacity: 0;
+    transition: opacity 0.3s;
+    white-space: nowrap;
+}
+
+/* Tooltip arrow */
+#tooltip-text::after {
+    content: "";
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    margin-left: -5px;
+    border-width: 5px;
+    border-style: solid;
+    border-color: #555 transparent transparent transparent;
+}
+
+/* Show the tooltip text when hovering */
+#roomCode-container:hover #tooltip-text {
+    visibility: visible;
+    opacity: 1;
 }
