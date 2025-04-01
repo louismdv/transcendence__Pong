@@ -18,7 +18,7 @@ const BALL_SIZE = 40, BALL_RADIUS = BALL_SIZE / 2;
 const FONT_SIZE_XL = 500, FONT_SIZE_L = 200, FONT_SIZE_M = 50;
 
 // VARIABLES
-let ball, winner, keysPressed = {}, point = 0, isMuted = false;
+let ball, winner, keysPressed = {}, point = 0;
 
 document.getElementById('page-title').textContent = "Online Game Mode";
 const canvas = document.getElementById('onlinegameCanvas');
@@ -29,129 +29,128 @@ const players = { me: null, opponent: null };
 
 // ************ WEBSOCKETS ************ //
 
-    const gameSocket = new WebSocket(`ws://${window.location.host}/ws/online-game/${roomName}/`);
+const gameSocket = new WebSocket(`ws://${window.location.host}/ws/online-game/${roomName}/`);
 
-    gameSocket.onclose = function(event) {
-        console.log("WebSocket closed:", event.code, event.reason);
-    };
-    gameSocket.onerror = function(event) {
-        console.error("WebSocket error observed:", event);
-    };
-    function sendMessage(data) {
-        if (gameSocket.readyState === WebSocket.OPEN) {
-            gameSocket.send(JSON.stringify(data));
-        } else {
-            console.warn("WebSocket not ready, retrying...");
-            setTimeout(() => sendMessage(data), 500); // Retry after 500ms
+gameSocket.onclose = function(event) {
+    console.log("WebSocket closed:", event.code, event.reason);
+};
+gameSocket.onerror = function(event) {
+    console.error("WebSocket error observed:", event);
+};
+
+// Event handler for when the connection is successfully opened
+gameSocket.onopen = function(event) {
+    console.log("WebSocket is open now.");
+    sendMessage({ type: 'initial_message', username: clientName });
+};
+// Event handler for receiving messages from the server
+gameSocket.onmessage = function(event) {
+    const data = JSON.parse(event.data);
+
+    if (data.game_state) {
+        // Parse the individual fields in game_state if they are strings
+        if (typeof data.game_state.playerL === "string") {
+            data.game_state.playerL = JSON.parse(data.game_state.playerL);
+        }
+        if (typeof data.game_state.playerR === "string") {
+            data.game_state.playerR = JSON.parse(data.game_state.playerR);
+        }
+        if (typeof data.game_state.ball === "string") {
+            data.game_state.ball = JSON.parse(data.game_state.ball);
         }
     }
-    // Event handler for when the connection is successfully opened
-    gameSocket.onopen = function(event) {
-        console.log("WebSocket is open now.");
-        sendMessage({ type: 'initial_message', username: clientName });
-    };
-    // Event handler for receiving messages from the server
-    gameSocket.onmessage = function(event) {
-        const data = JSON.parse(event.data);
+    // console.log("Received type:", data.type);
 
-        if (data.game_state) {
-            // Parse the individual fields in game_state if they are strings
-            if (typeof data.game_state.playerL === "string") {
-                data.game_state.playerL = JSON.parse(data.game_state.playerL);
+    switch (data.type) {
+        case 'load_player_info':
+            // console.log("Received player_info:", data);
+            document.getElementById('username-playerL').textContent = data.playerL_id;
+            startSearch();
+            if (data.playerR_id) {
+                document.getElementById('username-playerR').textContent = data.playerR_id;
+                clearInterval(loadingAnimation);
+                opponentFound();
+                setupGame(data);
+                pregameMessage();
             }
-            if (typeof data.game_state.playerR === "string") {
-                data.game_state.playerR = JSON.parse(data.game_state.playerR);
-            }
-            if (typeof data.game_state.ball === "string") {
-                data.game_state.ball = JSON.parse(data.game_state.ball);
-            }
-        }
-        // console.log("Received type:", data.type);
-
-        switch (data.type) {
-            case 'load_player_info':
-                // console.log("Received player_info:", data);
-                document.getElementById('username-playerL').textContent = data.playerL_id;
-                startSearch();
-                if (data.playerR_id) {
-                    document.getElementById('username-playerR').textContent = data.playerR_id;
-                    clearInterval(loadingAnimation);
-                    opponentFound();
-                    setupGame(data);
-                    pregameLoop();
-                }
-                break;
-            case 'start_game':
-                writeToCanvas("Game started!", BLUE);
-                // console.log("Received start_game:", data);
-                gameLoop();
-                break;
-            case 'update_player':
-                pullPlayerState(data.player_side, data.new_y);
-                break;
-            case 'update_ball':
-                pullBallState(data.ball_state);
-                // console.log("Received BALL state:", data.ball_state);
-                break;
-            default:
-                console.log("Unknown message type:", data.type);
-        }
-    };
-
-    // Abstracted code for both players. Each user gets a player obj and an opponent obj
-    function setupGame(data) {
-
-        // creating in-memory player object with pulled game_state
-        if (clientName === data.playerL_id) {
-            players.me = new Player(50, WIN_H / 2 - 175 / 2, 'orange', clientName, 'playerL');
-            players.opponent = new Player(WIN_W - 50 - 30, WIN_H / 2 - 175 / 2, 'red', data.playerR_id, 'playerR');
-        }
-        else if (clientName === data.playerR_id) {
-            players.me = new Player(WIN_W - 50 - 30, WIN_H / 2 - 175 / 2, 'red', clientName, 'playerR');
-            players.opponent = new Player(50, WIN_H / 2 - 175 / 2, 'orange', data.playerL_id, 'playerL');
-        }
-        ball = new Ball(WIN_W / 2, WIN_H / 2, 'blue');
-        ball.x = data.ball.x;
-        ball.y = data.ball.y;
-        ball.speed = data.ball.speed;
-        ball.xFac = data.ball.xFac;
-        ball.yFac = data.ball.yFac;
-        ball.point_win = data.ball.point_win;
+            break;
+        case 'start_game':
+            gameLoop();
+            break;
+        case 'update_player':
+            pullPlayerState(data.player_side, data.new_y);
+            break;
+        case 'update_ball':
+            pullBallState(data.ball_state);
+            // console.log("Received BALL state:", data.ball_state);
+            break;
+        default:
+            console.log("Unknown message type:", data.type);
     }
-    function pullPlayerState(player_side, new_y) {
-        if (players.me.side === player_side) {
-            players.me.y = new_y;
-        } else if (players.opponent.side === player_side) {
-            players.opponent.y = new_y;
-        }
+};
+
+// ************ HELPER WEBSOCKETS FUNCTIONS ************ //
+
+function sendMessage(data) {
+    if (gameSocket.readyState === WebSocket.OPEN) {
+        gameSocket.send(JSON.stringify(data));
+    } else {
+        console.warn("WebSocket not ready, retrying...");
+        setTimeout(() => sendMessage(data), 500); // Retry after 500ms
     }
-    function pullBallState(ball_state) {
-        // Check if ball is initialized
-        
-        if (typeof ball_state === "string") {
-            ball_state = JSON.parse(ball_state);
-        }
-        ball.x = ball_state.x;
-        ball.y = ball_state.y;
-        ball.speed = ball_state.speed;
-        ball.xFac = ball_state.xFac;   
-        ball.yFac = ball_state.yFac;
-        ball.point_win = ball_state.point_win;
+}
+// Abstracted code for both players. Each user gets a player obj and an opponent obj
+function setupGame(data) {
+
+    // creating in-memory player object with pulled game_state
+    if (clientName === data.playerL_id) {
+        players.me = new Player(50, WIN_H / 2 - 175 / 2, 'orange', clientName, 'playerL');
+        players.opponent = new Player(WIN_W - 50 - 30, WIN_H / 2 - 175 / 2, 'red', data.playerR_id, 'playerR');
     }
-    function pushMove(type) {
-        if (gameSocket.readyState === WebSocket.OPEN) {
-            sendMessage({
-                type: type,
-                side: players.me.side,
-            });
-        }
-    };
+    else if (clientName === data.playerR_id) {
+        players.me = new Player(WIN_W - 50 - 30, WIN_H / 2 - 175 / 2, 'red', clientName, 'playerR');
+        players.opponent = new Player(50, WIN_H / 2 - 175 / 2, 'orange', data.playerL_id, 'playerL');
+    }
+    ball = new Ball(WIN_W / 2, WIN_H / 2, 'blue');
+    ball.x = data.ball.x;
+    ball.y = data.ball.y;
+    ball.speed = data.ball.speed;
+    ball.xFac = data.ball.xFac;
+    ball.yFac = data.ball.yFac;
+    ball.point_win = data.ball.point_win;
+}
+function pullPlayerState(player_side, new_y) {
+    if (players.me.side === player_side) {
+        players.me.y = new_y;
+    } else if (players.opponent.side === player_side) {
+        players.opponent.y = new_y;
+    }
+}
+function pullBallState(ball_state) {
+    // Check if ball is initialized
+    
+    if (typeof ball_state === "string") {
+        ball_state = JSON.parse(ball_state);
+    }
+    ball.x = ball_state.x;
+    ball.y = ball_state.y;
+    ball.speed = ball_state.speed;
+    ball.xFac = ball_state.xFac;   
+    ball.yFac = ball_state.yFac;
+    ball.point_win = ball_state.point_win;
+}
+function pushMove(type) {
+    if (gameSocket.readyState === WebSocket.OPEN) {
+        sendMessage({
+            type: type,
+            side: players.me.side,
+        });
+    }
+};
 
-// ************ GAME ************ //
-setupEventListeners();
 
+// ************ OBJECT CLASSES ************ //
 
-// CLASSES: Player and Ball
 class Player {
     constructor(x, y, color, id, side) {
         this.x = x;
@@ -189,69 +188,8 @@ class Ball {
     }
 }
 
-// FUNCTIONS
-function setupEventListeners() {
-    document.addEventListener('keydown', (event) => {
-        keysPressed[event.code] = true;
-        switch (event.code) {
-            case 'ArrowUp':
-                return pushMove('move_up');
-            case 'ArrowDown':
-                return pushMove('move_down');
-            case 'KeyM':
-                return toggleMute();
-            case 'Space':
-                console.log("Space bar pressed");
-                return sendMessage({ type: 'ready', player_side: players.me.side });
-            // case 'Escape':
-            //     resetGame();
-            //     pregameLoop();
-        }
-    });
-    document.addEventListener('keyup', (event) => {
-        keysPressed[event.code] = false;
-    });
-    muteButton.addEventListener('click', (event) => {
-        toggleMute();
-    });
-}
-
-function disableScrolling() {
-    function preventDefault(e) {
-        e.preventDefault();
-    }
-
-    // Add event listener to prevent default scrolling behavior
-    document.addEventListener('keydown', function(e) {
-        if (e.key === 'ArrowUp' || e.key === 'ArrowDown') {
-            preventDefault(e);
-        }
-    });
-}
-
-// Function to enable scrolling
-function enableScrolling() {
-    // Remove the event listener to re-enable scrolling
-    document.removeEventListener('keydown', preventDefault);
-}
-
-function drawCanvas() {
-    // draw window 
-    ctx.fillStyle = GREY;
-    ctx.fillRect(0, 0, WIN_W, WIN_H);
-    // draw scores
-    color = WHITE
-    drawScores();
-    // draw central line
-    drawDottedLine();
-    // draw players and ball
-    players.me.draw();
-    players.opponent.draw();
-    ball.draw();
-}
-
-
-// Game loop
+// ************ GAME ************ //
+setupEventListeners();
 function gameLoop() {
     disableScrolling();
 
@@ -263,12 +201,10 @@ function gameLoop() {
         }
         // check missed balls for scoring
         if (ball.point_win) {
-            console.log("point_win:", ball.point_win);
             if (ball.point_win == players.me.side) {
                 players.me.score += 1;
                 winner = players.me.id;
-            }
-            else if (ball.point_win == players.opponent.side) {
+            } else {
                 players.opponent.score += 1;
                 winner = players.opponent.id;
             }
@@ -288,15 +224,61 @@ function gameLoop() {
     requestAnimationFrame(updateGame);
 }
 
+// ************ LISTENERS ************ //
+
+function setupEventListeners() {
+    document.addEventListener('keydown', (event) => {
+        keysPressed[event.code] = true;
+        switch (event.code) {
+            case 'ArrowUp':
+                return pushMove('move_up');
+            case 'ArrowDown':
+                return pushMove('move_down');
+            case 'KeyM':
+                return toggleMute();
+            case 'Space':
+                console.log("Space bar pressed");
+                return sendMessage({ type: 'ready', player_side: players.me.side });
+        }
+    });
+    document.addEventListener('keyup', (event) => {
+        keysPressed[event.code] = false;
+    });
+}
+function disableScrolling() {
+    function preventDefault(e) {
+        e.preventDefault();
+    }
+
+    // Add event listener to prevent default scrolling behavior
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'ArrowUp' || e.key === 'ArrowDown') {
+            preventDefault(e);
+        }
+    });
+}
+// Function to enable scrolling
+function enableScrolling() {
+    // Remove the event listener to re-enable scrolling
+    document.removeEventListener('keydown', preventDefault);
+}
+function drawCanvas() {
+    // draw window 
+    ctx.fillStyle = GREY;
+    ctx.fillRect(0, 0, WIN_W, WIN_H);
+    // draw scores
+    color = WHITE
+    drawScores();
+    // draw central line
+    drawDottedLine();
+    // draw players and ball
+    players.me.draw();
+    players.opponent.draw();
+    ball.draw();
+}
 
 ////// HELPER FUNCTIONS //////
 
-function toggleMute() {
-    isMuted = !isMuted;
-    hitSoundL.muted = !hitSoundL.muted;
-    hitSoundR.muted = !hitSoundR.muted;
-    muteButton.textContent = isMuted ? "volume_mute" : "volume_off";
-}
 function writeToCanvas(text, color, x=null, y=null) {
 
     ctx.fillStyle = color;
@@ -338,8 +320,14 @@ function drawScores() {
 
     ctx.fillStyle = WHITE;
     ctx.font = `${FONT_SIZE_M}px 'Pixelify Sans', sans-serif`;
-    ctx.fillText(players.me.score, WIN_W / 4, WIN_H / 2);
-    ctx.fillText(players.opponent.score, WIN_W / 4 * 3, WIN_H / 2);
+    if (players.me.side == 'playerL') {
+        ctx.fillText(players.me.score, WIN_W / 4, WIN_H / 2);
+        ctx.fillText(players.opponent.score, WIN_W / 4 * 3, WIN_H / 2);
+    }
+    else {
+        ctx.fillText(players.opponent.score, WIN_W / 4, WIN_H / 2);
+        ctx.fillText(players.me.score, WIN_W / 4 * 3, WIN_H / 2);
+    }
 }
 function drawDottedLine() {
     ctx.beginPath();
@@ -353,7 +341,7 @@ function drawDottedLine() {
 
     ctx.stroke(); // Draw the line
 }
-function pregameLoop() {
+function pregameMessage() {
 
     ctx.fillStyle = GREY;
     ctx.fillRect(0, 0, WIN_W, WIN_H);
@@ -361,7 +349,6 @@ function pregameLoop() {
     ctx.font = `${FONT_SIZE_M}px 'Pixelify Sans', sans-serif`;
     const text = "Press space bar when you are ready!";
     writeToCanvas(text, WHITE, WIN_W / 2, WIN_H / 2);
-    requestAnimationFrame(pregameLoop);
 }
 function winnerAnnouce() {
 
@@ -370,17 +357,25 @@ function winnerAnnouce() {
     ctx.fillStyle = WHITE;
     ctx.font = `${FONT_SIZE_M}px PixelifySans`;
     const winner_name = `${winner} wins!`;
+    writeToCanvas("GAME OVER", YELLOW, WIN_W / 2, WIN_H / 3 - FONT_SIZE_L);
     writeToCanvas(winner_name, YELLOW);
 
     requestAnimationFrame(winnerAnnouce);
 }
-
-// When starting to search for an opponent
+// Loading animation: When starting to search for an opponent
 function startSearch() {
     document.querySelector('.avatar-container').classList.add('searching');
 }
-
-// When opponent is found
+// Loading animation: When opponent is found
 function opponentFound() {
     document.querySelector('.avatar-container').classList.remove('searching');
+}
+function copyRoomCode() {
+    const roomCode = document.getElementById("roomCode").value;
+    console.log("Copying room code:", roomCode);
+    navigator.clipboard.writeText(roomCode).then(() => {
+        alert("Copied!");
+    }).catch(err => {
+        console.error("Failed to copy: ", err);
+    });
 }

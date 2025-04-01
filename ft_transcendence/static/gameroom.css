@@ -9,19 +9,31 @@
     border-radius: 5px;
     font-size: 20px;
 }
-#roomCode {
+#roomCode-container {
     display: flex;
     flex-direction: row;
     align-items: center;
-    justify-items: center;
+    justify-content: center; /* Changed from justify-items */
     color: black;
-    text-align: evenly;
     border-radius: 5px;
     margin-left: 5px;
     padding: 5px 15px;
     font-size: 20px;
     background-color: lightgray;
     cursor: pointer;
+}
+#roomCode {
+    cursor: pointer;
+    width: fit-content;
+    max-width: 200px; /* Adjusts width based on content */
+    font-size: 20px;
+    color: black;
+    text-align: center;
+    margin-left: 5px;
+    margin-right: 5px;
+    border-radius: 5px;
+    border-width: 0;
+    background-color: lightgray;
 }
 #copy-icon {
     margin-left: 5px;
