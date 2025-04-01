@@ -11,15 +11,17 @@
         
         <div id="room-info">
             Room Code:
-            <span id="roomCode">
-                {{ room_name }}
-                <span id="copy-icon" class="material-symbols-outlined">content_copy</span>
+            <span id="roomCode-container" onclick="copyRoomCode()">
+            
+                <input id="roomCode" value='{{ room_name }}' readonly>
+                <span id="copy-icon"  class="material-symbols-outlined">content_copy</span>
+                <p id="copyMessage" style="display: none; color: green;">Copied!</p>
             </span>
         </div>
         
         <div id="game-header">
             <div id="playerL">
-                <img src="/media/avatars/default.png" alt="profilepic_player1" class="user-avatar">
+                <img src="/media/avatars/ficello-dance.gif" alt="profilepic_player1" class="user-avatar">
                 <span id="username-playerL">You:</span> 
             </div>
             vs.
@@ -36,7 +38,6 @@
         
         <div id="instructions">
             Use ↑ and ↓ arrow keys to move your paddle
-            <button id="muteButton" class="material-symbols-outlined">volume_off</button>
         </div>
 
         <script>
