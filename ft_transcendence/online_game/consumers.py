@@ -2,6 +2,7 @@ import json
 import redis
 import random
 import asyncio
+import time
 
 from asgiref.sync import sync_to_async
 from channels.generic.websocket import AsyncWebsocketConsumer
@@ -105,7 +106,7 @@ class GameConsumer(AsyncWebsocketConsumer):
 
     async def game_loop(self):
             
-        print("Game loop started.")
+        await asyncio.sleep(4)
 
         while True:
             game_status = redis_client.hget(self.room_name, "game_status")
