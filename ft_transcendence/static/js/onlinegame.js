@@ -72,14 +72,14 @@ gameSocket.onmessage = function(event) {
                 clearInterval(loadingAnimation);
                 opponentFound();
                 setupGame(data);
-                pregameMessage();
+                writeToCanvas("Press space bar when you are ready!", WHITE, WIN_W / 2, WIN_H / 2);
             }
             break;
         case 'start_game':
             countdown(3, gameLoop);
             break;
         case 'update_player':
-            pullPlayerState(data.player_side, data.new_y);
+            pullPlayerState(data.player_side, data.new_y, data.old_y);
             break;
         case 'update_ball':
             pullBallState(data.ball_state);
@@ -120,11 +120,14 @@ function setupGame(data) {
     ball.yFac = data.ball.yFac;
     ball.point_win = data.ball.point_win;
 }
-function pullPlayerState(player_side, new_y) {
+function pullPlayerState(player_side, new_y, old_y) {
+    console.log("Received player state:", player_side, new_y, old_y);
     if (players.me.side === player_side) {
         players.me.y = new_y;
+        players.me.old_y = old_y;
     } else if (players.opponent.side === player_side) {
         players.opponent.y = new_y;
+        players.opponent.old_y = old_y;
     }
 }
 function pullBallState(ball_state) {
@@ -156,6 +159,7 @@ class Player {
     constructor(x, y, color, id, side) {
         this.x = x;
         this.y = y;
+        this.old_y = y;
         this.id = id;
         this.side = side,
         this.color = color;
@@ -164,8 +168,11 @@ class Player {
         this.height = PLAYER_H;
     }
     draw() {
+        // Interpolate between old y and new y
+        this.old_y += (this.y - this.old_y) * 0.3;
+
         ctx.fillStyle = this.color;
-        ctx.fillRect(this.x, this.y, this.width, this.height);
+        ctx.fillRect(this.x, this.old_y, this.width, this.height);
     }
 }
 class Ball {
@@ -230,6 +237,11 @@ function gameLoop() {
 
 function setupEventListeners() {
     document.addEventListener('keydown', (event) => {
+        // const now = Date.now();
+        // if (now - lastSentTime > UPDATE_INTERVAL) {
+        //     lastSentTime = now;
+        //     pushMove(event.key);  // Call your WebSocket send function
+        // }
         keysPressed[event.code] = true;
         switch (event.code) {
             case 'ArrowUp':
@@ -240,6 +252,7 @@ function setupEventListeners() {
                 return toggleMute();
             case 'Space':
                 console.log("Space bar pressed");
+                writeToCanvas("Opponent isn't ready yet...", WHITE, WIN_W / 2, WIN_H / 2);
                 return sendMessage({ type: 'ready', player_side: players.me.side });
         }
     });
@@ -280,6 +293,7 @@ function drawCanvas() {
 function writeToCanvas(text, color, x=null, y=null) {
 
     ctx.fillStyle = color;
+    ctx.clearRect(0, 0, canvas.width, canvas.height); // Clear canvas
     ctx.font = `${FONT_SIZE_M}px 'Pixelify Sans', sans-serif`;
     ctx.textAlign = "center";
     ctx.textBaseline = "middle";
@@ -339,14 +353,7 @@ function drawDottedLine() {
 
     ctx.stroke(); // Draw the line
 }
-function pregameMessage() {
 
-    ctx.fillStyle = GREY;
-    ctx.fillRect(0, 0, WIN_W, WIN_H);
-    ctx.fillStyle = WHITE;
-    ctx.font = `${FONT_SIZE_M}px 'Pixelify Sans', sans-serif`;
-    writeToCanvas("Press space bar when you are ready!", WHITE, WIN_W / 2, WIN_H / 2);
-}
 function winnerAnnouce() {
 
     ctx.fillStyle = GREY;
@@ -354,8 +361,7 @@ function winnerAnnouce() {
     ctx.fillStyle = WHITE;
     ctx.font = `${FONT_SIZE_M}px PixelifySans`;
     const winner_name = `${winner} wins!`;
-    writeToCanvas("GAME OVER", YELLOW, WIN_W / 2, WIN_H / 3 - FONT_SIZE_L);
-    writeToCanvas(winner_name, YELLOW);
+    writeToCanvas(`GAME OVER: ${winner_name}`, YELLOW); // Fixed line
 
     requestAnimationFrame(winnerAnnouce);
 }
