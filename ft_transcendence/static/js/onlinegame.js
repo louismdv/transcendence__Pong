@@ -18,7 +18,7 @@ const BALL_SIZE = 40, BALL_RADIUS = BALL_SIZE / 2;
 const FONT_SIZE_XL = 500, FONT_SIZE_L = 200, FONT_SIZE_M = 50;
 
 // VARIABLES
-let ball, winner, keysPressed = {}, point = 0;
+let ball, keysPressed = {}, point = 0;
 
 document.getElementById('page-title').textContent = "Online Game Mode";
 const canvas = document.getElementById('onlinegameCanvas');
@@ -27,6 +27,7 @@ let loadingAnimation = writeLoadingText(ORANGE);
 
 const players = { me: null, opponent: null };
 let downcounting = false;
+let winner = null;
 
 // ************ WEBSOCKETS ************ //
 
@@ -89,6 +90,7 @@ gameSocket.onmessage = function(event) {
             handle_restore_game(data.game_state);
             break;
         case 'start_game':
+            clearInterval(loadingAnimation);
             countdown(3, gameLoop);
             break;
         case 'update_player':
@@ -153,6 +155,14 @@ function pullBallState(ball_state) {
     ball.xFac = ball_state.xFac;   
     ball.yFac = ball_state.yFac;
     ball.point_win = ball_state.point_win;
+    if (players.me.side === 'playerL') {
+        players.me.score = ball_state.playerL_points;
+        players.opponent.score = ball_state.playerR_points;
+    }
+    else {
+        players.opponent.score = ball_state.playerL_points;
+        players.me.score = ball_state.playerR_points;
+    }
 }
 function pushMove(type) {
     if (gameSocket.readyState === WebSocket.OPEN) {
@@ -187,18 +197,19 @@ function handle_restore_game(gameState) {
         ball.xFac = gameState.ball.xFac;
         ball.yFac = gameState.ball.yFac;
         ball.point_win = gameState.ball.point_win;
+
+        if (players.me.side === 'playerL') {
+            players.me.score = gameState.ball.playerL_points
+            players.opponent.score = gameState.ball.playerR_points;
+        }
+        else if (players.me.side === 'playerR') {
+            players.opponent.score = gameState.ball.playerL_points;
+            players.me.score = gameState.ball.playerR_points;
+        }
     }
     sendMessage({ type: 'ready', player_side: players.me.side });
-    gameLoop()
-    console.log("Game state restored successfully");
+    console.log("Game state restored successfully: ", players.me, players.opponent, ball);
 }
-
-// state: {
-// 'playerL': '{"type": "playerL", "id": "bob", "x": 50, "y": 272.5, "old_y": null, "score": 0, "confirmed_ready": true}',
-// 'player_count': '2',
-// 'ball': '{"x": 540.0, "y": 360.0, "speed": 8, "xFac": -1, "yFac": -0.545569594588825, "point_win": null}',
-// 'game_status': 'playing',
-// 'playerR': '{"type": "playerR", "id": "jack", "x": 1000, "y": 272.5, "old_y": null, "score": 0, "confirmed_ready": true}'}
 
 // ************ OBJECT CLASSES ************ //
 
@@ -232,7 +243,6 @@ class Ball {
         this.speed = 5;
         this.radius = BALL_RADIUS;
         this.hitCount = 0;
-        this.point_win = null;
     }
     draw() {
         ctx.beginPath();
@@ -255,18 +265,11 @@ function gameLoop() {
         if (!gameRunning || downcounting) {
             return;
         }
-        // check missed balls for scoring
-        if (ball.point_win) {
-            if (ball.point_win == players.me.side) {
-                players.me.score += 1;
-                winner = players.me.id;
-            } else {
-                players.opponent.score += 1;
-                winner = players.opponent.id;
-            }
-            ball.point_win = null;
-        }
-        if (players.me.score >= WINNING_SCORE || players.opponent.score >= WINNING_SCORE) {
+        if (players.me.score >= WINNING_SCORE)
+            winner = players.me.id;
+        else if (players.opponent.score >= WINNING_SCORE)
+            winner = players.opponent.id;
+        if (winner) {
             gameRunning = false;
             sendMessage({ type: 'game_over', winner: winner });
             winnerAnnouce();
@@ -438,3 +441,5 @@ function countdown(start, callback) {
         setTimeout(callback, 1000); // Start the game after "Go!" is displayed
     }
 }
+
+

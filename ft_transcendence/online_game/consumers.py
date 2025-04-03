@@ -148,7 +148,7 @@ class GameConsumer(AsyncWebsocketConsumer):
                 }
             )
             # reset if ball hits left or right side
-            if self.ball.point_win:
+            if self.ball.point_win == True:
                 await self.ball.reset()
 
     async def handle_collision(self, ball, player, side):
@@ -240,10 +240,9 @@ class GameConsumer(AsyncWebsocketConsumer):
         # Check if the player is reconnecting
         if await self.restore_game_state(id):
             print(f"Player {id} is reconnecting.")
-            return
-    
-        # update redis players dict with player id
-        await self.create_redis_players(id)
+        else:
+            # update redis players dict with player id
+            await self.create_redis_players(id)
             
     async def handle_gameover(self, data):
         """Handles game over state."""
@@ -376,25 +375,45 @@ class GameConsumer(AsyncWebsocketConsumer):
     async def handle_waiting_room(self, data):
         """Handles the waiting room state."""
         
-        # Retrieve the value from Redis
+        # Retrieve the values from Redis
         playerL_json = redis_client.hget(self.room_name, "playerL")
         playerL = json.loads(playerL_json)
         playerR_json = redis_client.hget(self.room_name, "playerR")
         playerR = json.loads(playerR_json)
-        game_status = redis_client.hget(self.room_name, "game_status")        
+        game_status = redis_client.hget(self.room_name, "game_status")
 
-        print("checking readiness status")
         if (game_status == "waiting_for_confirmation" or game_status == "paused") and playerL["confirmed_ready"] == True and playerR["confirmed_ready"] == True:
-            # Get initial game state and broadcast it to all players
+            # Check if there's an interrupted game state
+            interrupted_game_state_json_str = redis_client.hget(self.room_name, "interrupted_game_state")
+            # print(f"interrupted_game_state_json: {interrupted_game_state_json_str}")
+            if interrupted_game_state_json_str:
+                # Parse the interrupted game state
+                interrupted_game_state = json.loads(interrupted_game_state_json_str)                
+                ball_data_str = interrupted_game_state["ball"]
+                ball_data = json.loads(ball_data_str)
+
+                print(f"ball_data: {ball_data}")
+                # The interrupted_game_state IS the ball data
+                print("Restoring ball data from interrupted game")
+                
+                # Create ball from the interrupted game state (which contains ball properties)
+                self.ball = Ball(int(ball_data.get("x")), int(ball_data.get("y")))
+                self.ball.xFac = ball_data.get("xFac")
+                self.ball.yFac = ball_data.get("yFac")
+                self.ball.speed = ball_data.get("speed")
+                self.ball.point_win = ball_data.get("point_win")
+                self.ball.playerL_points = ball_data.get("playerL_points")
+                self.ball.playerR_points = ball_data.get("playerR_points")
+        
+            else:
+                # No interrupted game state, create a new ball
+                print("Creating new ball")
+                self.ball = Ball(WIN_W / 2, WIN_H / 2)
             
-            # Create shared ball object
-            self.ball = Ball(WIN_W / 2, WIN_H / 2)
-            redis_client.hset(self.room_name, "ball", json.dumps(self.ball.to_dict()))
-            
+            # Update game status and start the game
             redis_client.hset(self.room_name, "game_status", "playing")
-            game_state = redis_client.hgetall(self.room_name)
-            print("game_state", game_state)
-            print(f"Initial game state: {game_state}")
+                        
+            # Send start game message to all clients
             await self.channel_layer.group_send(
                 self.room_group_name,
                 {
@@ -402,6 +421,7 @@ class GameConsumer(AsyncWebsocketConsumer):
                     "game_state": redis_client.hgetall(self.room_name)
                 }
             )
+            # Start the game loop
             asyncio.create_task(self.game_loop())  # Run the ball movement loop
 
 
@@ -458,3 +478,4 @@ class GameConsumer(AsyncWebsocketConsumer):
                 }
             )
             print(f"waiting for players to confirm")
+            
