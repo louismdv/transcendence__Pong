@@ -59,6 +59,9 @@ gameSocket.onmessage = function(event) {
         if (typeof data.game_state.ball === "string") {
             data.game_state.ball = JSON.parse(data.game_state.ball);
         }
+        if (typeof data.game_state === "string") {
+            data.game_state = JSON.parse(data.game_state);
+        }
     }
     // console.log("Received type:", data.type);
 
@@ -74,6 +77,17 @@ gameSocket.onmessage = function(event) {
                 writeToCanvas("Press space bar when you are ready!", WHITE, WIN_W / 2, WIN_H / 2);
             }
             break;
+        case 'room_full':
+            window.location.pathname = '/online-game/lobby/';
+            break;
+        case 'no_game_to_restore':
+            console.log("No game to restore.");
+            writeToCanvas("No game to restore. Waiting for challenger...", WHITE, WIN_W / 2, WIN_H / 2);
+            break;
+        case 'restore_game':
+            console.log("CASE Restoring game state:", data.game_state);
+            handle_restore_game(data.game_state);
+            break;
         case 'start_game':
             countdown(3, gameLoop);
             break;
@@ -82,7 +96,6 @@ gameSocket.onmessage = function(event) {
             break;
         case 'update_ball':
             pullBallState(data.ball_state);
-            // console.log("Received BALL state:", data.ball_state);
             break;
         default:
             console.log("Unknown message type:", data.type);
@@ -149,7 +162,43 @@ function pushMove(type) {
         });
     }
 };
+function handle_restore_game(gameState) {
 
+    console.log("Restoring game state:", gameState);    
+
+    if (clientName === gameState.playerL.id) {
+        console.log("RESTORED playerL");
+        players.me = new Player(gameState.playerL.x, gameState.playerL.y, 'orange', clientName, 'playerL');
+        players.opponent = new Player(gameState.playerR.x, gameState.playerR.y, 'red', gameState.playerR.id, 'playerR');
+    }
+    else if (clientName === gameState.playerR.id) {
+        console.log("RESTORED playerR");
+        players.me = new Player(gameState.playerR.x, gameState.playerR.y, 'red', gameState.playerR.id, 'playerR');
+        players.opponent = new Player(gameState.playerL.x, gameState.playerL.y, 'orange', clientName, 'playerL');
+    }
+
+    // Restore the ball properties
+    if (gameState.ball) {
+        console.log("RESTORED ball");
+        ball = new Ball(WIN_W / 2, WIN_H / 2, 'blue');
+        ball.x = gameState.ball.x;
+        ball.y = gameState.ball.y;
+        ball.speed = gameState.ball.speed;
+        ball.xFac = gameState.ball.xFac;
+        ball.yFac = gameState.ball.yFac;
+        ball.point_win = gameState.ball.point_win;
+    }
+    sendMessage({ type: 'ready', player_side: players.me.side });
+    gameLoop()
+    console.log("Game state restored successfully");
+}
+
+// state: {
+// 'playerL': '{"type": "playerL", "id": "bob", "x": 50, "y": 272.5, "old_y": null, "score": 0, "confirmed_ready": true}',
+// 'player_count': '2',
+// 'ball': '{"x": 540.0, "y": 360.0, "speed": 8, "xFac": -1, "yFac": -0.545569594588825, "point_win": null}',
+// 'game_status': 'playing',
+// 'playerR': '{"type": "playerR", "id": "jack", "x": 1000, "y": 272.5, "old_y": null, "score": 0, "confirmed_ready": true}'}
 
 // ************ OBJECT CLASSES ************ //
 
