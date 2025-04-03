@@ -61,7 +61,6 @@ class Ball:
         tanAngle = math.tan(self.randAngle * math.pi / 180) * self.xFac
         self.yFac = tanAngle # Update yFac based on the angle
         self.speed = 8 * (1 + random.random() * 0.5)
-        print("HIT")
         
     async def reset(self):
         self.x = WIN_W / 2

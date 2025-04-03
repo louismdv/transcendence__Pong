@@ -11,8 +11,6 @@ from .game import Ball, WIN_W, WIN_H, PLAYER_W, PLAYER_H, MARGIN
 # creating a redis connection for storing the game room data shared among all consumer instances
 redis_client = redis.Redis(host='redis', port=6379, db=0, decode_responses=True)
 
-rooms = {}  # Dictionary to keep track of rooms and their clients
-
 # each client connection to the server using websockets creates a GameConsumer instance
 # Player1 and Player2 each have their own instance with data stored in the redis db
 class GameConsumer(AsyncWebsocketConsumer):
@@ -24,9 +22,12 @@ class GameConsumer(AsyncWebsocketConsumer):
         self.room_name = self.scope['url_route']['kwargs']['room_name']
         self.room_group_name = f"online_game_{self.room_name}" # all clients connected to the same GAME room
     
+        # Add this room to the active rooms set
+    
         # Create redis_client hash structure if it doesn't exist
         if not redis_client.exists(self.room_name):
             redis_client.hset(self.room_name, "player_count", 0)
+            redis_client.sadd("active_game_rooms", self.room_name)
 
         # Retrieve the current player count
         player_count = redis_client.hget(self.room_name, "player_count")
@@ -40,7 +41,6 @@ class GameConsumer(AsyncWebsocketConsumer):
                 "message": "Game is full"
             }))
             self.disconnect(1000)
-            await self.close(code=1000)  # 1000 is a normal closure status code
             print("Connection refused: Maximum number of players reached.")
             return
 
@@ -58,30 +58,41 @@ class GameConsumer(AsyncWebsocketConsumer):
             self.channel_name #unique identifier created by channels for each websocket connection
         )
 
+## **************** DISCONNECTION MGNT **************** ##
+
+    async def end_game(self):
+        """Mark the current game as finished but keep the room code"""
+        redis_client.hset(self.room_name, "game_status", "end_game")
+        
+        # Notify all clients
+        print("Game finished. Notifying clients...")
+        
+        # Set expiry on the room hash (automatically deleted after TTL)
+        redis_client.expire(self.room_name, 10)
+        
+        print("Game room destroyed after 10 seconds")
+        
+        # ...rest of the end_game method...
+
     async def disconnect(self, close_code):
-        """Handles client disconnection and cleans up room if empty."""
+        # Decrement player count
+        redis_client.hincrby(self.room_name, "player_count", -1)
         
-        if self.room_group_name:
-            await self.channel_layer.group_discard(self.room_group_name, self.channel_name)
-
-        try:
-            redis_client.hincrby(self.room_name, "player_count", -1)  # Decrease player count
-            self.player_count -= 1
-            print(f"after disconnect player_count: {self.player_count}")
-
-            # If no players are left, remove the room from Redis
-            if self.player_count <= 0:
-                redis_client.delete(self.room_name)  # Remove room data
-                print(f"Room {self.room_name} deleted from Redis")
+        # Check if room is empty
+        player_count = int(redis_client.hget(self.room_name, "player_count"))
+        if player_count <= 0:
+            # Remove room data from Redis
+            redis_client.delete(self.room_name)
+            # Remove from active rooms set
+            redis_client.srem("active_game_rooms", self.room_name)
+            print(f"Room {self.room_name} removed from active rooms")
         
-        except Exception as e:
-            print(f"Error updating Redis player count: {e}")
-            
-    def on_client_disconnect(room_name, client_id):
-        if room_name in rooms:
-            rooms[room_name].remove(client_id)  # Remove client from room
-            if len(rooms[room_name]) == 0:  # If no clients left
-                del rooms[room_name]  # Remove room to free up name
+        # Leave room group
+        await self.channel_layer.group_discard(
+            self.room_group_name,
+            self.channel_name
+        )
+        print(f"WebSocket disconnected: {self.room_name}")
 
     async def receive(self, text_data):
     
@@ -97,8 +108,7 @@ class GameConsumer(AsyncWebsocketConsumer):
             case 'move_up' | 'move_down':
                 await self.handle_move(data)
             case 'game_over':
-                redis_client.hset(self.room_name, "game_status", "game_over")
-                print("Game over message received.")    
+                await self.handle_gameover(data)
             case _:
                 print(f"Received message of type: {data.get('type')}")
 
@@ -133,12 +143,10 @@ class GameConsumer(AsyncWebsocketConsumer):
             # Check for collision with paddles
                 # Ball hit PlayerL paddle
             if (self.ball.left <= playerL["x"] + PLAYER_W and playerL["y"] <= self.ball.y <= playerL["y"] + PLAYER_H):
-                print("Ball hit PlayerL paddle")
                 self.ball.x = self.ball.x + PLAYER_W
                 await self.handle_collision(self.ball, playerL, False)
                 # Ball hit PlayerR paddle
             elif (self.ball.right >= playerR["x"] and playerR["y"] <= self.ball.y <= playerR["y"] + PLAYER_H):
-                print("Ball hit PlayerR paddle")
                 self.ball.x = self.ball.x - PLAYER_W
                 await self.handle_collision(self.ball, playerR, True)
 
@@ -245,7 +253,17 @@ class GameConsumer(AsyncWebsocketConsumer):
             )
             print(f"waiting for players to confirm")
             
-
+    async def handle_gameover(self, data):
+        """Handles game over state."""
+        
+        # Optionally save any game stats you want to persist
+        redis_client.hset(self.room_name, "game_status", "game_over")
+        redis_client.hset(self.room_name, "winner", data.get("winner"))
+        print(f"Game over! Winner: {data.get('winner')}")
+        print("Game over message received.")
+        await self.disconnect(1000)  # Close the connection with a normal closure status code
+        await self.end_game()
+        
 
 
 ## **************** UTILS Fn **************** ##

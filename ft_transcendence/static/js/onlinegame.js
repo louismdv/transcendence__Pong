@@ -64,7 +64,6 @@ gameSocket.onmessage = function(event) {
 
     switch (data.type) {
         case 'load_player_info':
-            // console.log("Received player_info:", data);
             document.getElementById('username-playerL').textContent = data.playerL_id;
             startSearch();
             if (data.playerR_id) {
@@ -121,7 +120,6 @@ function setupGame(data) {
     ball.point_win = data.ball.point_win;
 }
 function pullPlayerState(player_side, new_y, old_y) {
-    console.log("Received player state:", player_side, new_y, old_y);
     if (players.me.side === player_side) {
         players.me.y = new_y;
         players.me.old_y = old_y;
@@ -221,7 +219,7 @@ function gameLoop() {
         }
         if (players.me.score >= WINNING_SCORE || players.opponent.score >= WINNING_SCORE) {
             gameRunning = false;
-            sendMessage({ type: 'game_over' });
+            sendMessage({ type: 'game_over', winner: winner });
             winnerAnnouce();
             return;
         }
@@ -237,11 +235,7 @@ function gameLoop() {
 
 function setupEventListeners() {
     document.addEventListener('keydown', (event) => {
-        // const now = Date.now();
-        // if (now - lastSentTime > UPDATE_INTERVAL) {
-        //     lastSentTime = now;
-        //     pushMove(event.key);  // Call your WebSocket send function
-        // }
+
         keysPressed[event.code] = true;
         switch (event.code) {
             case 'ArrowUp':
@@ -360,7 +354,7 @@ function winnerAnnouce() {
     ctx.fillRect(0, 0, WIN_W, WIN_H);
     ctx.fillStyle = WHITE;
     ctx.font = `${FONT_SIZE_M}px PixelifySans`;
-    const winner_name = `${winner} wins!`;
+    winner_name = `${winner} wins!`;
     writeToCanvas(`GAME OVER: ${winner_name}`, YELLOW); // Fixed line
 
     requestAnimationFrame(winnerAnnouce);
