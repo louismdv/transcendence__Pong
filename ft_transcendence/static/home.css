@@ -113,10 +113,17 @@ aside:hover .sidebar-links h4 {
     gap: 10px;
     padding: 20px;
 }
-.main-grid > div {
+/* .main-grid > div {
     text-align: center;
     font-size: 30px;
-}
+} */
+ 
+ #main-content, #settings-section{
+    display: grid;
+    grid-template-columns: repeat (4, 1fr);
+    gap: 10px;
+    padding: 20px;
+ }
 .gameMode {
     grid-column: span 4; 
     border-radius: 5px;

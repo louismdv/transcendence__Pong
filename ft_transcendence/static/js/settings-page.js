@@ -234,14 +234,14 @@ document.addEventListener('DOMContentLoaded', function () {
             gameSection.style.display = 'none';
         } else {
             settingsSection.style.display = 'none';
-            gameSection.style.display = 'block';
+            gameSection.style.display = 'grid';
         }
 
         if (settingsBtn) {
             settingsBtn.addEventListener('click', function () {
                 const isOpen = settingsSection.style.display === 'none';
                 settingsSection.style.display = isOpen ? 'block' : 'none';
-                gameSection.style.display = isOpen ? 'none' : 'block';
+                gameSection.style.display = isOpen ? 'none' : 'grid';
                 localStorage.setItem('settingsOpen', isOpen ? 'true' : 'false');
             });
         }
@@ -249,7 +249,7 @@ document.addEventListener('DOMContentLoaded', function () {
         if (homeBtn) {
             homeBtn.addEventListener('click', function () {
                 settingsSection.style.display = 'none';
-                gameSection.style.display = 'block';
+                gameSection.style.display = 'grid';
                 localStorage.setItem('settingsOpen', 'false');
             });
         }
