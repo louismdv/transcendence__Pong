@@ -79,6 +79,7 @@ gameSocket.onmessage = function(event) {
             }
             break;
         case 'room_full':
+        case 'connection_rejected':
             window.location.pathname = '/online-game/lobby/';
             break;
         case 'no_game_to_restore':
