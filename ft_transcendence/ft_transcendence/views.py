@@ -178,16 +178,19 @@ def settingspage(request):
                 'language': request.user.preferences.language,
             }
         }
-        return render(request, 'settingspage.html', {
-            'user_data': user_data,
-            'avatar_max_size': settings.AVATAR_MAX_SIZE,
-            'avatar_allowed_exts': settings.AVATAR_ALLOWED_FILE_EXTS
-        })
+        
+        # Si c'est une requête AJAX pour obtenir les données utilisateur (pour la réinitialisation)
+        if request.headers.get('Accept') == 'application/json':
+            return JsonResponse({'user_data': user_data})
+            
+        # Si c'est une requête GET normale, rediriger vers la page d'accueil
+        # Le JavaScript s'occupera d'afficher la section des paramètres
+        return render(request, 'settings.html')
     except Exception as e:
         print(f"Error in GET request: {str(e)}")
         messages.error(request, f"Erreur lors du chargement des paramètres: {str(e)}")
         return redirect('home')
-
+    
 @login_required(login_url='/login')
 def friendspage(request):
     return render(request, 'friendspage.html')
