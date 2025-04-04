@@ -49,8 +49,8 @@
 }
 
 .left-account-section .user-profile img {
-    width: 50%; /* Ensures the image scales with the container */
-    height: 50%; /* Ensures the image scales with the container */
+    width: 50px; /* Adjust the size of the image */
+    height: 50px; /* Adjust the size of the image */
     border-radius: 50%; /* Ensures the image itself is circular */
 }
 
@@ -363,3 +363,4 @@ body.darkmode {
     font-size: 1.5rem;
   }
 }
+

@@ -96,35 +96,34 @@ document.addEventListener('DOMContentLoaded', function() {
                             });
                         }
                         break;
-                    case 'account':
-                        const newPassword = document.getElementById('new-password').value;
-                        const confirmPassword = document.getElementById('confirm-password').value;
+                        case 'account':
+                            const newPassword = document.getElementById('new-password').value;
+                            const confirmPassword = document.getElementById('confirm-password').value;
+                            
+                            if (newPassword && newPassword !== confirmPassword) {
+                                throw new Error('Les mots de passe ne correspondent pas');
+                            }
                         
-                        if (newPassword && newPassword !== confirmPassword) {
-                            throw new Error('Les mots de passe ne correspondent pas');
-                        }
-
-                        formData.append('action', 'update_account');
-                        formData.append('email', document.getElementById('email').value);
-                        formData.append('current_password', document.getElementById('current-password').value);
-                        formData.append('new_password', newPassword);
-                        data = await sendFormData('/settingspage/', formData);
-                        break;
-
-                    case 'preferences':
-                        formData.append('action', 'update_preferences');
-                        formData.append('time_format', document.getElementById('time-format').value);
-                        formData.append('timezone', document.getElementById('timezone').value);
-                        formData.append('language', document.getElementById('language').value);
-                        data = await sendFormData('/settingspage/', formData);
-                        break;
+                            formData.append('action', 'update_account');
+                            formData.append('email', document.getElementById('email').value);
+                            formData.append('current_password', document.getElementById('current-password').value);
+                            formData.append('new_password', newPassword);
+                            formData.append('confirm_password', confirmPassword);
+                            data = await sendFormData('/settingspage/', formData);
+                        
+                            if (data.status === 'success') {
+                                document.getElementById('current-password').value = '';
+                                document.getElementById('new-password').value = '';
+                                document.getElementById('confirm-password').value = '';
+                            }
+                            break;
                 }
 
                 alert(data.message || 'Paramètres sauvegardés avec succès');
 
             } catch (error) {
                 console.error('Erreur:', error);
-                alert(error.message || 'Une erreur est survenue');
+               alert(error.message || 'Une erreur est survenue'); 
             } finally {
                 saveBtn.innerHTML = originalText;
                 saveBtn.disabled = false;

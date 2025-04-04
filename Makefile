@@ -13,7 +13,6 @@ down:
 	docker-compose down --remove-orphans
 	rm -rf ft_transcendence/ft_transcendence/__pycache__
 	rm -rf staticfiles
-
 logs:
 	docker-compose logs -f
 
@@ -26,7 +25,6 @@ collectstatic:
 reboot:
 	docker system prune -a --volumes
 	
-
 down-server:
 	sudo pkill -f runserver
 
