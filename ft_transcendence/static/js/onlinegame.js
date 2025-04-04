@@ -18,7 +18,7 @@ const BALL_SIZE = 40, BALL_RADIUS = BALL_SIZE / 2;
 const FONT_SIZE_XL = 500, FONT_SIZE_L = 200, FONT_SIZE_M = 50;
 
 // VARIABLES
-let ball, winner, keysPressed = {}, point = 0;
+let ball, keysPressed = {}, point = 0;
 
 document.getElementById('page-title').textContent = "Online Game Mode";
 const canvas = document.getElementById('onlinegameCanvas');
@@ -27,6 +27,7 @@ let loadingAnimation = writeLoadingText(ORANGE);
 
 const players = { me: null, opponent: null };
 let downcounting = false;
+let winner = null;
 
 // ************ WEBSOCKETS ************ //
 
@@ -59,12 +60,14 @@ gameSocket.onmessage = function(event) {
         if (typeof data.game_state.ball === "string") {
             data.game_state.ball = JSON.parse(data.game_state.ball);
         }
+        if (typeof data.game_state === "string") {
+            data.game_state = JSON.parse(data.game_state);
+        }
     }
     // console.log("Received type:", data.type);
 
     switch (data.type) {
         case 'load_player_info':
-            // console.log("Received player_info:", data);
             document.getElementById('username-playerL').textContent = data.playerL_id;
             startSearch();
             if (data.playerR_id) {
@@ -75,7 +78,20 @@ gameSocket.onmessage = function(event) {
                 writeToCanvas("Press space bar when you are ready!", WHITE, WIN_W / 2, WIN_H / 2);
             }
             break;
+        case 'room_full':
+        case 'connection_rejected':
+            window.location.pathname = '/online-game/lobby/';
+            break;
+        case 'no_game_to_restore':
+            console.log("No game to restore.");
+            writeToCanvas("No game to restore. Waiting for challenger...", WHITE, WIN_W / 2, WIN_H / 2);
+            break;
+        case 'restore_game':
+            console.log("CASE Restoring game state:", data.game_state);
+            handle_restore_game(data.game_state);
+            break;
         case 'start_game':
+            clearInterval(loadingAnimation);
             countdown(3, gameLoop);
             break;
         case 'update_player':
@@ -83,7 +99,6 @@ gameSocket.onmessage = function(event) {
             break;
         case 'update_ball':
             pullBallState(data.ball_state);
-            // console.log("Received BALL state:", data.ball_state);
             break;
         default:
             console.log("Unknown message type:", data.type);
@@ -121,7 +136,6 @@ function setupGame(data) {
     ball.point_win = data.ball.point_win;
 }
 function pullPlayerState(player_side, new_y, old_y) {
-    console.log("Received player state:", player_side, new_y, old_y);
     if (players.me.side === player_side) {
         players.me.y = new_y;
         players.me.old_y = old_y;
@@ -142,6 +156,14 @@ function pullBallState(ball_state) {
     ball.xFac = ball_state.xFac;   
     ball.yFac = ball_state.yFac;
     ball.point_win = ball_state.point_win;
+    if (players.me.side === 'playerL') {
+        players.me.score = ball_state.playerL_points;
+        players.opponent.score = ball_state.playerR_points;
+    }
+    else {
+        players.opponent.score = ball_state.playerL_points;
+        players.me.score = ball_state.playerR_points;
+    }
 }
 function pushMove(type) {
     if (gameSocket.readyState === WebSocket.OPEN) {
@@ -151,7 +173,44 @@ function pushMove(type) {
         });
     }
 };
+function handle_restore_game(gameState) {
 
+    console.log("Restoring game state:", gameState);    
+
+    if (clientName === gameState.playerL.id) {
+        console.log("RESTORED playerL");
+        players.me = new Player(gameState.playerL.x, gameState.playerL.y, 'orange', clientName, 'playerL');
+        players.opponent = new Player(gameState.playerR.x, gameState.playerR.y, 'red', gameState.playerR.id, 'playerR');
+    }
+    else if (clientName === gameState.playerR.id) {
+        console.log("RESTORED playerR");
+        players.me = new Player(gameState.playerR.x, gameState.playerR.y, 'red', gameState.playerR.id, 'playerR');
+        players.opponent = new Player(gameState.playerL.x, gameState.playerL.y, 'orange', clientName, 'playerL');
+    }
+
+    // Restore the ball properties
+    if (gameState.ball) {
+        console.log("RESTORED ball");
+        ball = new Ball(WIN_W / 2, WIN_H / 2, 'blue');
+        ball.x = gameState.ball.x;
+        ball.y = gameState.ball.y;
+        ball.speed = gameState.ball.speed;
+        ball.xFac = gameState.ball.xFac;
+        ball.yFac = gameState.ball.yFac;
+        ball.point_win = gameState.ball.point_win;
+
+        if (players.me.side === 'playerL') {
+            players.me.score = gameState.ball.playerL_points
+            players.opponent.score = gameState.ball.playerR_points;
+        }
+        else if (players.me.side === 'playerR') {
+            players.opponent.score = gameState.ball.playerL_points;
+            players.me.score = gameState.ball.playerR_points;
+        }
+    }
+    sendMessage({ type: 'ready', player_side: players.me.side });
+    console.log("Game state restored successfully: ", players.me, players.opponent, ball);
+}
 
 // ************ OBJECT CLASSES ************ //
 
@@ -185,7 +244,6 @@ class Ball {
         this.speed = 5;
         this.radius = BALL_RADIUS;
         this.hitCount = 0;
-        this.point_win = null;
     }
     draw() {
         ctx.beginPath();
@@ -208,20 +266,13 @@ function gameLoop() {
         if (!gameRunning || downcounting) {
             return;
         }
-        // check missed balls for scoring
-        if (ball.point_win) {
-            if (ball.point_win == players.me.side) {
-                players.me.score += 1;
-                winner = players.me.id;
-            } else {
-                players.opponent.score += 1;
-                winner = players.opponent.id;
-            }
-            ball.point_win = null;
-        }
-        if (players.me.score >= WINNING_SCORE || players.opponent.score >= WINNING_SCORE) {
+        if (players.me.score >= WINNING_SCORE)
+            winner = players.me.id;
+        else if (players.opponent.score >= WINNING_SCORE)
+            winner = players.opponent.id;
+        if (winner) {
             gameRunning = false;
-            sendMessage({ type: 'game_over' });
+            sendMessage({ type: 'game_over', winner: winner });
             winnerAnnouce();
             return;
         }
@@ -237,11 +288,7 @@ function gameLoop() {
 
 function setupEventListeners() {
     document.addEventListener('keydown', (event) => {
-        // const now = Date.now();
-        // if (now - lastSentTime > UPDATE_INTERVAL) {
-        //     lastSentTime = now;
-        //     pushMove(event.key);  // Call your WebSocket send function
-        // }
+
         keysPressed[event.code] = true;
         switch (event.code) {
             case 'ArrowUp':
@@ -360,7 +407,7 @@ function winnerAnnouce() {
     ctx.fillRect(0, 0, WIN_W, WIN_H);
     ctx.fillStyle = WHITE;
     ctx.font = `${FONT_SIZE_M}px PixelifySans`;
-    const winner_name = `${winner} wins!`;
+    winner_name = `${winner} wins!`;
     writeToCanvas(`GAME OVER: ${winner_name}`, YELLOW); // Fixed line
 
     requestAnimationFrame(winnerAnnouce);
@@ -395,3 +442,5 @@ function countdown(start, callback) {
         setTimeout(callback, 1000); // Start the game after "Go!" is displayed
     }
 }
+
+
