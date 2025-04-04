@@ -16,7 +16,7 @@ class Ball:
         self.y = y
         self.xFac = -1 if random.random() < 0.5 else 1
         self.yFac = random.random() * 2 - 1
-        self.speed = 5
+        self.speed = 8
         self.radius = BALL_RADIUS
         self.width = self.radius * 2  # Diameter of the ball
         self.height = self.radius * 2  # Diameter of the ball
@@ -26,8 +26,10 @@ class Ball:
         self.bottom = self.y + self.radius
         self.randAngle = 0
         self.deceleration = 0.998 #deceleration factor
-        self.minSpeed = 5
-        self.point_win = None
+        self.minSpeed = 7
+        self.playerL_points = 0
+        self.playerR_points = 0
+        self.point_win = False
         
     async def update(self):
         # Apply deceleration
@@ -49,19 +51,20 @@ class Ball:
         
         # check ball colision with right/left sides
         if self.right >= WIN_W:
-            self.point_win = "playerL"
+            self.playerL_points += 1
+            self.point_win = True
             print("point_win", self.point_win)
         elif self.left <= 0:
-            self.point_win = "playerR"
+            self.playerR_points += 1
+            self.point_win = True
             print("point_win", self.point_win)
-        return 0
+
 
     def hit(self):
         self.xFac *= -1
         tanAngle = math.tan(self.randAngle * math.pi / 180) * self.xFac
         self.yFac = tanAngle # Update yFac based on the angle
         self.speed = 8 * (1 + random.random() * 0.5)
-        print("HIT")
         
     async def reset(self):
         self.x = WIN_W / 2
@@ -86,6 +89,8 @@ class Ball:
             "xFac": self.xFac,
             "yFac": self.yFac,
             "point_win": self.point_win,
+            "playerL_points": self.playerL_points,
+            "playerR_points": self.playerR_points,
         }
 
     @classmethod

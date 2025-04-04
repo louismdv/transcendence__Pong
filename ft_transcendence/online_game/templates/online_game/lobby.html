@@ -19,18 +19,49 @@
         {% endif %}
     </div>
 
-    <script>
-        document.querySelector('#room-name-input').focus();
-        document.querySelector('#room-name-input').onkeyup = function(e) {
-            if (e.key === 'Enter') {  // enter, return
-                document.querySelector('#room-name-submit').click();
-            }
-        };
+<script>
+    const inputField = document.querySelector('#room-name-input');
+    const submitButton = document.querySelector('#room-name-submit');
 
-        document.querySelector('#room-name-submit').onclick = function(e) {
-            var roomName = document.querySelector('#room-name-input').value;
-            window.location.pathname = '/online-game/' + roomName + '/';
-        };
-    </script>
+    // Focus on input field
+    inputField.focus();
+
+    // Trigger submit on Enter key
+    inputField.onkeyup = function(e) {
+        if (e.key === 'Enter') {  
+            submitButton.click();
+        }
+    };
+
+    // Trigger submit when user pastes content
+    inputField.addEventListener('paste', function() {
+        setTimeout(() => submitButton.click(), 0); // Ensures pasted text is captured
+    });
+
+    function validateRoomName(roomName) {
+    // Regular expression that only allows alphanumeric characters
+    const validPattern = /^[a-zA-Z0-9]+$/;
+    
+    if (!roomName) {
+        alert("Room Name Error: Room name cannot be empty");
+        return false;
+    }
+    
+    if (!validPattern.test(roomName)) {
+        alert("Invalid Format: Room name can only contain letters and numbers (no spaces or special characters)");
+        return false;
+    }
+    
+    return true;
+    }
+
+    submitButton.onclick = function() {
+    const roomName = inputField.value.trim();
+    
+    if (validateRoomName(roomName)) {
+        window.location.pathname = '/online-game/' + roomName + '/';
+    }
+    };
+</script>
 
 {% endblock game-section %}

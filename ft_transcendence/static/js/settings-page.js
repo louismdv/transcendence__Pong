@@ -130,7 +130,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 showNotification("Paramètres sauvegardés avec succès");
             } catch (error) {
                 console.error('Erreur:', error);
-                alert(error.message || 'Une erreur est survenue');
+               alert(error.message || 'Une erreur est survenue'); 
             } finally {
                 saveBtn.innerHTML = originalText;
                 saveBtn.disabled = false;

@@ -8,35 +8,43 @@
 {% block game-section %}
 
     <div id="gameWrapper">
-        
+            
         <div id="room-info">
-            Room Code:
-            <span id="roomCode">
-                {{ room_name }}
-                <span id="copy-icon" class="material-symbols-outlined">content_copy</span>
-            </span>
+            Room Code :
+            <div id="roomCode-container" onclick="copyRoomCode()">
+                <input id="roomCode" value="{{ room_name }}" readonly>
+                <div id="tooltip-container"  >
+                    <span class="material-symbols-outlined">content_copy</span>
+                    <span id="tooltip-text">Copy room code</span>
+                </div>
+            </div>
         </div>
         
         <div id="game-header">
             <div id="playerL">
-                <img src="/media/avatars/default.png" alt="profilepic_player1" class="user-avatar">
+                <img src="/media/avatars/ficello-dance.gif" alt="profilepic_player1" class="user-avatar">
                 <span id="username-playerL">You:</span> 
             </div>
             vs.
             <div id="playerR">
                 <div class="avatar-container">
-                    <img src="/media/avatars/default.png" alt="profilepic_player2" class="user-avatar">
+                    <img src="/media/avatars/pp.jpg" alt="profilepic_player2" class="user-avatar">
                     <span class="loader"></span>
                 </div>
-                <span id="username-playerR">Opponent:</span> 
+                <span id="username-playerR">loading</span> 
             </div>
         </div>
         <canvas id="onlinegameCanvas" class="gamebox" width="1080" height="720"></canvas>
         
         
         <div id="instructions">
-            Use ↑ and ↓ arrow keys to move your paddle
-            <button id="muteButton" class="material-symbols-outlined">volume_off</button>
+            Use 
+            <span id="arrowBox">
+                <span class="material-symbols-outlined">arrow_drop_up</span>
+            </span>
+            and <span id="arrowBox">
+                <span class="material-symbols-outlined">arrow_drop_down</span>
+            </span> arrow keys to move your paddle
         </div>
 
         <script>

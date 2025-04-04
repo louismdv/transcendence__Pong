@@ -3,17 +3,16 @@ build:
 	
 
 up:
-	docker-compose up -d
+	docker-compose up -d --remove-orphans
 	mkdir -p ft_transcendence/ft_transcendence/migrations
 	touch ft_transcendence/ft_transcendence/migrations/__init__.py
 	docker-compose run web python ft_transcendence/manage.py makemigrations ft_transcendence
 	docker-compose run web python ft_transcendence/manage.py migrate --noinput
 
 down:
-	docker-compose down
+	docker-compose down --remove-orphans
 	rm -rf ft_transcendence/ft_transcendence/__pycache__
 	rm -rf staticfiles
-
 logs:
 	docker-compose logs -f
 
@@ -26,7 +25,6 @@ collectstatic:
 reboot:
 	docker system prune -a --volumes
 	
-
 down-server:
 	sudo pkill -f runserver
 
