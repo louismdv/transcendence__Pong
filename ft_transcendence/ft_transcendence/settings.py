@@ -20,6 +20,9 @@ DEBUG = True
 ALLOWED_HOSTS = ['*']
 
 INSTALLED_APPS = [
+    'channels',
+    'channels_redis',
+    'online_game',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -58,7 +61,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'allauth.account.middleware.AccountMiddleware',  # Ajoutez cette ligne
+    'allauth.account.middleware.AccountMiddleware',
 ]
 
 ROOT_URLCONF = 'ft_transcendence.urls'
@@ -130,6 +133,7 @@ STATIC_ROOT = os.path.join(BASE_DIR.parent, 'staticfiles')
 WHITENOISE_MIDDLEWARE = ['whitenoise.middleware.WhiteNoiseMiddleware']
 MIDDLEWARE = WHITENOISE_MIDDLEWARE + MIDDLEWARE
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
@@ -138,3 +142,12 @@ FILE_UPLOAD_MAX_MEMORY_SIZE = 5242880
 
 AVATAR_MAX_SIZE = 2 * 1024 * 1024  # 2MB
 AVATAR_ALLOWED_FILE_EXTS = ('.jpg', '.jpeg', '.png', '.gif')
+
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels_redis.core.RedisChannelLayer',
+        'CONFIG': {
+            "hosts": [os.environ.get('REDIS_URL', 'redis://redis:6379/0')],
+        },
+    },
+}

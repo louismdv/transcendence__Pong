@@ -13,5 +13,7 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Exposer le port sur lequel Django va tourner
 EXPOSE 8000
 
-# Lancer le serveur ASGI avec uvicorn
-CMD ["sh", "-c", "python manage.py migrate && uvicorn ft_transcendence.asgi:application --host 0.0.0.0 --port 8000"]
+ENV PYTHONUNBUFFERED=1
+
+# Lancer le serveur ASGI avec daphne
+CMD ["sh", "-c", "python manage.py migrate && daphne -p 8000 -b 0.0.0.0 ft_transcendence.asgi:application"]

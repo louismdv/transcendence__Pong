@@ -1,11 +1,9 @@
 
-const canvas = document.getElementById('gameCanvas');
+document.getElementById('page-title').textContent = "Local Game Mode";
+const canvas = document.getElementById('localgameCanvas');
 const ctx = canvas.getContext('2d');
 
 let msPrev = window.performance.now();
-const hitSoundL = document.getElementById('hitSoundL');
-const hitSoundR = document.getElementById('hitSoundR');
-const muteButton = document.getElementById('muteButton');
 
 // CONSTANTS
     // COLORS
@@ -183,13 +181,13 @@ function toggleMute() {
     isMuted = !isMuted;
     hitSoundL.muted = !hitSoundL.muted;
     hitSoundR.muted = !hitSoundR.muted;
-    muteButton.textContent = isMuted ? 'Unmute 🔉' : 'Mute 🔇';
+    muteButton.textContent = isMuted ? "volume_mute" : "volume_off";
 }
 
 function drawScores() {
 
     ctx.fillStyle = WHITE;
-    ctx.font = `${FONT_SIZE_M}px PixelifySans`;
+    ctx.font = `${FONT_SIZE_M}px 'Pixelify Sans', sans-serif`;
     ctx.fillText(playerL.score, WIN_W / 4, WIN_H / 2);
     ctx.fillText(playerR.score, WIN_W / 4 * 3, WIN_H / 2);
 }
@@ -210,7 +208,7 @@ function pregameLoop() {
     ctx.fillStyle = GREY;
     ctx.fillRect(0, 0, WIN_W, WIN_H);
     ctx.fillStyle = WHITE;
-    ctx.font = `${FONT_SIZE_M}px PixelifySans`;
+    ctx.font = `${FONT_SIZE_M}px 'Pixelify Sans', sans-serif`;
     const text = "Press space bar to start!";
     const textWidth = ctx.measureText(text).width;
     ctx.fillText(text,  (WIN_W - textWidth) / 2, WIN_H / 2);
