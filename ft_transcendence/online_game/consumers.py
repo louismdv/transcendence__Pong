@@ -50,6 +50,7 @@ class GameConsumer(AsyncWebsocketConsumer):
 
         playerL_id = await self.get_value_from_player("playerL", "id")
         playerR_id = await self.get_value_from_player("playerR", "id")
+        game_state = redis_client.hgetall(self.room_name)
         # Check if room is empty
         if playerL_id == self.id or playerR_id == self.id:
             redis_client.hincrby(self.room_name, "player_count", -1)
@@ -59,6 +60,10 @@ class GameConsumer(AsyncWebsocketConsumer):
         
         if self.player_count <= 0:
             # Remove room data from Redis
+            
+            # add data to postgres db
+            print(game_state)
+
             redis_client.delete(self.room_name)
             # Remove from active rooms set
             redis_client.srem("active_game_rooms", self.room_name)
@@ -349,7 +354,6 @@ class GameConsumer(AsyncWebsocketConsumer):
                 "x": MARGIN,
                 "y": WIN_H / 2 - PLAYER_H / 2,
                 "old_y": None,
-                "score": 0,
                 "confirmed_ready": False
             }))
         elif (player_key == "playerR"):
@@ -359,7 +363,6 @@ class GameConsumer(AsyncWebsocketConsumer):
                 "x": WIN_W - MARGIN - PLAYER_W,
                 "y": WIN_H / 2 - PLAYER_H / 2,
                 "old_y": None,
-                "score": 0,
                 "confirmed_ready": False
             }))
         print(f"{player_key} stored in Redis:", redis_client.hget(self.room_name, player_key))
