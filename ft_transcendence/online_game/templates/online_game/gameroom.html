@@ -22,13 +22,13 @@
         
         <div id="game-header">
             <div id="playerL">
-                <img src="/media/avatars/ficello-dance.gif" alt="profilepic_player1" class="user-avatar">
+                <img src="{{ user.userprofile.avatar.url|default:'../media/avatars/default.png' }}" alt="profilepic_player1" class="user-avatar">
                 <span id="username-playerL">You:</span> 
             </div>
             vs.
             <div id="playerR">
                 <div class="avatar-container">
-                    <img src="/media/avatars/pp.jpg" alt="profilepic_player2" class="user-avatar">
+                    <img src="{{'../media/avatars/default.png' }}" alt="profilepic_player2" class="user-avatar">
                     <span class="loader"></span>
                 </div>
                 <span id="username-playerR">loading</span> 
