@@ -78,6 +78,14 @@ gameSocket.onmessage = function(event) {
                 writeToCanvas("Press space bar when you are ready!", WHITE, WIN_W / 2, WIN_H / 2);
             }
             break;
+        case 'load_player_avatar':
+            if (data.playerL_picture) {
+                document.getElementById("playerL_picture").src = `data:image/jpeg;base64,${data.playerL_picture}`;
+            }
+            if (data.playerR_picture) {
+                document.getElementById("playerR_picture").src = `data:image/jpeg;base64,${data.playerR_picture}`;
+            }
+            break;
         case 'room_full':
         case 'connection_rejected':
             window.location.pathname = '/online-game/lobby/';

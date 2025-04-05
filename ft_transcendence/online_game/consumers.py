@@ -4,7 +4,16 @@ import random
 import asyncio
 import time
 
+import base64
+from io import BytesIO
+from django.core.files.base import ContentFile
+from django.core.exceptions import ObjectDoesNotExist
+from django.db import connection
+from django.conf import settings
+
 from asgiref.sync import sync_to_async
+import os
+
 from channels.generic.websocket import AsyncWebsocketConsumer
 from .game import Ball, WIN_W, WIN_H, PLAYER_W, PLAYER_H, MARGIN
 
@@ -211,52 +220,16 @@ class GameConsumer(AsyncWebsocketConsumer):
             'playerR_id': right_id,
             'ball': ball,
         }))
-    
-
-    # # initiate players in redis and clients
-    # async def handle_initial_message(self, data):
-    #     self.id = data.get('username')
-    #     print("[handle_inital_message] entered fn")
-
-    #     game_status = redis_client.hget(self.room_name, "game_status")
-    #     interrupted_game_state = redis_client.hget(self.room_name, "interrupted_game_state")
-    #     playerL_id = await self.get_value_from_player("playerL", "id")
-    #     playerR_id = await self.get_value_from_player("playerR", "id")
-    #     print(f"playerL_id: {playerL_id}, playerR_id: {playerR_id}")
-    #     print(f"interrupted_game_state: {interrupted_game_state}")
-    #     print(f"game_status: {game_status}")
-    #     if self.player_count >= 2 or (game_status == "pause" and self.id != playerL_id and self.id != playerR_id and interrupted_game_state is not None):
-    #         print("ENTERED")
-    #         # Send an alert message to the third player
-    #         await self.send(text_data=json.dumps({
-    #             "type": "room_full",
-    #             "message": "Game is full! This room already has 2 players."
-    #         }))
-    #         self.disconnect(1000)  # Close the connection with a normal closure status code
-    #         await self.close()  # Close the connection with a normal closure status code
-    #         print("Connection refused: Maximum number of players reached.")
-    #         return
-                
-    #     print(f"Player {self.id} connected to room {self.room_name}")
-    #     # Increment player count
-    #     redis_client.hincrby(self.room_name, "player_count", 1)
-    #     self.player_count = int(redis_client.hget(self.room_name, "player_count"))
-    #     print(f"Updated player_count: {self.player_count}")
-
-    #     # Join room group
-    #     await self.channel_layer.group_add(
-    #         self.room_group_name,
-    #         self.channel_name
-    #     )
+    async def load_player_avatar(self, event):
+        playerL_picture_base64 = event['playerL_picture']
+        playerR_picture_base64 = event['playerR_picture']
         
-    #     # Check if the player is reconnecting
-    #     if await self.restore_game_state():
-    #         print(f"Player {self.id} is reconnecting.")
-    #     else:
-    #         # update redis players dict with player id
-    #         await self.create_redis_players()
-            
-
+        await self.send(text_data=json.dumps({
+            'type': 'load_player_avatar',
+            'playerL_picture': playerL_picture_base64,
+            'playerR_picture': playerR_picture_base64,
+        }))
+    
     async def handle_initial_message(self, data):
         self.id = data.get('username')
         print(f"[handle_initial_message] Player {self.id} attempting to connect to room {self.room_name}")
@@ -528,6 +501,7 @@ class GameConsumer(AsyncWebsocketConsumer):
             return True
         return False
 
+
     async def create_redis_players(self):
         """Creates player objects in Redis."""
 
@@ -537,6 +511,7 @@ class GameConsumer(AsyncWebsocketConsumer):
             await self.send(text_data=json.dumps({'type': 'load_player_info', 'playerL_id' : self.id}))
         elif self.player_count == 2:
             await self.create_redis_player("playerR"),
+            await self.send_profile_picture(await self.get_value_from_player("playerL", "id"), self.id)
             
             # create a ball obj instance and save to redis
             self.ball = Ball(WIN_W / 2, WIN_H / 2)
@@ -556,4 +531,51 @@ class GameConsumer(AsyncWebsocketConsumer):
                 }
             )
             print(f"waiting for players to confirm")
-            
+
+
+    # profile pictures
+    def encode_image_to_base64(self, image_path):
+        """Convert an image file to a base64-encoded string."""
+        try:
+            with open(image_path, "rb") as image_file:
+                encoded_image = base64.b64encode(image_file.read()).decode('utf-8')
+                return encoded_image
+        except FileNotFoundError:
+            return None
+
+    def get_profile_picture_by_username(self, username):
+        """Fetch the profile picture of the user from PostgreSQL using their username."""
+        with connection.cursor() as cursor:
+            # Use raw SQL to fetch the profile picture URL or binary data using the username
+            cursor.execute("SELECT avatar FROM view_merged_authuser_userprofile WHERE username = %s", [username])
+            row = cursor.fetchone()
+            if row:
+                return row[0]  # row[0] will contain the file path or URL to the profile picture
+        return None
+
+    # Wrap the synchronous function call in sync_to_async
+    async def send_profile_picture(self, playerL, playerR):
+        """Send both players' profile pictures (base64 encoded) through WebSocket."""
+        # Use sync_to_async to run the synchronous database query in a separate thread
+        playerL_picture_path = await sync_to_async(self.get_profile_picture_by_username)(playerL)
+        playerR_picture_path = await sync_to_async(self.get_profile_picture_by_username)(playerR)
+
+        if playerL_picture_path and playerR_picture_path:
+            # Combine the file path with the MEDIA_URL to get the full image path
+            playerL_picture_full_path = os.path.join(settings.MEDIA_ROOT, playerL_picture_path)
+            playerR_picture_full_path = os.path.join(settings.MEDIA_ROOT, playerR_picture_path)
+
+            # Convert image files to base64
+            playerL_picture_base64 = self.encode_image_to_base64(playerL_picture_full_path)
+            playerR_picture_base64 = self.encode_image_to_base64(playerR_picture_full_path)
+
+            if playerL_picture_base64 and playerR_picture_base64:
+                await self.channel_layer.group_send(
+                    self.room_group_name,
+                    {
+                        'type': 'load.player.avatar',
+                        'playerL_picture': playerL_picture_base64,
+                        'playerR_picture': playerR_picture_base64,
+                    }
+                )
+
