@@ -222,36 +222,110 @@ document.addEventListener('DOMContentLoaded', function () {
     // Gestion de l'affichage de la section paramètres vs. le contenu principal
     // -------------------------------
     // Consolidation d'un écouteur unique pour la navigation entre sections
-    (function () {
-        let settingsSection = document.getElementById('settings-section');
-        let settingsBtn = document.getElementById('settings-btn');
-        let gameSection = document.querySelector('.main-grid');
-        let homeBtn = document.getElementById('home-btn'); // Assure-toi que ce bouton existe dans ton HTML
+//     (function () {
+//         let settingsSection = document.getElementById('settings-section');
+//         let settingsBtn = document.getElementById('settings-btn');
+//         let gameSection = document.querySelector('.main-grid');
+//         let homeBtn = document.getElementById('home-btn'); // Assure-toi que ce bouton existe dans ton HTML
 
-        // Initialisation selon l'état sauvegardé dans localStorage
-        if (localStorage.getItem('settingsOpen') === 'true') {
-            settingsSection.style.display = 'block';
-            gameSection.style.display = 'none';
-        } else {
-            settingsSection.style.display = 'none';
-            gameSection.style.display = 'grid';
-        }
+//         // Initialisation selon l'état sauvegardé dans localStorage
+//         if (localStorage.getItem('settingsOpen') === 'true') {
+//             settingsSection.style.display = 'block';
+//             gameSection.style.display = 'none';
+//         } else {
+//             settingsSection.style.display = 'none';
+//             gameSection.style.display = 'grid';
+//         }
 
-        if (settingsBtn) {
-            settingsBtn.addEventListener('click', function () {
-                const isOpen = settingsSection.style.display === 'none';
-                settingsSection.style.display = isOpen ? 'block' : 'none';
-                gameSection.style.display = isOpen ? 'none' : 'grid';
-                localStorage.setItem('settingsOpen', isOpen ? 'true' : 'false');
-            });
-        }
+//         if (settingsBtn) {
+//             settingsBtn.addEventListener('click', function () {
+//                 const isOpen = settingsSection.style.display === 'none';
+//                 settingsSection.style.display = isOpen ? 'block' : 'none';
+//                 gameSection.style.display = isOpen ? 'none' : 'grid';
+//                 localStorage.setItem('settingsOpen', isOpen ? 'true' : 'false');
+//             });
+//         }
 
-        if (homeBtn) {
-            homeBtn.addEventListener('click', function () {
-                settingsSection.style.display = 'none';
-                gameSection.style.display = 'grid';
-                localStorage.setItem('settingsOpen', 'false');
-            });
-        }
-    })();
-});
+//         if (homeBtn) {
+//             homeBtn.addEventListener('click', function () {
+//                 settingsSection.style.display = 'none';
+//                 gameSection.style.display = 'grid';
+//                 localStorage.setItem('settingsOpen', 'false');
+//             });
+//         }
+//     })();
+// });
+
+// // Fonction pour afficher le tournoi
+// // Fonction pour afficher le tournoi
+// function showTournament() {
+//     const gameSection = document.querySelector('.main-grid');
+//     const settingsSection = document.getElementById('settings-section');
+//     const tournamentSection = document.getElementById('tournament-section');
+//     const pageTitle = document.getElementById('page-title');
+    
+//     gameSection.style.display = 'none';
+//     settingsSection.style.display = 'none';
+//     tournamentSection.style.display = 'block';
+//     pageTitle.textContent = 'Tournoi';
+//     history.pushState({page: 'tournament'}, 'Tournoi', '/tournament/');
+//   }
+  
+//   // Fonction pour afficher la page d'accueil
+//   function showHome() {
+//     const gameSection = document.querySelector('.main-grid');
+//     const settingsSection = document.getElementById('settings-section');
+//     const tournamentSection = document.getElementById('tournament-section');
+//     const pageTitle = document.getElementById('page-title');
+    
+//     gameSection.style.display = 'grid';
+//     settingsSection.style.display = 'none';
+//     tournamentSection.style.display = 'none';
+//     pageTitle.textContent = 'Home';
+//     history.pushState({page: 'home'}, 'Home', '/');
+//   }
+  
+//   // Fonction pour afficher les paramètres
+//   function showSettings() {
+//     const gameSection = document.querySelector('.main-grid');
+//     const settingsSection = document.getElementById('settings-section');
+//     const tournamentSection = document.getElementById('tournament-section');
+//     const pageTitle = document.getElementById('page-title');
+    
+//     gameSection.style.display = 'none';
+//     settingsSection.style.display = 'block';
+//     tournamentSection.style.display = 'none';
+//     pageTitle.textContent = 'Paramètres';
+//     history.pushState({page: 'settings'}, 'Paramètres', '/settingspage/');
+//   }
+  
+//   // Ouvrir le tournoi
+//   const openTournamentLink = document.getElementById("openTournamentLink");
+//   if (openTournamentLink) {
+//     openTournamentLink.addEventListener("click", function(event) {
+//       event.preventDefault();
+//       showTournament();
+//     });
+//   }
+  
+//   // Mettre à jour la gestion du bouton retour
+//   window.addEventListener('popstate', function(event) {
+//     if (event.state && event.state.page === 'settings') {
+//       showSettings();
+//     } else if (event.state && event.state.page === 'tournament') {
+//       showTournament();
+//     } else {
+//       showHome();
+//     }
+//   });
+  
+//   // Mettre à jour l'initialisation de l'état de l'historique
+//   if (window.location.pathname === '/settingspage/') {
+//     showSettings();
+//     history.replaceState({page: 'settings'}, 'Paramètres', '/settingspage/');
+//   } else if (window.location.pathname === '/tournament/') {
+//     showTournament();
+//     history.replaceState({page: 'tournament'}, 'Tournoi', '/tournament/');
+//   } else {
+//     history.replaceState({page: 'home'}, 'Home', window.location.pathname);
+//   }

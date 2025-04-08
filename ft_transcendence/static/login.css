@@ -7,6 +7,15 @@
     background-color: var(--background-color);
 }
 
+
+.login-content form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px; 
+    width: 100%;
+    margin-top: 70px;
+}
+
 .login-header {
     display: flex;
     align-items: center;
