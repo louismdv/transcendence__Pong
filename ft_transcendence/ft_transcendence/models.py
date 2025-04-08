@@ -116,3 +116,18 @@ def save_user_profile_and_preferences(sender, instance, **kwargs):
             instance.preferences.save()
     except Exception as e:
         print(f"Error saving UserPreferences: {e}")
+
+class Friendship(models.Model):
+    sender = models.ForeignKey(User, related_name='friendship_requests_sent', on_delete=models.CASCADE)
+    receiver = models.ForeignKey(User, related_name='friendship_requests_received', on_delete=models.CASCADE)
+    status = models.CharField(max_length=20, choices=[
+        ('pending', 'Pending'),
+        ('accepted', 'Accepted'),
+        ('rejected', 'Rejected'),
+        ('blocked', 'Blocked')
+    ])
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        unique_together = ['sender', 'receiver']
