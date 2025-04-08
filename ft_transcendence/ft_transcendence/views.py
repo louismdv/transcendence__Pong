@@ -155,8 +155,9 @@ def register(request):
         form = UserCreationForm(request.POST)
         if form.is_valid():
             user = form.save()
-            login(request, user)
-            return redirect('home')
+            login(request, user, backend='django.contrib.auth.backends.ModelBackend')
+            messages.success(request, 'Inscription réussie')
+            return redirect('login')
         else:
             for field, errors in form.errors.items():
                 for error in errors:
