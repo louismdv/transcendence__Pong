@@ -1,0 +1,190 @@
+<div id="tournamentpage">
+    <div class="gameMode">
+        <h3>Tournament Mode</h3>
+    </div>
+    
+    <div class="tournament-container">
+        <!-- Informations du tournoi -->
+        <div class="tournament-info">
+            <div class="card">
+                <div class="tournament-status-container">
+                    <h4>Tournament Status</h4>
+                    <p id="tournament-status-text">Waiting for players...</p>
+                    
+                    <div class="players-container">
+                        <h5>Players (<span id="player-count">0</span>/4)</h5>
+                        <div id="players-list" class="players-list">
+                            <div class="player-slot empty">
+                                <span class="material-symbols-outlined">person</span>
+                                <span class="player-name">Waiting...</span>
+                            </div>
+                            <div class="player-slot empty">
+                                <span class="material-symbols-outlined">person</span>
+                                <span class="player-name">Waiting...</span>
+                            </div>
+                            <div class="player-slot empty">
+                                <span class="material-symbols-outlined">person</span>
+                                <span class="player-name">Waiting...</span>
+                            </div>
+                            <div class="player-slot empty">
+                                <span class="material-symbols-outlined">person</span>
+                                <span class="player-name">Waiting...</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="tournament-actions">
+                        <button id="join-tournament-btn" class="glow-on-hover">
+                            Join Tournament
+                            <span class="material-symbols-outlined">login</span>
+                        </button>
+                        <button id="leave-tournament-btn" class="glow-on-hover danger" style="display: none;">
+                            Leave Tournament
+                            <span class="material-symbols-outlined">logout</span>
+                        </button>
+                        <button id="ready-btn" class="glow-on-hover success" style="display: none;">
+                            Ready
+                            <span class="material-symbols-outlined">check_circle</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Bracket du tournoi -->
+        <div class="tournament-bracket-container">
+            <div class="card">
+                <div class="bracket-content">
+                    <div class="tournament-bracket">
+                        <div class="bracket-section">
+                            <h5 class="round-title">First Round</h5>
+                            <div class="match-container" id="match-a">
+                                <div class="match-header">Match A</div>
+                                <div class="match-players">
+                                    <div class="match-player">
+                                        <span class="player-name">Waiting...</span>
+                                        <span class="player-score">0</span>
+                                    </div>
+                                    <div class="match-vs">VS</div>
+                                    <div class="match-player">
+                                        <span class="player-name">Waiting...</span>
+                                        <span class="player-score">0</span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="match-container" id="match-b">
+                                <div class="match-header">Match B</div>
+                                <div class="match-players">
+                                    <div class="match-player">
+                                        <span class="player-name">Waiting...</span>
+                                        <span class="player-score">0</span>
+                                    </div>
+                                    <div class="match-vs">VS</div>
+                                    <div class="match-player">
+                                        <span class="player-name">Waiting...</span>
+                                        <span class="player-score">0</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="bracket-section">
+                            <div class="bracket-split">
+                                <h5 class="round-title">3rd Place Match</h5>
+                                <div class="match-container" id="match-losers">
+                                    <div class="match-header">Losers Match</div>
+                                    <div class="match-players">
+                                        <div class="match-player">
+                                            <span class="player-name">Loser A</span>
+                                            <span class="player-score">0</span>
+                                        </div>
+                                        <div class="match-vs">VS</div>
+                                        <div class="match-player">
+                                            <span class="player-name">Loser B</span>
+                                            <span class="player-score">0</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="bracket-split">
+                                <h5 class="round-title">Final</h5>
+                                <div class="match-container" id="match-final">
+                                    <div class="match-header">Championship</div>
+                                    <div class="match-players">
+                                        <div class="match-player">
+                                            <span class="player-name">Winner A</span>
+                                            <span class="player-score">0</span>
+                                        </div>
+                                        <div class="match-vs">VS</div>
+                                        <div class="match-player">
+                                            <span class="player-name">Winner B</span>
+                                            <span class="player-score">0</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Résultats du tournoi -->
+        <div class="tournament-results" style="display: none;">
+            <div class="card">
+                <div class="centeredTextonImage">
+                    <span class="pixel-text">results</span>
+                </div>
+                <div class="results-content">
+                    <h4>Tournament Results</h4>
+                    
+                    <div class="results-podium">
+                        <div class="podium-place second-place">
+                            <div class="podium-player">
+                                <span class="material-symbols-outlined">emoji_events</span>
+                                <span id="second-place" class="podium-name">-</span>
+                            </div>
+                            <div class="podium-position">2nd</div>
+                            <div class="podium-block"></div>
+                        </div>
+                        
+                        <div class="podium-place first-place">
+                            <div class="podium-player">
+                                <span class="material-symbols-outlined">emoji_events</span>
+                                <span id="first-place" class="podium-name">-</span>
+                            </div>
+                            <div class="podium-position">1st</div>
+                            <div class="podium-block"></div>
+                        </div>
+                        
+                        <div class="podium-place third-place">
+                            <div class="podium-player">
+                                <span class="material-symbols-outlined">emoji_events</span>
+                                <span id="third-place" class="podium-name">-</span>
+                            </div>
+                            <div class="podium-position">3rd</div>
+                            <div class="podium-block"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="fourth-place-container">
+                        <div class="fourth-place">
+                            <span class="material-symbols-outlined">person</span>
+                            <span id="fourth-place" class="fourth-name">-</span>
+                            <span class="fourth-position">4th Place</span>
+                        </div>
+                    </div>
+                    
+                    <div class="results-actions">
+                        <button id="new-tournament-btn" class="glow-on-hover">
+                            New Tournament
+                            <span class="material-symbols-outlined">refresh</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

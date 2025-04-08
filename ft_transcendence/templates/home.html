@@ -17,6 +17,8 @@
     <link rel="stylesheet" href="{% static 'friendspage.css' %}">
     <link rel="stylesheet" href="{% static 'gameroom.css' %}">
     <link rel="stylesheet" href="{% static 'lobby.css' %}">
+    <link rel="stylesheet" href="{% static 'tournament.css' %}">
+
 
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -73,33 +75,43 @@
     <aside>
         <ul class="sidebar-links">
             <h4>Main menu</h4>
-            <li><a href="{% url 'home' %}" hx-get="{% url 'home' %}" hx-target="#main-content" hx-push-url="true"><span class="material-symbols-outlined" style="color: #F75A6A;">home
+            <li><a href="#" id="homeLink"><span class="material-symbols-outlined" style="color: #F75A6A;">home
                 </span>Home</a>
             </li>
-            <li><a href="#"><span class="material-symbols-outlined" style="color: #E5C462">trophy
-                </span>Tournament</a>
-            </li>
-            
-            <li><a href="{% url 'friendspage' %}" hx-get="{% url 'friendspage' %}" hx-target="#friendspage" hx-push-url="true"><span class="material-symbols-outlined" style="color: #62E573";>group
-                </span>Friends</a>
+            <li>
+                <a id="openTournamentLink" href="#">
+                    <span class="material-symbols-outlined" style="color: #E5C462">trophy</span>
+                    Tournament
+                </a>
             </li>
             <li>
-                <a id="openChatLink">
+                <a href="#" id="friendsLink">
+                    <span class="material-symbols-outlined" style="color: #62E573">group</span>
+                    Friends
+                </a>
+            </li>
+            <li>
+                <a id="openChatLink" href="#">
                     <span class="material-symbols-outlined" style="color: #628BE5;">chat</span> Chat
                 </a>
             </li>
-            <li><a href="#"><span class="material-symbols-outlined" style="color: #96725F;">leaderboard
-                </span>Board</a>
+            <li>
+                <a href="#" id="boardLink">
+                    <span class="material-symbols-outlined" style="color: #96725F;">leaderboard</span>
+                    Board
+                </a>
             </li>
             <h4>Account</h4>
             <li>
-                <a id="settings-btn">
-                  <span class="material-symbols-outlined">Settings</span>Settings
+                <a id="settings-btn" href="#">
+                    <span class="material-symbols-outlined">Settings</span>Settings
                 </a>
-              </li>
-              
-            <li><a href="{% url 'login' %}" hx-get="{% url 'login' %}" hx-target="#login" hx-push-url="true"><span class="material-symbols-outlined" style="color: #CF0E0F";>Logout
-                </span>Log out</a>
+            </li>
+            <li>
+                <a href="{% url 'login' %}">
+                    <span class="material-symbols-outlined" style="color: #CF0E0F">Logout</span>
+                    Log out
+                </a>
             </li>
         </ul>
     </aside>
@@ -133,9 +145,15 @@
         </div>
     </div>
     {% endblock game-section %}
-        <section id="settings-section">
-            {% include 'settingspage.html' %}
-        </section>  
+    <section id="settings-section" style="display: none;">
+        {% include 'settingspage.html' %}
+    </section>
+        <section id="tournament-section" style="display: none;">
+        {% include 'tournament.html' %}
+    </section>
+    <section id="friendspage" style="display: none;">
+        {% include 'friendspage.html' %}
+    </section>
 </div> 
     <footer>
         42Transcendence
@@ -145,7 +163,8 @@
 {% include 'livechat.html' %}
 <script src="{% static 'js/home.js' %}"></script>
 <script src="{% static 'js/livechat.js' %}"></script>
-
+<script src="{% static 'js/tournament.js' %}"></script>
+<script src="{% static 'js/navigation.js' %}"></script>
 {% if 'local-game' in request.path %}
     <script src="{% static 'js/localgame.js' %}"></script>
 {% elif 'online-game' in request.path %}

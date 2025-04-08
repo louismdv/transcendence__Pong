@@ -21,10 +21,8 @@
     <form id="settings-form" method="POST" enctype="multipart/form-data">
         {% csrf_token %}
         
-        <div class="gameMode">
-            <h4>Paramètres du profil</h4>
-            <h5>Gérez vos informations personnelles et vos préférences</h5>
-        </div>
+            <h3>Paramètres du profil</h3>
+            {% comment %} <h5>Gérez vos informations personnelles et vos préférences</h5> {% endcomment %}
 
         <!-- Navigation Tabs -->
         <div class="nav nav-tabs mb-4 custom-nav" id="settingsTabs" role="tablist">
