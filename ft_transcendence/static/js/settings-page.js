@@ -217,6 +217,7 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         });
     }
+});
 
     // -------------------------------
     // Gestion de l'affichage de la section paramètres vs. le contenu principal

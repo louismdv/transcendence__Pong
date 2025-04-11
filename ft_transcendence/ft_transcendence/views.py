@@ -28,106 +28,141 @@ def localgame(request):
 @login_required(login_url='/login')
 @csrf_protect
 def settingspage(request):
+    # Ensure user has profile and preferences
     try:
         if not hasattr(request.user, 'userprofile'):
+            print("Debug: Creating user profile")
             UserProfile.objects.create(user=request.user)
         if not hasattr(request.user, 'preferences'):
+            print("Debug: Creating user preferences")
             UserPreferences.objects.create(user=request.user)
     except Exception as e:
+        print(f"Error creating user profile/preferences: {str(e)}")
         messages.error(request, "Erreur lors de l'initialisation des paramètres utilisateur")
         return redirect('home')
 
     if request.method == 'POST':
         try:
-            content_type = request.headers.get('Content-Type', '')
-            data = json.loads(request.body) if 'application/json' in content_type else request.POST
-            action = data.get('action')
+            if request.headers.get('Content-Type') == 'application/json':
+                data = json.loads(request.body)
+                action = data.get('action')
+            else:
+                action = request.POST.get('action')
+                data = request.POST
 
             if not action:
                 return JsonResponse({'status': 'error', 'message': 'Action non spécifiée'})
 
             if action == 'update_profile':
+                user = request.user
                 username = data.get('username')
+                
                 if not username:
                     return JsonResponse({'status': 'error', 'message': "Nom d'utilisateur requis"})
-
+                
                 avatar_url = None
                 if request.FILES.get('avatar'):
                     avatar = request.FILES['avatar']
                     if avatar.size > settings.AVATAR_MAX_SIZE:
-                        return JsonResponse({'status': 'error', 'message': "Image trop volumineuse"})
+                        return JsonResponse({'status': 'error', 'message': "L'image est trop volumineuse"})
                     if not any(avatar.name.lower().endswith(ext) for ext in settings.AVATAR_ALLOWED_FILE_EXTS):
-                        return JsonResponse({'status': 'error', 'message': "Format non supporté"})
-
-                    old_avatar_path = request.user.userprofile.avatar.path if request.user.userprofile.avatar.name != 'avatars/default.png' else None
-                    if old_avatar_path and os.path.exists(old_avatar_path):
-                        os.remove(old_avatar_path)
-
-                    request.user.userprofile.avatar = avatar
-                    request.user.userprofile.save()
-                    avatar_url = request.user.userprofile.avatar.url
-
-                request.user.username = username
-                request.user.save()
-
+                        return JsonResponse({'status': 'error', 'message': 'Format de fichier non supporté'})
+                    
+                    # Supprimer l'ancien avatar s'il existe et n'est pas l'avatar par défaut
+                    if user.userprofile.avatar and user.userprofile.avatar.name != 'avatars/default.png':
+                        try:
+                            old_avatar_path = user.userprofile.avatar.path
+                            if os.path.exists(old_avatar_path):
+                                os.remove(old_avatar_path)
+                        except Exception as e:
+                            print(f"Error deleting old avatar: {str(e)}")
+                    
+                    user.userprofile.avatar = avatar
+                    user.userprofile.save()
+                    avatar_url = user.userprofile.avatar.url
+                
+                user.username = username
+                user.save()
+                
                 return JsonResponse({
                     'status': 'success',
-                    'message': 'Profil mis à jour',
-                    'username': request.user.username,
-                    'avatar_url': avatar_url or request.user.userprofile.avatar.url
+                    'message': 'Profil mis à jour avec succès',
+                    'avatar_url': avatar_url or (user.userprofile.avatar.url if user.userprofile.avatar else None),
+                    'username': user.username
                 })
 
             elif action == 'update_account':
+                user = request.user
                 email = data.get('email')
                 current_password = data.get('current_password')
                 new_password = data.get('new_password')
                 confirm_password = data.get('confirm_password')
 
-                if current_password and not request.user.check_password(current_password):
+                if current_password and not user.check_password(current_password):
                     return JsonResponse({'status': 'error', 'message': 'Mot de passe incorrect'})
 
                 if new_password:
                     if new_password != confirm_password:
                         return JsonResponse({'status': 'error', 'message': 'Les mots de passe ne correspondent pas'})
                     if len(new_password) < 8:
-                        return JsonResponse({'status': 'error', 'message': 'Mot de passe trop court'})
-                    request.user.set_password(new_password)
+                        return JsonResponse({'status': 'error', 'message': 'Le mot de passe doit contenir au moins 8 caractères'})
+                    user.set_password(new_password)
 
                 if email:
-                    request.user.email = email
+                    user.email = email
 
-                request.user.save()
-                return JsonResponse({'status': 'success', 'message': 'Compte mis à jour', 'email': request.user.email})
+                user.save()
+                return JsonResponse({
+                    'status': 'success',
+                    'message': 'Compte mis à jour avec succès',
+                    'email': user.email
+                })
 
             elif action == 'update_preferences':
-                prefs = request.user.preferences
-                for field, choices in [('time_format', UserPreferences.TIME_FORMAT_CHOICES),
-                                       ('timezone', UserPreferences.TIMEZONE_CHOICES),
-                                       ('language', UserPreferences.LANGUAGE_CHOICES)]:
-                    value = data.get(field)
-                    if value and value in dict(choices):
-                        setattr(prefs, field, value)
-                prefs.save()
-                return JsonResponse({'status': 'success', 'message': 'Préférences mises à jour', 'preferences': {
-                    'time_format': prefs.time_format,
-                    'timezone': prefs.timezone,
-                    'language': prefs.language,
-                }})
+                preferences = request.user.preferences
+                time_format = data.get('time_format')
+                timezone = data.get('timezone')
+                language = data.get('language')
+
+                if time_format and time_format in dict(UserPreferences.TIME_FORMAT_CHOICES):
+                    preferences.time_format = time_format
+                if timezone and timezone in dict(UserPreferences.TIMEZONE_CHOICES):
+                    preferences.timezone = timezone
+                if language and language in dict(UserPreferences.LANGUAGE_CHOICES):
+                    preferences.language = language
+
+                preferences.save()
+                return JsonResponse({
+                    'status': 'success',
+                    'message': 'Préférences mises à jour avec succès',
+                    'preferences': {
+                        'time_format': preferences.time_format,
+                        'timezone': preferences.timezone,
+                        'language': preferences.language
+                    }
+                })
 
             elif action == 'delete_account':
-                if data.get('confirm_deletion') != 'true':
+                if not data.get('confirm_deletion') == 'true':
                     return JsonResponse({'status': 'error', 'message': 'Confirmation requise'})
+                
                 username = request.user.username
                 request.user.delete()
-                return JsonResponse({'status': 'success', 'message': f'Compte {username} supprimé', 'redirect': '/login'})
+                return JsonResponse({
+                    'status': 'success',
+                    'message': f'Compte {username} supprimé avec succès',
+                    'redirect': '/login'
+                })
 
-            return JsonResponse({'status': 'error', 'message': 'Action inconnue'})
+            return JsonResponse({'status': 'error', 'message': 'Action non reconnue'})
 
         except json.JSONDecodeError:
-            return JsonResponse({'status': 'error', 'message': 'JSON invalide'})
+            return JsonResponse({'status': 'error', 'message': 'Format JSON invalide'})
         except Exception as e:
+            print(f"Error in POST request: {str(e)}")
             return JsonResponse({'status': 'error', 'message': str(e)})
 
+    # GET request
     try:
         user_data = {
             'username': request.user.username,
@@ -139,11 +174,14 @@ def settingspage(request):
                 'language': request.user.preferences.language,
             }
         }
-        if request.headers.get('Accept') == 'application/json':
-            return JsonResponse({'user_data': user_data})
-        return render(request, 'settings.html')
+        return render(request, 'settingspage.html', {
+            'user_data': user_data,
+            'avatar_max_size': settings.AVATAR_MAX_SIZE,
+            'avatar_allowed_exts': settings.AVATAR_ALLOWED_FILE_EXTS
+        })
     except Exception as e:
-        messages.error(request, f"Erreur chargement paramètres: {str(e)}")
+        print(f"Error in GET request: {str(e)}")
+        messages.error(request, f"Erreur lors du chargement des paramètres: {str(e)}")
         return redirect('home')
 
 @login_required(login_url='/login')
