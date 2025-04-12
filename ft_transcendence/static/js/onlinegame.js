@@ -195,6 +195,8 @@ function handle_restore_game(gameState) {
         players.me = new Player(gameState.playerR.x, gameState.playerR.y, 'red', gameState.playerR.id, 'playerR');
         players.opponent = new Player(gameState.playerL.x, gameState.playerL.y, 'orange', clientName, 'playerL');
     }
+    document.getElementById('username-playerL').textContent = gameState.playerL.id;
+    document.getElementById('username-playerR').textContent = gameState.playerR.id;
 
     // Restore the ball properties
     if (gameState.ball) {

@@ -497,6 +497,10 @@ class GameConsumer(AsyncWebsocketConsumer):
                 'type': 'restore_game', 
                 'game_state': game_state,
             }))
+            if (self.id == playerL_id):
+                await self.send_profile_picture(self.id, await self.get_value_from_player("playerR", "id"))
+            if (self.id == playerR_id):
+                await self.send_profile_picture(await self.get_value_from_player("playerL", "id"), self.id)
             print(f"sent game_state to player {self.id}")
             return True
         return False
