@@ -78,6 +78,14 @@ gameSocket.onmessage = function(event) {
                 writeToCanvas("Press space bar when you are ready!", WHITE, WIN_W / 2, WIN_H / 2);
             }
             break;
+        case 'load_player_avatar':
+            if (data.playerL_picture) {
+                document.getElementById("playerL_picture").src = `data:image/jpeg;base64,${data.playerL_picture}`;
+            }
+            if (data.playerR_picture) {
+                document.getElementById("playerR_picture").src = `data:image/jpeg;base64,${data.playerR_picture}`;
+            }
+            break;
         case 'room_full':
         case 'connection_rejected':
             window.location.pathname = '/online-game/lobby/';
@@ -187,6 +195,8 @@ function handle_restore_game(gameState) {
         players.me = new Player(gameState.playerR.x, gameState.playerR.y, 'red', gameState.playerR.id, 'playerR');
         players.opponent = new Player(gameState.playerL.x, gameState.playerL.y, 'orange', clientName, 'playerL');
     }
+    document.getElementById('username-playerL').textContent = gameState.playerL.id;
+    document.getElementById('username-playerR').textContent = gameState.playerR.id;
 
     // Restore the ball properties
     if (gameState.ball) {
