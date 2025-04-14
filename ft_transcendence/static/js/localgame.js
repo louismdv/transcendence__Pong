@@ -1,4 +1,3 @@
-
 document.getElementById('page-title').textContent = "Local Game Mode";
 const canvas = document.getElementById('localgameCanvas');
 const ctx = canvas.getContext('2d');
@@ -14,10 +13,10 @@ const WHITE = '#ffffff';
 const BLACK = '#000000';
 const YELLOW = '#ffff00';
 const ORANGE = '#ffa500';
-    // SETTING
+    // SETTINGS
 const FPS = 60;
 const WINNING_SCORE = 5;
-const msPerFrame = 1000 / FPS; // time required for one frame to complete
+const msPerFrame = 1000 / FPS; // Time required for one frame to complete
 const WIN_H = 720, WIN_W = 1080;
 const PLAYER_W = 30, PLAYER_H = 175;
 const BALL_SIZE = 30, BALL_RADIUS = BALL_SIZE / 2;
@@ -43,17 +42,20 @@ class Player {
     }
 
     draw() {
+        // Draw player
         ctx.fillStyle = this.color;
         ctx.fillRect(this.x, this.y, this.width, this.height);
     }
 
     update() {
+        // Move player based on key input
         if (keysPressed[this.upKey]) {
             this.y -= this.speed;
         }
         if (keysPressed[this.downKey]) {
             this.y += this.speed;
         }
+        // Prevent the player from moving out of bounds
         if (this.y < 0) {
             this.y = 0;
         }
@@ -62,13 +64,14 @@ class Player {
         }
     }
 }
+
 class Ball {
     constructor(x, y, color) {
         this.x = x;
         this.y = y;
         this.color = color;
-        this.xFac = Math.random() < 0.5 ? -1 : 1;
-        this.yFac = Math.random() * 2 - 1;
+        this.xFac = Math.random() < 0.5 ? -1 : 1; // Random direction for X
+        this.yFac = Math.random() * 2 - 1; // Random direction for Y
         this.speed = 5;
         this.radius = BALL_RADIUS;
         this.left = this.x - this.radius
@@ -82,6 +85,7 @@ class Ball {
     }
 
     draw() {
+        // Draw ball
         ctx.beginPath();
         ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
         ctx.fillStyle = this.color;
@@ -92,22 +96,22 @@ class Ball {
     update() {
         // Apply deceleration
         this.speed *= this.deceleration;
-        // console.log(this.speed)
+
         if (this.speed < this.minSpeed) {
             this.speed = this.minSpeed;
         }
         this.x += this.speed * this.xFac;
         this.y += this.speed * this.yFac;
 
-        // update pos in obj
+        // Update ball position in the object
         this.left = this.x - this.radius
         this.right = this.x + this.radius
         this.top = this.y - this.radius
         this.bottom = this.y + this.radius
 
-        // check ball colision with top/bottom edges
+        // Check for ball collision with top/bottom edges
         if (this.top <= 0 || this.bottom >= WIN_H) {
-            this.yFac *= -1;
+            this.yFac *= -1; // Reverse direction
             if (this.top <= 0) {
                 this.top = BALL_SIZE + 1;
             } else if (this.bottom >= WIN_H) {
@@ -115,31 +119,33 @@ class Ball {
             }
         }
 
-        // check ball colision with right/left sides
+        // Check for ball collision with right/left sides
         if (this.right >= WIN_W) {
-            return 1;
+            return 1; // Point scored for left player
         } else if (this.left <= 0) {
-            return -1;
+            return -1; // Point scored for right player
         }
         return 0;
     }
 
     hit() {
+        // Reverse X direction on hit and calculate random angle
         this.xFac *= -1;
         const tanAngle = Math.tan(this.randAngle * Math.PI / 180) * this.xFac;
-        this.yFac = tanAngle; // Update yFac based on the angle
-        this.speed = 8 * (1 + Math.random() * 0.5);
+        this.yFac = tanAngle; // Update Y direction based on the angle
+        this.speed = 8 * (1 + Math.random() * 0.5); // Increase speed after hit
 
         this.hitCount++;
         const hitSound = document.getElementById(this.hitCount % 2 === 0 ? 'hitSoundL' : 'hitSoundR');
         hitSound.currentTime = 0; // Reset sound to start
-        hitSound.playbackRate = 1; // Double the playback speed
+        hitSound.playbackRate = 1; // Set playback speed
         hitSound.play().catch(error => {
             console.error("Error attempting to play", error);
         });
     }
 
     reset() {
+        // Reset ball to center
         this.x = WIN_W / 2;
         this.y = WIN_H / 2;
         this.speed = 5;
@@ -155,6 +161,7 @@ class Ball {
 
 // FUNCTIONS
 function setupEventListeners() {
+    // Set up event listeners for controls
     muteButton.addEventListener('click', (event) => {
         toggleMute();
     });
@@ -178,6 +185,7 @@ function setupEventListeners() {
 }
 
 function toggleMute() {
+    // Toggle mute status and update button
     isMuted = !isMuted;
     hitSoundL.muted = !hitSoundL.muted;
     hitSoundR.muted = !hitSoundR.muted;
@@ -185,13 +193,15 @@ function toggleMute() {
 }
 
 function drawScores() {
-
+    // Draw player scores
     ctx.fillStyle = WHITE;
     ctx.font = `${FONT_SIZE_M}px 'Pixelify Sans', sans-serif`;
     ctx.fillText(playerL.score, WIN_W / 4, WIN_H / 2);
     ctx.fillText(playerR.score, WIN_W / 4 * 3, WIN_H / 2);
 }
+
 function drawDottedLine() {
+    // Draw a dotted line in the middle of the screen
     ctx.beginPath();
     ctx.setLineDash([10, 10]); // Pattern: 10px dash, 10px gap
     ctx.lineWidth = 10; // Line width
@@ -203,43 +213,51 @@ function drawDottedLine() {
 
     ctx.stroke(); // Draw the line
 }
-function pregameLoop() {
 
+function pregameLoop() {
+    // Show the pre-game screen
     ctx.fillStyle = GREY;
     ctx.fillRect(0, 0, WIN_W, WIN_H);
     ctx.fillStyle = WHITE;
     ctx.font = `${FONT_SIZE_M}px 'Pixelify Sans', sans-serif`;
     const text = "Press space bar to start!";
     const textWidth = ctx.measureText(text).width;
-    ctx.fillText(text,  (WIN_W - textWidth) / 2, WIN_H / 2);
+    ctx.fillText(text, (WIN_W - textWidth) / 2, WIN_H / 2);
 
     requestAnimationFrame(pregameLoop);
 }
+
 function drawCanvas() {
-    // draw window 
+    // Draw the game canvas
     ctx.fillStyle = GREY;
     ctx.fillRect(0, 0, WIN_W, WIN_H);
-    // draw scores
-    color = WHITE
+    // Draw the scores
+    color = WHITE;
     drawScores();
-    // draw central line
+    // Draw the central line
     drawDottedLine();
-    // draw players and ball
+    // Draw the players and ball
     playerL.draw();
     playerR.draw();
     ball.draw();
 }
+
 function resetGame() {
+    // Reset the game state
     gameRunning = false;
-        
+
     playerL = new Player(50, WIN_H / 2 - 175 / 2, 'orange', 'KeyA', 'KeyD');
     playerR = new Player(WIN_W - 50 - 30, WIN_H / 2 - 175 / 2, 'red', 'ArrowRight', 'ArrowLeft');
     ball    = new Ball(WIN_W / 2, WIN_H / 2, 'blue');
 }
+
 function randNumBtw(min, max) {
+    // Return a random number between min and max
     return Math.random() * (max - min) + min;
 }
+
 function handleCollision(ball, player, side) {
+    // Handle collision between ball and player
     const paddleThird = player.height / 3;
 
     if (ball.y >= player.y && ball.y <= player.y + paddleThird) {
@@ -255,28 +273,27 @@ function handleCollision(ball, player, side) {
 }
 
 // Start the pregame
-pregameLoop(); 
+pregameLoop();
 setupEventListeners();
 
 // Game loop
 function gameLoop() {
-
-    // make sure fps <= 60
+    // Ensure FPS <= 60
     let msNow = window.performance.now();
     let msPassed = msNow - msPrev;
-    
+
     gameRunning = true;
 
     function updateGame() {
         if (!gameRunning || (msPassed < msPerFrame))
             return;
 
-        // update game state
+        // Update game state
         playerL.update();
         playerR.update();
         let point = ball.update();
 
-        // check missed balls for scoring
+        // Check missed balls for scoring
         if (point === 1) {
             playerL.score += 1;
             ball.reset();
@@ -285,8 +302,8 @@ function gameLoop() {
             ball.reset();
         }
 
-        // check end game conditions
-        if (playerL.score >= WINNING_SCORE || playerR.score >= WINNING_SCORE){
+        // Check end game conditions
+        if (playerL.score >= WINNING_SCORE || playerR.score >= WINNING_SCORE) {
             resetGame();
             return;
         }
@@ -294,16 +311,16 @@ function gameLoop() {
         // Collision detection and response
         if (ball.left <= playerL.x + playerL.width
             && ball.y >= playerL.y && ball.y <= playerL.y + playerL.height) {
-            ball.x = ball.x + playerL.width/2;
+            ball.x = ball.x + playerL.width / 2;
             handleCollision(ball, playerL, false);
         } else if (ball.right >= playerR.x
             && ball.y >= playerR.y && ball.y <= playerR.y + playerR.height) {
-            ball.x = ball.x - playerR.width/2;
+            ball.x = ball.x - playerR.width / 2;
             handleCollision(ball, playerR, true);
         }
         // Draw the canvas
         drawCanvas();
-        
+
         let excessTime = msPassed % msPerFrame;
         msPrev = msNow - excessTime;
         requestAnimationFrame(updateGame);

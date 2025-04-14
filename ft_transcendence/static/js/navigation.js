@@ -12,6 +12,9 @@ document.addEventListener('DOMContentLoaded', function() {
     const friendsSection = document.getElementById('friendspage');
     const boardSection = document.getElementById('board-section');
     const pageTitle = document.getElementById('page-title');
+    const localGameSection = document.getElementById("localgame-section");
+    const onlineGameSection = document.getElementById("localgame-section");
+
 
     // Fonction pour masquer toutes les sections
     function hideAllSections() {
@@ -20,6 +23,10 @@ document.addEventListener('DOMContentLoaded', function() {
         if (tournamentSection) tournamentSection.style.display = 'none';
         if (friendsSection) friendsSection.style.display = 'none';
         if (boardSection) boardSection.style.display = 'none';
+        if (localGameSection) localGameSection.style.display = 'none';
+        if (onlineGameSection) onlineGameSection.style.display = 'none';
+
+
     }
     
     // Fonction pour mettre à jour la classe active
@@ -77,7 +84,24 @@ document.addEventListener('DOMContentLoaded', function() {
         updateActiveLink(boardLink);
         window.location.hash = '#board';
     }
-
+    function navigateToLocalGame() {
+        hideAllSections(); // Masque toutes les sections
+        const localGameSection = document.getElementById('localgame-section');
+        if (localGameSection) {
+            localGameSection.style.display = 'block'; // Affiche la section du jeu local
+        }
+        // Met à jour l'URL sans recharger la page pour garder la navigation fluide
+        window.location.hash = '#localgame';
+    }
+        function navigateToOnlineGame() {
+            hideAllSections(); // Masque toutes les sections
+            const onlineGameSection = document.getElementById('onlinegame-section');
+            if (onlineGameSection) {
+                onlineGameSection.style.display = 'block'; // Affiche la section du jeu local
+            }
+            // Met à jour l'URL sans recharger la page pour garder la navigation fluide
+            window.location.hash = '#onlinegame';
+    }
     // Gestionnaires d'événements sur les liens
     if (homeLink) {
         homeLink.addEventListener('click', function(e) {
@@ -109,7 +133,18 @@ document.addEventListener('DOMContentLoaded', function() {
             navigateToBoard();
         });
     }
-    
+    if (localGameBtn) {
+        localGameBtn.addEventListener("click", function (e) {
+            e.preventDefault();
+            navigateToLocalGame();
+        });
+    }
+    if (onlineGameBtn) {
+        onlineGameBtn.addEventListener("click", function (e) {
+            e.preventDefault();
+            navigateToOnlineGame();
+        });
+    }
     // Fonction pour gérer le hash actuel
     function handleHashChange() {
         const hash = window.location.hash;
@@ -123,7 +158,13 @@ document.addEventListener('DOMContentLoaded', function() {
             navigateToTournament();
         } else if (hash === '#board') {
             navigateToBoard();
-        } else {
+        } 
+        else if (hash === '#localgame') {
+            navigateToLocalGame();
+        }
+        else if (hash === '#onlinegame') {
+            navigateToOnlineGame();
+        }else {
             navigateToHome();
         }
     }
