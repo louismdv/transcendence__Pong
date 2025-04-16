@@ -13,23 +13,26 @@ document.addEventListener('DOMContentLoaded', function() {
     const boardSection = document.getElementById('board-section');
     const pageTitle = document.getElementById('page-title');
     const localGameSection = document.getElementById("localgame-section");
-    const onlineGameSection = document.getElementById("localgame-section");
+    const joinRoomBtn = document.getElementById('room-name-submit');
+    const roomNameInput = document.getElementById('room-name-input');
+    const onlineGameSection = document.getElementById("onlinegame-section");
+    const gameRoomSection = document.getElementById("game-room-section");
+    const localGameBtn = document.getElementById("localGameBtn");
+    const onlineGameBtn = document.getElementById("onlineGameBtn");
 
 
     // Fonction pour masquer toutes les sections
     function hideAllSections() {
-        if (gameSection) gameSection.style.display = 'none';
-        if (settingsSection) settingsSection.style.display = 'none';
-        if (tournamentSection) tournamentSection.style.display = 'none';
-        if (friendsSection) friendsSection.style.display = 'none';
-        if (boardSection) boardSection.style.display = 'none';
-        if (localGameSection) localGameSection.style.display = 'none';
-        if (onlineGameSection) onlineGameSection.style.display = 'none';
-
-
+        gameSection.style.display = "none";
+        settingsSection.style.display = "none";
+        tournamentSection.style.display = "none";
+        friendsSection.style.display = "none";
+        localGameSection.style.display = "none";
+        onlineGameSection.style.display = "none";
+        gameRoomSection.style.display = "none";
+        if (boardSection) boardSection.style.display = "none"; 
     }
     
-    // Fonction pour mettre à jour la classe active
     function updateActiveLink(activeElement) {
         document.querySelectorAll('.sidebar-links li a').forEach(link => {
             link.classList.remove('active');
@@ -38,8 +41,6 @@ document.addEventListener('DOMContentLoaded', function() {
             activeElement.classList.add('active');
         }
     }
-
-    // Navigation vers les différentes sections en utilisant le hash
     function navigateToHome() {
         hideAllSections();
         if (gameSection) gameSection.style.display = 'grid';
@@ -85,24 +86,46 @@ document.addEventListener('DOMContentLoaded', function() {
         window.location.hash = '#board';
     }
     function navigateToLocalGame() {
-        hideAllSections(); // Masque toutes les sections
-        const localGameSection = document.getElementById('localgame-section');
+        hideAllSections(); 
         if (localGameSection) {
-            localGameSection.style.display = 'block'; // Affiche la section du jeu local
+            localGameSection.style.display = 'block';
         }
-        // Met à jour l'URL sans recharger la page pour garder la navigation fluide
         window.location.hash = '#localgame';
     }
-        function navigateToOnlineGame() {
-            hideAllSections(); // Masque toutes les sections
-            const onlineGameSection = document.getElementById('onlinegame-section');
-            if (onlineGameSection) {
-                onlineGameSection.style.display = 'block'; // Affiche la section du jeu local
-            }
-            // Met à jour l'URL sans recharger la page pour garder la navigation fluide
-            window.location.hash = '#onlinegame';
+    function navigateToGameRoom(roomName) {
+        hideAllSections();
+        if (gameRoomSection) {
+            gameRoomSection.style.display = 'block';
+        }
+        window.location.hash = `#game/${roomName}`;
+    
+        const roomDisplay = document.getElementById('room-name-display');
+        if (roomDisplay) {
+            roomDisplay.textContent = `Room: ${roomName}`;
+        }
     }
-    // Gestionnaires d'événements sur les liens
+    
+    function navigateToOnlineGameLobby() {
+        hideAllSections();
+        if (onlineGameSection) {
+            onlineGameSection.style.display = 'block';
+        }
+        pageTitle.textContent = 'Online Game';
+        pageTitle.className = 'page-online';
+        window.location.hash = '#onlinegame';
+    }
+    
+    if (joinRoomBtn) {
+        joinRoomBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            const roomName = roomNameInput.value.trim();
+            if (roomName) {
+                navigateToGameRoom(roomName);
+            } else {
+                alert("Veuillez entrer un nom de room valide.");
+            }
+        });
+    }
     if (homeLink) {
         homeLink.addEventListener('click', function(e) {
             e.preventDefault();
@@ -142,12 +165,14 @@ document.addEventListener('DOMContentLoaded', function() {
     if (onlineGameBtn) {
         onlineGameBtn.addEventListener("click", function (e) {
             e.preventDefault();
-            navigateToOnlineGame();
+            navigateToOnlineGameLobby();
         });
     }
-    // Fonction pour gérer le hash actuel
+    
     function handleHashChange() {
         const hash = window.location.hash;
+        const match = hash.match(/^#game\/(.+)$/); // Capturer le nom de la room dans l'URL
+
         if (!hash || hash === '#home') {
             navigateToHome();
         } else if (hash === '#friends') {
@@ -163,8 +188,13 @@ document.addEventListener('DOMContentLoaded', function() {
             navigateToLocalGame();
         }
         else if (hash === '#onlinegame') {
-            navigateToOnlineGame();
-        }else {
+            navigateToOnlineGameLobby();
+        }
+        
+       else if (match) {
+            const roomName = match[1];
+            navigateToGameRoom(roomName); // Rediriger vers la game room avec le nom
+        } else {
             navigateToHome();
         }
     }
