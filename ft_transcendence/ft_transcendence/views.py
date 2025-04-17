@@ -10,6 +10,8 @@ from .models import UserProfile, UserPreferences
 from django.conf import settings
 import os
 import json
+from django.utils import translation
+
 
 def main(request):
     return render(request, 'main.html')
