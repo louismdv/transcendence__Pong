@@ -551,7 +551,7 @@ class GameConsumer(AsyncWebsocketConsumer):
         """Fetch the profile picture of the user from PostgreSQL using their username."""
         with connection.cursor() as cursor:
             # Use raw SQL to fetch the profile picture URL or binary data using the username
-            cursor.execute("SELECT avatar FROM view_merged_authuser_userprofile WHERE username = %s", [username])
+            cursor.execute("SELECT avatar FROM merged_authuser_userprofile WHERE username = %s", [username])
             row = cursor.fetchone()
             if row:
                 return row[0]  # row[0] will contain the file path or URL to the profile picture
