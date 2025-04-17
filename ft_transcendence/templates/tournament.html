@@ -1,6 +1,8 @@
+{% load i18n %}
+
 <div id="tournamentpage">
     <div class="gameMode">
-        <h3>Tournament Mode</h3>
+        <h3>{% trans "Tournament Mode" %}</h3>
     </div>
     
     <div class="tournament-container">
@@ -8,7 +10,7 @@
         <div class="tournament-info">
             <div class="card">
                 <div class="tournament-status-container">
-                    <h4>Tournament Status</h4>
+                    <h4>{% trans "Tournament Status" %}</h4>
                     <p id="tournament-status-text">Waiting for players...</p>
                     
                     <div class="players-container">
