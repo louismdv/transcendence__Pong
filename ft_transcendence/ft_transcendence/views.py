@@ -12,7 +12,6 @@ import os
 import json
 from django.utils import translation
 
-
 def main(request):
     return render(request, 'main.html')
 
@@ -217,3 +216,15 @@ def tournament_ready(request):
         except json.JSONDecodeError:
             return JsonResponse({'status': 'error', 'message': 'JSON invalide'})
     return JsonResponse({'status': 'error', 'message': 'Méthode non autorisée'})
+
+@login_required
+def set_language_ajax(request):
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        lang = data.get('language')
+        if lang in ['en', 'fr', 'es']:
+            # Set language in session
+            request.session[translation.LANGUAGE_SESSION_KEY] = lang
+            translation.activate(lang)
+            return JsonResponse({'status': 'ok'})
+    return JsonResponse({'status': 'error'}, status=400)
