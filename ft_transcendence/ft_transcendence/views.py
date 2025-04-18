@@ -8,6 +8,10 @@ from django.http import JsonResponse
 from django.core.files.storage import default_storage
 from .models import UserProfile, UserPreferences
 from django.conf import settings
+from django.views.decorators.http import require_POST
+from django.contrib.auth.models import User
+from .models import Friendship
+from django.db import models
 import os
 import json
 
@@ -215,3 +219,167 @@ def tournament_ready(request):
         except json.JSONDecodeError:
             return JsonResponse({'status': 'error', 'message': 'JSON invalide'})
     return JsonResponse({'status': 'error', 'message': 'Méthode non autorisée'})
+
+
+@login_required
+def get_friends(request):
+    # Récupérer les amis (statut "accepted")
+    friends_sent = Friendship.objects.filter(sender=request.user, status='accepted')
+    friends_received = Friendship.objects.filter(receiver=request.user, status='accepted')
+    
+    friends_data = []
+    
+    for friendship in friends_sent:
+        friend = friendship.receiver
+        friends_data.append({
+            'id': friend.id,
+            'username': friend.username,
+            'avatar': friend.userprofile.avatar.url if hasattr(friend, 'userprofile') and friend.userprofile.avatar else None,
+            'online': hasattr(friend, 'userprofile') and getattr(friend.userprofile, 'is_online', False),
+        })
+    
+    for friendship in friends_received:
+        friend = friendship.sender
+        friends_data.append({
+            'id': friend.id,
+            'username': friend.username,
+            'avatar': friend.userprofile.avatar.url if hasattr(friend, 'userprofile') and friend.userprofile.avatar else None,
+            'online': hasattr(friend, 'userprofile') and getattr(friend.userprofile, 'is_online', False),
+        })
+    
+    return JsonResponse({'friends': friends_data})
+
+@login_required
+def get_friend_requests(request):
+    # Récupérer les demandes d'amis reçues (statut "pending")
+    requests = Friendship.objects.filter(receiver=request.user, status='pending')
+    
+    requests_data = []
+    for req in requests:
+        requests_data.append({
+            'id': req.id,
+            'username': req.sender.username,
+            'avatar': req.sender.userprofile.avatar.url if hasattr(req.sender, 'userprofile') and req.sender.userprofile.avatar else None,
+            'created_at': req.created_at.isoformat(),
+        })
+    
+    return JsonResponse({'requests': requests_data})
+
+@login_required
+def search_users(request):
+    query = request.GET.get('q', '')
+    if len(query) < 3:
+        return JsonResponse({'users': []})
+    
+    users = User.objects.filter(username__icontains=query).exclude(id=request.user.id)[:10]
+    
+    users_data = []
+    for user in users:
+        # Vérifier si une relation d'amitié existe déjà
+        friendship_sent = Friendship.objects.filter(sender=request.user, receiver=user).first()
+        friendship_received = Friendship.objects.filter(sender=user, receiver=request.user).first()
+        
+        status = None
+        is_sender = False
+        request_id = None
+        
+        if friendship_sent:
+            status = friendship_sent.status
+            is_sender = True
+            request_id = friendship_sent.id
+        elif friendship_received:
+            status = friendship_received.status
+            is_sender = False
+            request_id = friendship_received.id
+        
+        users_data.append({
+            'id': user.id,
+            'username': user.username,
+            'avatar': user.userprofile.avatar.url if hasattr(user, 'userprofile') and user.userprofile.avatar else None,
+            'status': status,
+            'is_sender': is_sender,
+            'request_id': request_id,
+        })
+    
+    return JsonResponse({'users': users_data})
+
+@login_required
+@require_POST
+def send_friend_request(request, user_id):
+    try:
+        receiver = User.objects.get(id=user_id)
+        
+        # Vérifier si une demande existe déjà
+        if Friendship.objects.filter(
+            (models.Q(sender=request.user) & models.Q(receiver=receiver)) | 
+            (models.Q(sender=receiver) & models.Q(receiver=request.user))
+        ).exists():
+            return JsonResponse({'success': False, 'message': 'Une relation existe déjà avec cet utilisateur'})
+        
+        # Créer la demande d'ami
+        friendship = Friendship(sender=request.user, receiver=receiver, status='pending')
+        friendship.save()
+        
+        return JsonResponse({'success': True})
+    except User.DoesNotExist:
+        return JsonResponse({'success': False, 'message': 'Utilisateur non trouvé'})
+
+@login_required
+@require_POST
+def handle_friend_request(request, request_id):
+    try:
+        data = json.loads(request.body)
+        action = data.get('action')
+        
+        friendship = Friendship.objects.get(id=request_id, receiver=request.user, status='pending')
+        
+        if action == 'accept':
+            friendship.status = 'accepted'
+            friendship.save()
+            return JsonResponse({'success': True})
+        elif action == 'reject':
+            friendship.status = 'rejected'
+            friendship.save()
+            return JsonResponse({'success': True})
+        else:
+            return JsonResponse({'success': False, 'message': 'Action non reconnue'})
+    except Friendship.DoesNotExist:
+        return JsonResponse({'success': False, 'message': 'Demande non trouvée'})
+    except json.JSONDecodeError:
+        return JsonResponse({'success': False, 'message': 'Données invalides'})
+
+@login_required
+@require_POST
+def remove_friend(request, friend_id):
+    # Supprimer la relation d'amitié dans les deux sens
+    count = 0
+    try:
+        friendship1 = Friendship.objects.filter(sender=request.user, receiver_id=friend_id, status='accepted')
+        friendship2 = Friendship.objects.filter(sender_id=friend_id, receiver=request.user, status='accepted')
+        
+        count += friendship1.delete()[0]
+        count += friendship2.delete()[0]
+        
+        return JsonResponse({'success': True if count > 0 else False})
+    except Exception as e:
+        return JsonResponse({'success': False, 'message': str(e)})
+
+@login_required
+@require_POST
+def block_user(request, user_id):
+    try:
+        user_to_block = User.objects.get(id=user_id)
+        
+        # Supprimer les relations existantes
+        Friendship.objects.filter(
+            (models.Q(sender=request.user) & models.Q(receiver=user_to_block)) | 
+            (models.Q(sender=user_to_block) & models.Q(receiver=request.user))
+        ).delete()
+        
+        # Créer la relation de blocage
+        friendship = Friendship(sender=request.user, receiver=user_to_block, status='blocked')
+        friendship.save()
+        
+        return JsonResponse({'success': True})
+    except User.DoesNotExist:
+        return JsonResponse({'success': False, 'message': 'Utilisateur non trouvé'})
