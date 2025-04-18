@@ -58,6 +58,9 @@ document.addEventListener('DOMContentLoaded', function () {
                 },
                 body: formData
             });
+            if (response.ok) {
+                location.reload(); // force reload once language preference updated
+            }
             const data = await response.json();
             if (!response.ok) {
                 throw new Error(`Erreur serveur: ${response.status} - ${response.statusText}`);
