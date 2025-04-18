@@ -21,8 +21,8 @@ urlpatterns = [
     path('settingspage/update-account/', views.settingspage, name='update_account'),
     path('settingspage/update-preferences/', views.settingspage, name='update_preferences'),
     path('settingspage/delete-account/', views.settingspage, name='delete_account'),
-    path('api/auth/', include('dj_rest_auth.urls')),
-    path('api/auth/registration/', include('dj_rest_auth.registration.urls')),
+    path('auth/login/', views.login_42, name='login_42'),
+    path('auth/callback/', views.callback_42, name='callback_42'),
     path('home/', views.home, name='home')  
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 

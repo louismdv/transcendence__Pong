@@ -12,6 +12,83 @@ import os
 import json
 from django.utils import translation
 
+
+import requests
+from django.contrib.auth.models import User
+
+# Step 1: Redirect to 42
+def login_42(request):
+    auth_url = (
+        f"https://api.intra.42.fr/oauth/authorize?"
+        f"client_id={settings.FT_CLIENT_ID}&"
+        f"redirect_uri={settings.FT_REDIRECT_URI}&"
+        f"response_type=code"
+    )
+    return redirect(auth_url)
+
+# Step 2: Handle callback
+
+from urllib.request import urlopen
+from django.core.files.base import ContentFile
+import os
+
+def callback_42(request):
+    code = request.GET.get("code")
+    if not code:
+        return render(request, "error.html", {"message": "No code provided."})
+
+    # Step 1: Get access token
+    token_response = requests.post("https://api.intra.42.fr/oauth/token", data={
+        "grant_type": "authorization_code",
+        "client_id": settings.FT_CLIENT_ID,
+        "client_secret": settings.FT_CLIENT_SECRET,
+        "code": code,
+        "redirect_uri": settings.FT_REDIRECT_URI,
+    })
+    token_json = token_response.json()
+    access_token = token_json.get("access_token")
+
+    if not access_token:
+        return render(request, "error.html", {"message": "Could not get access token."})
+
+    # Step 2: Get user info
+    user_info_response = requests.get("https://api.intra.42.fr/v2/me", headers={
+        "Authorization": f"Bearer {access_token}"
+    })
+    user_info = user_info_response.json()
+
+    username = user_info.get("login")
+    email = user_info.get("email")
+    profile_pic_url = user_info.get("image", {}).get("link")
+
+    if not username:
+        return render(request, "error.html", {"message": "Missing username from 42 API response."})
+
+    # Step 3: Get or create Django user
+    user, created = User.objects.get_or_create(username=username, defaults={"email": email})
+    user.backend = 'django.contrib.auth.backends.ModelBackend'
+
+    # Step 4: Save 42 avatar to UserProfile
+    if profile_pic_url:
+        try:
+            image_data = urlopen(profile_pic_url).read()
+            filename = os.path.basename(profile_pic_url)
+
+            if not hasattr(user, 'userprofile'):
+                from .models import UserProfile
+                UserProfile.objects.create(user=user)
+
+            user.userprofile.avatar.save(filename, ContentFile(image_data), save=True)
+        except Exception as e:
+            print(f"[42 Avatar Error] Could not save avatar: {e}")
+
+    # Step 5: Log in user
+    login(request, user)
+    return redirect("/")
+
+
+
+
 def main(request):
     return render(request, 'main.html')
 

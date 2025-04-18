@@ -1,0 +1,38 @@
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+<section id="liveChat">
+  <div class="livechat-container">
+    <div class="chat-header">
+      <h3>{{ request.user.username }}</h3>
+      <div class="chat-controls">
+        <button class="control-button minimize-btn">
+          <i class="fas fa-minus"></i>
+        </button>
+        <button class="control-button close-btn">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+    </div>
+    
+    <div class="chat-messages" id="chatMessages">
+      <div class="message message-receive">
+        <div class="message-bubble">Hello there!</div>
+      </div>
+      <div class="message message-send">
+        <div class="message-bubble">Hi! How can I help you?</div>
+      </div>
+      <div class="message message-receive">
+        <div class="message-bubble">I have a question about the game.</div>
+      </div>
+    </div>
+    
+    <div class="chat-input">
+      <div class="input-container">
+        <input type="text" id="messageInput" placeholder="Message">
+        <button class="send-button" id="sendButton">
+          <i class="fas fa-paper-plane"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+</section>
