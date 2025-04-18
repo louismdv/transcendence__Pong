@@ -23,7 +23,6 @@ urlpatterns = [
     path('settingspage/delete-account/', views.settingspage, name='delete_account'),
     path('api/auth/', include('dj_rest_auth.urls')),
     path('api/auth/registration/', include('dj_rest_auth.registration.urls')),
-    path('home/', views.home, name='home')  
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 if settings.DEBUG:
