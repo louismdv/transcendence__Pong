@@ -1,10 +1,5 @@
 
-{% extends 'home.html' %}
-
-{% block title %} <title>Multiplayer Pong - Lobby</title> {% endblock title %}
-
-{% block game-section %}
-
+<section id="onlinegame-section">
     <div id="gameWrapper">
         <h1>Create a new game:</h1>
         
@@ -18,7 +13,7 @@
         <p style="color: red;">{{ error }}</p>
         {% endif %}
     </div>
-
+</section>
 <script>
     const inputField = document.querySelector('#room-name-input');
     const submitButton = document.querySelector('#room-name-submit');
@@ -64,4 +59,3 @@
     };
 </script>
 
-{% endblock game-section %}

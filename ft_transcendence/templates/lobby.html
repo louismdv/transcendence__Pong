@@ -1,0 +1,36 @@
+{% load static %}
+
+<section id="onlinegame-section">
+    <div id="gameWrapper">
+        <h1>Create a new game:</h1>
+        
+        What game room would you like to join/create?<br><br><br>
+        <div id="input-container">
+            <input id="room-name-input" type="text" size="100" placeholder="Enter room name ..."><br>
+            <button id="room-name-submit" type="button" class="glow-on-hover">Enter</button>
+        </div>
+        
+        {% if error %}
+        <p style="color: red;">{{ error }}</p>
+        {% endif %}
+    </div>
+</section>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const roomNameInput = document.getElementById('room-name-input');
+        const joinRoomBtn = document.getElementById('room-name-submit');
+
+        joinRoomBtn.addEventListener('click', function () {
+            const roomName = roomNameInput.value.trim();
+            if (roomName) {
+                // Met à jour le hash pour déclencher `navigateToGameRoom()` dans navigation.js
+                window.location.hash = `#game/${roomName}`;
+            } else {
+                alert("Please enter a valid room name.");
+            }
+        });
+    });
+    
+</script>
+
+<script src="{% static 'js/navigation.js' %}"></script>
