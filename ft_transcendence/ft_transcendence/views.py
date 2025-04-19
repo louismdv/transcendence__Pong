@@ -16,6 +16,7 @@ from datetime import timedelta
 from django.db import models
 import os
 import json
+from django.utils import translation
 
 def main(request):
     return render(request, 'main.html')
@@ -260,6 +261,7 @@ def tournament_ready(request):
             return JsonResponse({'status': 'error', 'message': 'JSON invalide'})
     return JsonResponse({'status': 'error', 'message': 'Méthode non autorisée'})
 
+<<<<<<< HEAD
 
 @login_required
 def get_friends(request):
@@ -679,3 +681,16 @@ def unblock_user(request, user_id):
             'success': False, 
             'message': f'Une erreur est survenue: {str(e)}'
         })
+=======
+@login_required
+def set_language_ajax(request):
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        lang = data.get('language')
+        if lang in ['en', 'fr', 'es']:
+            # Set language in session
+            request.session[translation.LANGUAGE_SESSION_KEY] = lang
+            translation.activate(lang)
+            return JsonResponse({'status': 'ok'})
+    return JsonResponse({'status': 'error'}, status=400)
+>>>>>>> main

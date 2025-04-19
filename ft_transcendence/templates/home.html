@@ -1,6 +1,10 @@
+{% load i18n %}
 {% load static %}
+<<<<<<< HEAD
 <!DOCTYPE html>
 <html lang="en">
+=======
+>>>>>>> main
 
 <head>
     <meta charset="UTF-8">
@@ -46,6 +50,7 @@
 </head>
 
 <body>
+<<<<<<< HEAD
     <div class="grid-wrapper">
         <!-- Header -->
         <header>
@@ -60,6 +65,23 @@
                         <div class="btn__icon-container">
                             <i class="btn__icon fa-solid"></i>
                         </div>
+=======
+
+<div class="grid-wrapper">
+    <header>
+        <div class="logo">
+            <img src="../media/logo.svg" alt="Pong logo" width="40" height="40">
+            PONG
+        </div>
+        <div id="page-title" class="page-index">
+            {% trans "Home" %}
+        </div>
+        <div  class="left-account-section">
+            <div class="btn">
+                <div class="btn__indicator"> 
+                    <div class="btn__icon-container">
+                        <i class="btn__icon fa-solid"></i>
+>>>>>>> main
                     </div>
                 </div>
                 <div class="user-profile">
@@ -68,6 +90,7 @@
             </div>
         </header>
 
+<<<<<<< HEAD
         <!-- Sidebar -->
         <aside>
             <ul class="sidebar-links">
@@ -111,6 +134,69 @@
                 <div class="dash">Checkout your stats
                     <span class="material-symbols-outlined">Open_in_new</span>
                 </div>
+=======
+    <aside>
+        <ul class="sidebar-links">
+            <h4> {% trans "Main menu" %} </h4>
+            <li> 
+                <a id="homeLink"href="#">
+                    <span class="material-symbols-outlined" style="color: #F75A6A;">home</span>{% trans "Home" %}
+                </a>
+            </li>
+            <li>
+                <a id="openTournamentLink" href="#">
+                    <span class="material-symbols-outlined" style="color: #E5C462">trophy</span>{% trans "Tournament" %}
+                </a>
+            </li>
+            <li>
+                <a id="friendsLink" href="#">
+                    <span class="material-symbols-outlined" style="color: #62E573">group</span>{% trans "Friends" %}
+                </a>
+            </li>
+            <li>
+                <a id="openChatLink" href="#">
+                    <span class="material-symbols-outlined" style="color: #628BE5;">chat</span> {% trans "Chat" %}
+                </a>
+            </li>
+            <li>
+                <a id="boardLink" href="#">
+                    <span class="material-symbols-outlined" style="color: #96725F;">leaderboard</span>{% trans "Board" %}
+                </a>
+            </li>
+            <h4>{% trans "Account" %}</h4>
+            <li>
+                <a id="settings-btn" href="#">
+                    <span class="material-symbols-outlined">Settings</span>{% trans "Settings" %}
+                </a>
+            </li>
+            <li>
+                <a href="{% url 'login' %}">
+                    <span class="material-symbols-outlined" style="color: #CF0E0F">Logout</span>{% trans "Log out" %}
+                </a>
+            </li>
+        </ul>
+    </aside>
+<div id="main-content">
+    {% block game-section %}
+    <div class="main-grid" style="display: grid;">
+        <div class="gameMode">
+            <h3> {% trans "Choose a game mode :" %} </h3>
+        </div>
+        <div class="flex-container">
+            <div class="card">
+                <div class="centeredTextonImage">solo</div>
+                <button id="gameBtn" onclick="window.location.href='{% url 'localgame' %}';" class="glow-on-hover" type="button" >
+                    {% trans "Play local" %}
+                    <span class="material-symbols-outlined" style="font-weight: 600;">arrow_forward</span>
+                </button>
+            </div>
+            <div class="card">
+                <div class="centeredTextonImage">duo</div>
+                <button id="gameBtn" onclick="window.location.href='{% url 'lobby' %}';" class="glow-on-hover" type="button">
+                    {% trans "Play online" %}
+                    <span class="material-symbols-outlined" style="font-weight: 600;">language</span>
+                </button>
+>>>>>>> main
             </div>
 
             <!-- Sections -->

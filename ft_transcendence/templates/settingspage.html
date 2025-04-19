@@ -17,6 +17,7 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.2/css/all.min.css" integrity="sha512-1sCRPdkRXhBV2PBLUdRb4tMg1w2YPf37qatUFeS7zlBy7jJI8Lf4VHwWfZZfpXtYSLy85pkm9GaYVYMfw5BC1A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 <script src="{% static 'js/settings-page.js' %}"></script>
+
 <section id="settingspage">
     <form id="settings-form" method="POST" enctype="multipart/form-data">
         {% csrf_token %}
@@ -56,10 +57,6 @@
                                 <div>
                                     <label for="avatar-upload" class="form-label">Photo de profil</label>
                                     <div class="file-input-wrapper">
-                                        <button type="button" class="btn-settings btn-primary">
-                                            <i class="bi bi-upload me-2"></i>
-                                            Changer l'avatar
-                                        </button>
                                         <input type="file" id="avatar-upload" name="avatar" accept="image/*" class="form-control">
                                     </div>
                                 </div>
@@ -173,6 +170,7 @@
                                 <select class="form-select" id="language" name="language">
                                     <option value="fr" {% if user.preferences.language == 'fr' %}selected{% endif %}>Français</option>
                                     <option value="en" {% if user.preferences.language == 'en' %}selected{% endif %}>English</option>
+                                    <option value="es" {% if user.preferences.language == 'es' %}selected{% endif %}>Espagñol</option>
                                 </select>
                             </div>
                         </div>

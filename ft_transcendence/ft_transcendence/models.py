@@ -49,6 +49,7 @@ class UserPreferences(models.Model):
     LANGUAGE_CHOICES = [
         ('fr', 'Français'),
         ('en', 'English'),
+        ('es', 'Spanish'),
     ]
 
     TIMEZONE_CHOICES = [
