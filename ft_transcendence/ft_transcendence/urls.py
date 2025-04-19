@@ -30,6 +30,13 @@ urlpatterns = [
     path('api/friends/request/handle/<int:request_id>/', views.handle_friend_request, name='handle_friend_request'),
     path('api/friends/<int:friend_id>/remove/', views.remove_friend, name='remove_friend'),
     path('api/friends/<int:user_id>/block/', views.block_user, name='block_user'),
+    path('api/friends/blocked/', views.get_blocked_users, name='get_blocked_users'),
+    path('api/friends/<int:user_id>/unblock/', views.unblock_user, name='unblock_user'),
+    path('api/update-online-status/', views.update_online_status, name='update_online_status'),
+    path('api/friends/status/', views.get_friend_statuses, name='get_friend_statuses'),
+    path('api/game/invite/<int:user_id>/', views.invite_to_game, name='invite_to_game'),
+    path('profile/<int:user_id>/', views.user_profile, name='user_profile'),
+    path('chat/<int:user_id>/', views.chat_with_user, name='chat_with_user'),
     
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 

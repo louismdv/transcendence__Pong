@@ -11,6 +11,8 @@ from django.conf import settings
 from django.views.decorators.http import require_POST
 from django.contrib.auth.models import User
 from .models import Friendship
+from django.utils import timezone
+from datetime import timedelta
 from django.db import models
 import os
 import json
@@ -421,3 +423,259 @@ def block_user(request, user_id):
         return JsonResponse({'success': True})
     except User.DoesNotExist:
         return JsonResponse({'success': False, 'message': 'Utilisateur non trouvé'})
+
+
+def update_online_status(request):
+    """Met à jour automatiquement les statuts des utilisateurs inactifs"""
+    # Définir le délai après lequel un utilisateur est considéré comme hors ligne (10s)
+    offline_threshold = timezone.now() - timedelta(seconds=10)
+    
+    updated_count = UserProfile.objects.filter(
+        last_activity__lt=offline_threshold, 
+        is_online=True
+    ).update(is_online=False)
+    
+    return JsonResponse({'success': True, 'updated': updated_count})
+
+@login_required
+def get_friend_statuses(request):
+    # Récupérer les amis (statut "accepted")
+    friends_sent = Friendship.objects.filter(sender=request.user, status='accepted')
+    friends_received = Friendship.objects.filter(receiver=request.user, status='accepted')
+    
+    friend_statuses = []
+    
+    for friendship in friends_sent:
+        friend = friendship.receiver
+        friend_statuses.append({
+            'id': friend.id,
+            'username': friend.username,
+            'online': hasattr(friend, 'userprofile') and friend.userprofile.is_online
+        })
+    
+    for friendship in friends_received:
+        friend = friendship.sender
+        friend_statuses.append({
+            'id': friend.id,
+            'username': friend.username,
+            'online': hasattr(friend, 'userprofile') and friend.userprofile.is_online
+        })
+    
+    return JsonResponse({'friends': friend_statuses})
+
+@login_required
+@require_POST
+def remove_friend(request, friend_id):
+    """Supprime une relation d'amitié."""
+    try:
+        # Supprimer la relation d'amitié dans les deux sens
+        friendship1 = Friendship.objects.filter(
+            sender=request.user, 
+            receiver_id=friend_id, 
+            status='accepted'
+        )
+        friendship2 = Friendship.objects.filter(
+            sender_id=friend_id, 
+            receiver=request.user, 
+            status='accepted'
+        )
+        
+        count = friendship1.delete()[0] + friendship2.delete()[0]
+        
+        return JsonResponse({'success': count > 0})
+            
+    except Exception as e:
+        return JsonResponse({'success': False, 'message': str(e)})
+
+@login_required
+@require_POST
+def block_user(request, user_id):
+    """Bloque un utilisateur."""
+    try:
+        user_to_block = User.objects.get(id=user_id)
+        
+        # Supprimer les relations existantes
+        Friendship.objects.filter(
+            (models.Q(sender=request.user) & models.Q(receiver=user_to_block)) | 
+            (models.Q(sender=user_to_block) & models.Q(receiver=request.user))
+        ).delete()
+        
+        # Créer la relation de blocage
+        friendship = Friendship(
+            sender=request.user,
+            receiver=user_to_block,
+            status='blocked'
+        )
+        friendship.save()
+        
+        return JsonResponse({'success': True})
+    except User.DoesNotExist:
+        return JsonResponse({'success': False, 'message': 'Utilisateur non trouvé'})
+    except Exception as e:
+        return JsonResponse({'success': False, 'message': str(e)})
+
+@login_required
+@require_POST
+def invite_to_game(request, user_id):
+    """Invite un utilisateur à jouer."""
+    try:
+        user_to_invite = User.objects.get(id=user_id)
+        
+        # Vérifier si l'utilisateur est un ami
+        is_friend = Friendship.objects.filter(
+            (models.Q(sender=request.user) & models.Q(receiver=user_to_invite) & models.Q(status='accepted')) |
+            (models.Q(sender=user_to_invite) & models.Q(receiver=request.user) & models.Q(status='accepted'))
+        ).exists()
+        
+        if not is_friend:
+            return JsonResponse({'success': False, 'message': 'Vous ne pouvez inviter que vos amis à jouer'})
+        
+        # Ici, vous pourriez implémenter la logique d'envoi d'invitation au jeu
+        # Par exemple, via des notifications WebSocket ou en sauvegardant dans la base de données
+        
+        # Code exemple pour une invitation via WebSocket
+        # from channels.layers import get_channel_layer
+        # from asgiref.sync import async_to_sync
+        # channel_layer = get_channel_layer()
+        # async_to_sync(channel_layer.group_send)(
+        #     f'user_{user_to_invite.id}',
+        #     {
+        #         'type': 'game_invitation',
+        #         'sender_id': request.user.id,
+        #         'sender_name': request.user.username
+        #     }
+        # )
+        
+        return JsonResponse({'success': True, 'message': 'Invitation envoyée !'})
+    except User.DoesNotExist:
+        return JsonResponse({'success': False, 'message': 'Utilisateur non trouvé'})
+    except Exception as e:
+        return JsonResponse({'success': False, 'message': str(e)})
+
+@login_required
+def user_profile(request, user_id):
+    """Affiche le profil d'un utilisateur."""
+    try:
+        user = User.objects.get(id=user_id)
+        
+        # Vérifier si l'utilisateur est bloqué
+        is_blocked = Friendship.objects.filter(
+            sender=request.user,
+            receiver=user,
+            status='blocked'
+        ).exists()
+        
+        # Vérifier si l'utilisateur est un ami
+        is_friend = Friendship.objects.filter(
+            (models.Q(sender=request.user) & models.Q(receiver=user) & models.Q(status='accepted')) |
+            (models.Q(sender=user) & models.Q(receiver=request.user) & models.Q(status='accepted'))
+        ).exists()
+        
+        context = {
+            'profile_user': user,
+            'is_friend': is_friend,
+            'is_blocked': is_blocked,
+        }
+        
+        return render(request, 'profile.html', context)
+    except User.DoesNotExist:
+        messages.error(request, "Utilisateur non trouvé.")
+        return redirect('friends')
+
+@login_required
+def chat_with_user(request, user_id):
+    """Affiche ou crée une conversation avec un utilisateur."""
+    try:
+        other_user = User.objects.get(id=user_id)
+        
+        # Vérifier si l'utilisateur est un ami
+        is_friend = Friendship.objects.filter(
+            (models.Q(sender=request.user) & models.Q(receiver=other_user) & models.Q(status='accepted')) |
+            (models.Q(sender=other_user) & models.Q(receiver=request.user) & models.Q(status='accepted'))
+        ).exists()
+        
+        if not is_friend:
+            messages.warning(request, "Vous ne pouvez discuter qu'avec vos amis.")
+            return redirect('friends')
+        
+        # Récupérer ou créer une conversation
+        # Cette partie dépend de votre implémentation du système de chat
+        
+        context = {
+            'other_user': other_user,
+        }
+        
+        return render(request, 'chat.html', context)
+    except User.DoesNotExist:
+        messages.error(request, "Utilisateur non trouvé.")
+        return redirect('friends')
+
+@login_required
+def get_blocked_users(request):
+    """Récupère la liste des utilisateurs bloqués par l'utilisateur connecté."""
+    try:
+        # Récupérer les relations de blocage (ajustez selon votre modèle)
+        blocked_relations = Friendship.objects.filter(
+            sender=request.user,
+            status='blocked'
+        ).select_related('receiver')
+        
+        blocked_users = []
+        for relation in blocked_relations:
+            # Adapter les champs selon votre modèle
+            user_info = {
+                'id': relation.receiver.id,
+                'username': relation.receiver.username,
+                'blocked_date': relation.created_at.isoformat()
+            }
+            
+            # Gérer l'avatar selon votre logique
+            if hasattr(relation.receiver, 'userprofile') and relation.receiver.userprofile.avatar:
+                user_info['avatar'] = relation.receiver.userprofile.avatar.url
+            else:
+                user_info['avatar'] = None
+            
+            blocked_users.append(user_info)
+        
+        return JsonResponse({'blocked_users': blocked_users})
+    
+    except Exception as e:
+        # Logger l'erreur pour le débogage
+        print(f"Error in get_blocked_users: {e}")
+        return JsonResponse({'blocked_users': [], 'error': str(e)})
+
+@login_required
+@require_POST
+def unblock_user(request, user_id):
+    """Débloque un utilisateur."""
+    try:
+        user_to_unblock = User.objects.get(id=user_id)
+        
+        # Trouver et supprimer la relation de blocage
+        blocked_relation = Friendship.objects.filter(
+            sender=request.user,
+            receiver=user_to_unblock,
+            status='blocked'
+        )
+        
+        if not blocked_relation.exists():
+            return JsonResponse({
+                'success': False, 
+                'message': 'Cet utilisateur n\'est pas bloqué.'
+            })
+        
+        blocked_relation.delete()
+        return JsonResponse({'success': True})
+    
+    except User.DoesNotExist:
+        return JsonResponse({
+            'success': False, 
+            'message': 'Utilisateur non trouvé.'
+        })
+    
+    except Exception as e:
+        print(f"Error in unblock_user: {e}")
+        return JsonResponse({
+            'success': False, 
+            'message': f'Une erreur est survenue: {str(e)}'
+        })

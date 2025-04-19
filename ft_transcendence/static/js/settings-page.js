@@ -218,6 +218,3 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 });
-
-
-});

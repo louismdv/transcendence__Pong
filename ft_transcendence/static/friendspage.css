@@ -47,23 +47,7 @@
     grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
     gap: 16px;
 }
-.custom-dropdown {
-    /* Vos styles ici */
-    background-color: #fff;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-  }
-  
-  .custom-dropdown .dropdown-item {
-    padding: 10px 16px;
-    transition: background-color 0.2s ease;
-  }
-  
-  .custom-dropdown .dropdown-item:hover {
-    background-color: #e9ecef;
-  }
-  
+
 /* Style moderne pour les cartes d'amis */
 .friend-card {
     border: none;
@@ -71,20 +55,28 @@
     background-color: #fff;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
     transition: all 0.3s ease;
-    overflow: hidden;
     margin-bottom: 20px;
+    position: relative !important;
+    overflow: visible !important;
+    z-index: 1; /* Niveau de base */
 }
 
-.friend-card  .card-body {
+.friend-card:hover {
+    box-shadow: 0 6px 25px rgba(0, 0, 0, 0.12);
+    transform: translateY(-2px);
+}
+
+.friend-card .card-body {
     padding: 20px;
     background-color: #ffffff;
-
 }
-.card-custom{
+
+.card-custom {
     background-color: #ffffff;
     height: 180px;
-    width:360px;
+    width: 360px;
 }
+
 /* Avatar et statut */
 .friend-avatar-wrapper {
     position: relative;
@@ -104,10 +96,12 @@
 .friend-card:hover .friend-avatar {
     transform: scale(1.05);
 }
-.status-text{
+
+.status-text {
     display: flex;
     margin-left: 20px;
 }
+
 .friend-avatar img {
     width: 100%;
     height: 100%;
@@ -152,13 +146,10 @@
 }
 
 .friend-status {
-    /* display: flex; */
     align-items: center;
     font-size: 0.85rem;
     color: #666;
 }
-
-
 
 /* Menu d'options */
 .friend-menu {
@@ -184,20 +175,99 @@
     color: #333;
 }
 
-.dropdown-menu {
-    border-radius: 12px;
-    border: none;
-    box-shadow: 0 5px 25px rgba(0, 0, 0, 0.15);
+/* ===== DROPDOWN MENU - VERSION PERSONNALISÉE ===== */
+
+/* Menu d'actions personnalisé */
+.custom-action-menu {
+    display: none;
+    position: absolute;
+    z-index: 9999;
+    right: 0;
+    top: 100%;
+    min-width: 200px;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    border: 1px solid rgba(0,0,0,0.1);
     padding: 8px 0;
-    min-width: 180px;
+    margin-top: 5px;
+}
+
+.custom-action-menu.show {
+    display: block;
+}
+
+.action-option {
+    padding: 8px 16px;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.action-option:hover {
+    background-color: rgba(0,0,0,0.04);
+}
+
+.action-option.text-warning {
+    color: #FFA500;
+}
+
+.action-option.text-danger {
+    color: #F75A6A;
+}
+
+.action-divider {
+    margin: 5px 0;
+    border-top: 1px solid #eee;
+}
+
+/* DROPDOWN MENU - VERSION BOOTSTRAP */
+
+/* Correction pour les dropdowns */
+.friend-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 20px;
+    position: relative !important;
+    z-index: 10; /* Plus élevé que les cartes */
+}
+
+.dropdown-toggle {
+    position: relative;
+    z-index: 20; /* Plus élevé que le menu */
+}
+
+.dropdown-menu {
+    position: absolute !important;
+    z-index: 9999 !important; /* Très élevé pour être au-dessus de tout */
+    min-width: 200px !important;
+    max-height: none !important;
+    overflow: visible !important;
+    transform: none !important;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    border: 1px solid rgba(0,0,0,0.1);
+}
+
+.dropdown-menu.show {
+    display: block !important;
+    visibility: visible !important;
+}
+
+.friend-actions .dropdown-menu {
+    right: 0 !important;
+    left: auto !important;
+    top: 100% !important;
+    transform: none !important;
 }
 
 .dropdown-item {
+    padding: 8px 16px;
+    clear: both;
+    white-space: nowrap;
     display: flex;
     align-items: center;
-    padding: 10px 16px;
-    font-size: 0.9rem;
-    transition: background-color 0.2s ease;
 }
 
 .dropdown-item .material-symbols-outlined {
@@ -217,13 +287,30 @@
     background-color: rgba(247, 90, 106, 0.08);
 }
 
-/* Boutons d'action */
-.friend-actions {
-    display: flex;
-    gap: 10px;
-    margin-top: 20px;
+.dropdown-item.text-warning {
+    color: #FFA500 !important;
 }
 
+/* Force l'affichage des dropdowns */
+.dropdown {
+    position: static !important; /* Supprime le positionnement relatif par défaut */
+}
+
+.dropdown-menu {
+    position: absolute !important; /* Force le positionnement absolu */
+    display: block !important; /* Garantit l'affichage */
+    clip: rect(0, 0, 0, 0) !important; /* Masque visuellement sans affecter l'accessibilité */
+    pointer-events: none !important; /* Désactive les interactions quand masqué */
+    transition: clip 0s linear 0.2s !important; /* Transition pour l'affichage */
+}
+
+.dropdown-menu.show {
+    clip: auto !important; /* Restaure l'affichage normal */
+    pointer-events: auto !important; /* Restaure les interactions */
+    transition: none !important; /* Pas de transition à l'ouverture */
+}
+
+/* Boutons d'action */
 .action-button {
     flex: 1;
     display: flex;
@@ -283,21 +370,6 @@
     animation: pulse 1.5s infinite;
 }
 
-/* Adaptation pour les écrans mobiles */
-@media (max-width: 576px) {
-    .friend-actions {
-        flex-direction: column;
-    }
-    
-    .friend-name {
-        font-size: 1rem;
-    }
-    
-    .friend-avatar {
-        width: 50px;
-        height: 50px;
-    }
-}
 /* Personnalisation des en-têtes de carte par onglet */
 .requests-header {
     background-color: #628BE5; /* Bleu comme dans votre sidebar */
@@ -404,10 +476,50 @@
     background-color: rgba(0, 0, 0, 0.02);
 }
 
+/* Icônes */
+.bi {
+    font-size: 1rem;
+}
+
+/* Modal */
+.modal-header {
+    background-color: var(--background-color);
+    border-bottom: 1px solid #e9ecef;
+}
+
+.modal-footer {
+    background-color: var(--background-color);
+    border-top: 1px solid #e9ecef;
+}
+
+/* Classe pour résoudre les problèmes de dropdown */
+.fixed-dropdown {
+    display: block;
+    position: absolute;
+    background-color: white;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    top: 100%;
+    right: 0;
+    width: 200px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    z-index: 9999;
+    margin-top: 5px;
+}
+
 /* Adaptation pour les écrans mobiles */
 @media (max-width: 576px) {
     .friend-actions {
         flex-direction: column;
+    }
+    
+    .friend-name {
+        font-size: 1rem;
+    }
+    
+    .friend-avatar {
+        width: 50px;
+        height: 50px;
     }
     
     .list-group-item {
@@ -422,20 +534,81 @@
         width: 100%;
         justify-content: space-between;
     }
+    
+    .friend-actions .dropdown-menu {
+        width: 180px !important; 
+        right: 0 !important;
+        left: auto !important;
+    }
 }
 
-/* Icônes */
-.bi {
-    font-size: 1rem;
+/* Nettoyer les styles existants qui pourraient interférer */
+.dropdown-menu,
+.dropdown-toggle,
+.dropdown {
+    display: none !important; /* Masquer les éléments dropdown de Bootstrap */
 }
 
-/* Modal */
-.modal-header {
-    background-color:var(--background-color);
-    border-bottom: 1px solid #e9ecef;
+/* Améliorer les menus d'actions personnalisés */
+.custom-action-menu {
+    display: none;
+    position: absolute !important;
+    right: 0;
+    top: calc(100% + 5px);
+    min-width: 200px;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    border: 1px solid rgba(0,0,0,0.1);
+    padding: 8px 0;
+    z-index: 9999 !important;
 }
 
-.modal-footer {
-    background-color:var(--background-color);
-    border-top: 1px solid #e9ecef;
+.custom-action-menu.show {
+    display: block !important;
+}
+
+.action-option {
+    padding: 10px 16px;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    color: #333;
+    font-size: 14px;
+    transition: background-color 0.2s;
+}
+
+.action-option:hover {
+    background-color: rgba(0,0,0,0.04);
+}
+
+.action-option.text-warning {
+    color: #FFA500;
+}
+
+.action-option.text-danger {
+    color: #F75A6A;
+}
+
+.action-divider {
+    height: 1px;
+    background-color: #eee;
+    margin: 5px 0;
+}
+
+/* Position correcte du bouton et du conteneur d'actions */
+.friend-actions {
+    position: relative !important;
+}
+
+/* Assurer que la carte ami est en position relative pour le menu */
+.friend-card {
+    position: relative !important;
+    z-index: 1;
+}
+
+/* Le bouton d'actions */
+.action-toggle {
+    z-index: 2;
+    position: relative;
 }

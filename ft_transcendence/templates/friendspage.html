@@ -193,7 +193,21 @@
             </div>
         </div>
     </div>
+    <div id="blockedUserCardTemplate">
+        <div class="blocked-user-card" data-user-id="{id}">
+            <div class="blocked-user-avatar">
+                <img src="{avatar}" alt="{username}" class="avatar">
+            </div>
+            <div class="blocked-user-info">
+                <h6 class="blocked-user-name">{username}</h6>
+                <div class="blocked-date text-muted small">Bloqué le {blockedDate}</div>
+            </div>
+            <div class="blocked-user-actions">
+                <button class="btn btn-sm btn-outline-secondary" onclick="unblockUser('{id}'); return false;">
+                    <i class="bi bi-unlock me-1"></i>Débloquer
+                </button>
+            </div>
+        </div>
+    </div>
 </div>
 
-<!-- JavaScript pour alimenter la page -->
-<script src="{% static 'js/friendspage.js' %}"></script>

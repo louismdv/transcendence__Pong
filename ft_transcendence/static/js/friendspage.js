@@ -7,6 +7,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Initialiser la page
     loadFriends();
     loadFriendRequests();
+    loadBlockedUsers(); // Ajout de cette fonction
     setupUserSearch();
     
     // Configuration de la recherche d'amis
@@ -17,6 +18,26 @@ document.addEventListener('DOMContentLoaded', function() {
             filterFriends(searchTerm);
         });
     }
+    
+    // Initialisation des statuts en ligne
+    updateOnlineStatus();
+    
+    // Actualiser les statuts toutes les 30 secondes
+    setInterval(updateOnlineStatus, 30000);
+    
+    // Ajouter des écouteurs pour les onglets
+    document.querySelectorAll('.nav-link').forEach(tab => {
+        tab.addEventListener('click', function() {
+            const target = this.getAttribute('data-bs-target') || this.getAttribute('href');
+            if (target === '#blocked') {
+                loadBlockedUsers();
+            } else if (target === '#friends') {
+                loadFriends();
+            } else if (target === '#requests') {
+                loadFriendRequests();
+            }
+        });
+    });
 });
 
 /**
@@ -78,7 +99,7 @@ function loadFriends() {
         });
 }
 
-// Créer le HTML pour une carte ami
+// Créer le HTML pour une carte ami avec menu personnalisé
 function createFriendCardHTML(friend) {
     return `
         <div class="friend-card" data-friend-id="${friend.id}">
@@ -90,36 +111,72 @@ function createFriendCardHTML(friend) {
                 <h6 class="friend-name">${friend.username}</h6>
                 <div class="friend-status">${friend.online ? 'En ligne' : 'Hors ligne'}</div>
             </div>
-            <div class="friend-actions dropdown">
-                <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+            <div class="friend-actions">
+                <button class="btn btn-sm btn-outline-secondary action-toggle" 
+                        type="button" 
+                        onclick="toggleActionMenu('${friend.id}')">
                     Actions
                 </button>
-                <ul class="dropdown-menu">
-                    <li><a class="dropdown-item" href="#" onclick="openChat('${friend.id}'); return false;">
+                <div id="action-menu-${friend.id}" class="custom-action-menu">
+                    <div class="action-option" onclick="openChat('${friend.id}')">
                         <i class="bi bi-chat-dots me-2"></i>
                         <span>Message privé</span>
-                    </a></li>
-                    <li><a class="dropdown-item" href="#" onclick="inviteToGame('${friend.id}'); return false;">
+                    </div>
+                    <div class="action-option" onclick="inviteToGame('${friend.id}')">
                         <i class="bi bi-controller me-2"></i>
                         <span>Inviter à jouer</span>
-                    </a></li>
-                    <li><a class="dropdown-item" href="/profile/${friend.id}">
+                    </div>
+                    <div class="action-option" onclick="window.location.href='/profile/${friend.id}'">
                         <i class="bi bi-person me-2"></i>
                         <span>Voir le profil</span>
-                    </a></li>
-                    <li><hr class="dropdown-divider"></li>
-                    <li><a class="dropdown-item text-warning" href="#" onclick="removeFriend('${friend.id}'); return false;">
+                    </div>
+                    <div class="action-divider"></div>
+                    <div class="action-option text-warning" onclick="removeFriend('${friend.id}')">
                         <i class="bi bi-person-dash me-2"></i>
                         <span>Supprimer</span>
-                    </a></li>
-                    <li><a class="dropdown-item text-danger" href="#" onclick="blockFriend('${friend.id}'); return false;">
+                    </div>
+                    <div class="action-option text-danger" onclick="blockFriend('${friend.id}')">
                         <i class="bi bi-slash-circle me-2"></i>
                         <span>Bloquer</span>
-                    </a></li>
-                </ul>
+                    </div>
+                </div>
             </div>
         </div>
     `;
+}
+
+function toggleActionMenu(friendId) {
+    console.log("Menu toggled for friend ID:", friendId);
+    
+    // Fermer tous les menus ouverts
+    document.querySelectorAll('.custom-action-menu.show').forEach(menu => {
+        if (menu.id !== `action-menu-${friendId}`) {
+            menu.classList.remove('show');
+        }
+    });
+    
+    // Basculer l'état du menu actuel
+    const menu = document.getElementById(`action-menu-${friendId}`);
+    if (menu) {
+        menu.classList.toggle('show');
+        
+        // Ajouter un gestionnaire d'événement pour fermer lors d'un clic ailleurs
+        if (menu.classList.contains('show')) {
+            // Gestionnaire d'événement pour fermer les menus quand on clique ailleurs
+            function closeOnClickOutside(e) {
+                if (!e.target.closest(`#action-menu-${friendId}`) && 
+                    !e.target.closest(`[onclick="toggleActionMenu('${friendId}')"]`)) {
+                    menu.classList.remove('show');
+                    document.removeEventListener('click', closeOnClickOutside);
+                }
+            }
+            
+            // Utiliser setTimeout pour éviter que l'événement actuel ne ferme immédiatement le menu
+            setTimeout(() => {
+                document.addEventListener('click', closeOnClickOutside);
+            }, 0);
+        }
+    }
 }
 
 // Filtrer les amis en fonction du terme de recherche
@@ -257,6 +314,8 @@ function blockFriend(friendId) {
                 }
                 
                 showToast('Utilisateur bloqué avec succès!', 'success');
+                // Recharger la liste des utilisateurs bloqués
+                loadBlockedUsers();
             } else {
                 showToast(data.message || 'Erreur lors du blocage de l\'utilisateur.', 'error');
             }
@@ -265,6 +324,160 @@ function blockFriend(friendId) {
             console.error('Error:', error);
             showToast('Une erreur est survenue.', 'error');
         });
+    }
+}
+
+/**
+ * GESTION DES UTILISATEURS BLOQUÉS
+ */
+
+// Fonction pour charger les utilisateurs bloqués
+function loadBlockedUsers() {
+    const blockedContainer = document.getElementById('blockedUsersContainer');
+    if (!blockedContainer) return;
+    
+    // Afficher un spinner pendant le chargement
+    blockedContainer.innerHTML = `
+        <div class="d-flex justify-content-center">
+            <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden">Chargement...</span>
+            </div>
+        </div>
+    `;
+    
+    fetch('/api/friends/blocked/')
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+            return response.json();
+        })
+        .then(data => {
+            if (data.blocked_users.length === 0) {
+                blockedContainer.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-icon">
+                            <i class="bi bi-shield-check"></i>
+                        </div>
+                        <h6>Aucun utilisateur bloqué</h6>
+                        <p class="text-muted">Vous n'avez bloqué personne pour le moment.</p>
+                    </div>
+                `;
+                
+                // Mettre à jour le badge
+                const badge = document.querySelector('#blocked-tab .badge');
+                if (badge) {
+                    badge.textContent = "0";
+                }
+                
+                return;
+            }
+            
+            let blockedHTML = '';
+            data.blocked_users.forEach(user => {
+                blockedHTML += createBlockedUserCardHTML(user);
+            });
+            
+            blockedContainer.innerHTML = blockedHTML;
+            
+            // Mettre à jour le badge
+            const badge = document.querySelector('#blocked-tab .badge');
+            if (badge) {
+                badge.textContent = data.blocked_users.length;
+            }
+        })
+        .catch(error => {
+            console.error('Error loading blocked users:', error);
+            blockedContainer.innerHTML = `
+                <div class="alert alert-danger" role="alert">
+                    <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                    Erreur lors du chargement des utilisateurs bloqués. Veuillez réessayer.
+                </div>
+            `;
+        });
+}
+
+// Créer le HTML pour une carte d'utilisateur bloqué
+function createBlockedUserCardHTML(user) {
+    return `
+        <div class="blocked-user-card" data-user-id="${user.id}">
+            <div class="d-flex align-items-center p-3 border-bottom">
+                <div class="user-avatar me-3">
+                    <img src="${user.avatar || '/media/avatars/default.png'}" alt="${user.username}" class="avatar-sm">
+                </div>
+                <div class="user-info flex-grow-1">
+                    <h6 class="mb-0">${user.username}</h6>
+                    <small class="text-muted">Bloqué ${formatDate(user.blocked_date)}</small>
+                </div>
+                <div class="actions">
+                    <button class="btn btn-sm btn-outline-primary" onclick="unblockUser('${user.id}')">
+                        <i class="bi bi-unlock me-1"></i>
+                        Débloquer
+                    </button>
+                </div>
+            </div>
+        </div>
+    `;
+}
+
+// Fonction pour débloquer un utilisateur
+function unblockUser(userId) {
+    if (confirm('Voulez-vous vraiment débloquer cet utilisateur ?')) {
+        fetch(`/api/friends/${userId}/unblock/`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': getCookie('csrftoken')
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                // Animation de suppression
+                const userCard = document.querySelector(`.blocked-user-card[data-user-id="${userId}"]`);
+                if (userCard) {
+                    userCard.style.opacity = '0';
+                    userCard.style.transform = 'scale(0.8)';
+                    
+                    setTimeout(() => {
+                        userCard.remove();
+                        updateBlockedCounter();
+                    }, 300);
+                }
+                
+                showToast('Utilisateur débloqué avec succès!', 'success');
+            } else {
+                showToast(data.message || 'Erreur lors du déblocage de l\'utilisateur.', 'error');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            showToast('Une erreur est survenue.', 'error');
+        });
+    }
+}
+
+// Fonction pour mettre à jour le compteur d'utilisateurs bloqués
+function updateBlockedCounter() {
+    const blockedContainer = document.getElementById('blockedUsersContainer');
+    const badge = document.querySelector('#blocked-tab .badge');
+    
+    if (blockedContainer && badge) {
+        const blockedCount = blockedContainer.querySelectorAll('.blocked-user-card').length;
+        badge.textContent = blockedCount;
+        
+        // Afficher l'état vide si aucun utilisateur bloqué
+        if (blockedCount === 0) {
+            blockedContainer.innerHTML = `
+                <div class="empty-state">
+                    <div class="empty-icon">
+                        <i class="bi bi-shield-check"></i>
+                    </div>
+                    <h6>Aucun utilisateur bloqué</h6>
+                    <p class="text-muted">Vous n'avez bloqué personne pour le moment.</p>
+                </div>
+            `;
+        }
     }
 }
 
@@ -444,6 +657,11 @@ function loadFriendRequests() {
 
 // Accepter une demande d'ami
 function acceptFriendRequest(requestId) {
+    if (!requestId) {
+        showToast('ID de demande invalide', 'error');
+        return;
+    }
+    
     fetch(`/api/friends/request/handle/${requestId}/`, {
         method: 'POST',
         headers: {
@@ -482,6 +700,11 @@ function acceptFriendRequest(requestId) {
 
 // Refuser une demande d'ami
 function rejectFriendRequest(requestId) {
+    if (!requestId) {
+        showToast('ID de demande invalide', 'error');
+        return;
+    }
+    
     fetch(`/api/friends/request/handle/${requestId}/`, {
         method: 'POST',
         headers: {
@@ -529,6 +752,50 @@ function updateRequestCounter() {
             requestsContainer.innerHTML = '<p class="text-muted">Aucune demande pour le moment</p>';
         }
     }
+}
+
+/**
+ * STATUT EN LIGNE
+ */
+
+// Fonction pour mettre à jour les statuts des utilisateurs inactifs
+function updateOnlineStatus() {
+    // Appeler l'API pour mettre à jour les statuts des utilisateurs inactifs
+    fetch('/api/update-online-status/')
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                console.log(`${data.updated} utilisateurs marqués comme hors ligne`);
+                // Recharger les statuts des amis
+                updateFriendStatuses();
+            }
+        })
+        .catch(error => console.error('Erreur lors de la mise à jour des statuts:', error));
+}
+
+// Fonction pour mettre à jour visuellement les statuts des amis
+function updateFriendStatuses() {
+    fetch('/api/friends/status/')
+        .then(response => response.json())
+        .then(data => {
+            data.friends.forEach(friend => {
+                const statusIndicator = document.querySelector(`.friend-card[data-friend-id="${friend.id}"] .status-indicator`);
+                const statusText = document.querySelector(`.friend-card[data-friend-id="${friend.id}"] .friend-status`);
+                
+                if (statusIndicator && statusText) {
+                    if (friend.online) {
+                        statusIndicator.classList.remove('offline');
+                        statusIndicator.classList.add('online');
+                        statusText.textContent = 'En ligne';
+                    } else {
+                        statusIndicator.classList.remove('online');
+                        statusIndicator.classList.add('offline');
+                        statusText.textContent = 'Hors ligne';
+                    }
+                }
+            });
+        })
+        .catch(error => console.error('Erreur lors de la récupération des statuts:', error));
 }
 
 /**
@@ -635,3 +902,77 @@ function getCookie(name) {
     }
     return cookieValue;
 }
+
+// Cette fonction garantit le bon fonctionnement des dropdowns
+document.addEventListener('DOMContentLoaded', function() {
+    // Fonction pour initialiser manuellement les dropdowns
+    function initializeDropdowns() {
+        document.querySelectorAll('.friend-card').forEach(card => {
+            const dropdownToggle = card.querySelector('.dropdown-toggle');
+            const dropdownMenu = card.querySelector('.dropdown-menu');
+            
+            if (dropdownToggle && dropdownMenu) {
+                // Empêcher la propagation du clic dans le menu dropdown
+                dropdownMenu.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                });
+                
+                // Assurer que le menu s'affiche correctement
+                dropdownToggle.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    e.preventDefault();
+                    
+                    // Fermer tous les autres dropdowns
+                    document.querySelectorAll('.dropdown-menu.show').forEach(menu => {
+                        if (menu !== dropdownMenu) {
+                            menu.classList.remove('show');
+                        }
+                    });
+                    
+                    // Basculer l'état du dropdown actuel
+                    dropdownMenu.classList.toggle('show');
+                    
+                    // Positionner correctement le menu
+                    const rect = dropdownMenu.getBoundingClientRect();
+                    if (rect.right > window.innerWidth) {
+                        dropdownMenu.style.left = 'auto';
+                        dropdownMenu.style.right = '0';
+                    }
+                    
+                    // S'assurer que le menu reste dans la vue
+                    if (rect.bottom > window.innerHeight) {
+                        dropdownMenu.style.top = 'auto';
+                        dropdownMenu.style.bottom = '100%';
+                    }
+                });
+            }
+        });
+        
+        // Fermer les dropdowns lorsqu'on clique ailleurs
+        document.addEventListener('click', function(e) {
+            if (!e.target.closest('.dropdown-menu') && !e.target.closest('.dropdown-toggle')) {
+                document.querySelectorAll('.dropdown-menu.show').forEach(menu => {
+                    menu.classList.remove('show');
+                });
+            }
+        });
+    }
+    
+    // Observer les changements dans le DOM pour initialiser les nouveaux dropdowns
+    const observer = new MutationObserver(function(mutations) {
+        mutations.forEach(function(mutation) {
+            if (mutation.addedNodes.length) {
+                initializeDropdowns();
+            }
+        });
+    });
+    
+    // Observer le conteneur des amis
+    const friendsContainer = document.getElementById('friendsContainer');
+    if (friendsContainer) {
+        observer.observe(friendsContainer, { childList: true });
+        
+        // Initialiser les dropdowns existants
+        initializeDropdowns();
+    }
+});

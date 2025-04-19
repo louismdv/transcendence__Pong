@@ -62,6 +62,7 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'allauth.account.middleware.AccountMiddleware',
+    'ft_transcendence.middleware.UserActivityMiddleware',
 ]
 
 ROOT_URLCONF = 'ft_transcendence.urls'

@@ -3,6 +3,7 @@ from django.contrib.auth.models import User
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.core.exceptions import ObjectDoesNotExist
+from django.utils import timezone
 
 class UserProfile(models.Model):
     user = models.OneToOneField(
@@ -18,6 +19,8 @@ class UserProfile(models.Model):
     )
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    is_online = models.BooleanField(default=False)
+    last_activity = models.DateTimeField(default=timezone.now)
 
     class Meta:
         verbose_name = 'User Profile'
