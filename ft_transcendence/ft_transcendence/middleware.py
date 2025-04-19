@@ -1,4 +1,4 @@
-<<<<<<< HEAD
+from django.utils import translation
 from django.utils import timezone
 
 class UserActivityMiddleware:
@@ -18,8 +18,8 @@ class UserActivityMiddleware:
             except Exception as e:
                 print(f"Error updating user online status: {e}")
                 
-=======
-from django.utils import translation
+        return response
+                
 
 class UserLanguageMiddleware:
     def __init__(self, get_response):
@@ -33,5 +33,4 @@ class UserLanguageMiddleware:
                 request.LANGUAGE_CODE = language
         response = self.get_response(request)
         translation.deactivate()
->>>>>>> main
         return response
