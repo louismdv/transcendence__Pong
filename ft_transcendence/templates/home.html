@@ -132,13 +132,40 @@
     <!-- Live Chat -->
     {% include 'livechat.html' %}
 
+
+    <script>
+        function loadScriptOnce(src) {
+            if (!document.querySelector(`script[src="${src}"]`)) {
+                const script = document.createElement('script');
+                script.src = src;
+                document.body.appendChild(script);
+            }
+        }
+
+        function handleHashChange() {
+            const hash = window.location.hash;
+
+            if (hash.includes('#localgame')) {
+                console.log("Loading localgame script");
+                loadScriptOnce("{% static 'js/localgame.js' %}");
+            } else if (hash.includes('#game')) {
+                console.log("Loading onlinegame script");
+                loadScriptOnce("{% static 'js/onlinegame.js' %}");
+            }
+        }
+
+        // Run on page load
+        handleHashChange();
+
+        // Run on hash change
+        window.addEventListener('hashchange', handleHashChange);
+    </script>
+
     <!-- JS Scripts -->
     <script src="{% static 'js/home.js' %}"></script>
     <script src="{% static 'js/livechat.js' %}"></script>
     <script src="{% static 'js/tournament.js' %}"></script>
     <script src="{% static 'js/navigation.js' %}"></script>
-    <script src="{% static 'js/localgame.js' %}"></script>
-    <script src="{% static 'js/onlinegame.js' %}"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
 </body>
 
