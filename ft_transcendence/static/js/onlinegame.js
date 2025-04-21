@@ -2,13 +2,16 @@
 // ************ SETUP ************ //
 
 // COLORS
-const RED = '#ff0000';
-const GREY = '#1c1c1c';
-const BLUE = '#0000ff';
-const WHITE = '#ffffff';
-const BLACK = '#000000';
-const YELLOW = '#ffff00';
-const ORANGE = '#ffa500';
+const COLORS = {
+    RED: '#ff0000',
+    GREY: '#1c1c1c',
+    BLUE: '#0000ff',
+    WHITE: '#ffffff',
+    BLACK: '#000000',
+    YELLOW: '#ffff00',
+    ORANGE: '#ffa500',
+  };
+  
 
 // SETTINGS
 const WINNING_SCORE = 5;
@@ -30,7 +33,8 @@ let downcounting = false;
 let winner = null;
 
 // ************ WEBSOCKETS ************ //
-
+const hash = window.location.hash; 
+const roomName = hash.split('/')[1];
 const gameSocket = new WebSocket(`ws://${window.location.host}/ws/online-game/${roomName}/`);
 
 gameSocket.onclose = function(event) {
@@ -39,6 +43,7 @@ gameSocket.onclose = function(event) {
 gameSocket.onerror = function(event) {
     console.error("WebSocket error observed:", event);
 };
+const clientName = "{{ request.user.username|escapejs }}";
 
 // Event handler for when the connection is successfully opened
 gameSocket.onopen = function(event) {
@@ -317,27 +322,24 @@ function setupEventListeners() {
         keysPressed[event.code] = false;
     });
 }
-function disableScrolling() {
-    function preventDefault(e) {
+function preventDefault(e) {
+    if (e.key === 'ArrowUp' || e.key === 'ArrowDown') {
         e.preventDefault();
     }
-
-    // Add event listener to prevent default scrolling behavior
-    document.addEventListener('keydown', function(e) {
-        if (e.key === 'ArrowUp' || e.key === 'ArrowDown') {
-            preventDefault(e);
-        }
-    });
 }
-// Function to enable scrolling
+
+function disableScrolling() {
+    document.addEventListener('keydown', preventDefault);
+}
+
 function enableScrolling() {
-    // Remove the event listener to re-enable scrolling
     document.removeEventListener('keydown', preventDefault);
 }
+
 function drawCanvas() {
     ctx.fillStyle = GREY;
     ctx.fillRect(0, 0, WIN_W, WIN_H);
-    color = WHITE
+    COLORS = WHITE
     drawScores();
     drawDottedLine();
     players.me.draw();

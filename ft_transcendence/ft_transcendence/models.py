@@ -3,6 +3,7 @@ from django.contrib.auth.models import User
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.core.exceptions import ObjectDoesNotExist
+from django.utils import timezone
 
 class UserProfile(models.Model):
     user = models.OneToOneField(
@@ -18,6 +19,8 @@ class UserProfile(models.Model):
     )
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    is_online = models.BooleanField(default=False)
+    last_activity = models.DateTimeField(default=timezone.now)
 
     class Meta:
         verbose_name = 'User Profile'
@@ -117,3 +120,21 @@ def save_user_profile_and_preferences(sender, instance, **kwargs):
             instance.preferences.save()
     except Exception as e:
         print(f"Error saving UserPreferences: {e}")
+
+class Friendship(models.Model):
+    STATUS_CHOICES = (
+        ('pending', 'En attente'),
+        ('accepted', 'Accepté'),
+        ('rejected', 'Rejeté'),
+        ('blocked', 'Bloqué'),
+    )
+    
+    sender = models.ForeignKey(User, related_name='friendship_requests_sent', on_delete=models.CASCADE)
+    receiver = models.ForeignKey(User, related_name='friendship_requests_received', on_delete=models.CASCADE)
+    status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='pending')
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    
+    class Meta:
+        unique_together = ('sender', 'receiver')
+

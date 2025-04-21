@@ -37,20 +37,23 @@
     </div>
 
     <div class="friends-content">
-        <!-- Barre de recherche -->
-
         <!-- Onglets -->
         <ul class="nav nav-tabs mb-4" id="friendsTabs" role="tablist">
             <li class="nav-item" role="presentation">
                 <button class="nav-link active" id="friends-tab" data-bs-toggle="tab" data-bs-target="#friends" type="button" role="tab" aria-controls="friends" aria-selected="true">
-                    <span class="badge bg-primary rounded-pill ms-2"></span>
                     <i class="bi bi-people-fill me-2"></i>Mes amis
+                    <span class="badge bg-primary rounded-pill ms-2">0</span>
                 </button>
             </li>
             <li class="nav-item" role="presentation">
                 <button class="nav-link" id="requests-tab" data-bs-toggle="tab" data-bs-target="#requests" type="button" role="tab" aria-controls="requests" aria-selected="false">
                     <i class="bi bi-envelope-fill me-2"></i>Demandes
-                    <span class="badge bg-danger rounded-pill ms-2">!</span>
+                    <span class="badge bg-danger rounded-pill ms-2" id="requestCount">0</span>
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="search-tab" data-bs-toggle="tab" data-bs-target="#search" type="button" role="tab" aria-controls="search" aria-selected="false">
+                    <i class="bi bi-search me-2"></i>Recherche
                 </button>
             </li>
             <li class="nav-item" role="presentation">
@@ -58,69 +61,26 @@
                     <i class="bi bi-slash-circle-fill me-2"></i>Bloqués
                 </button>
             </li>
-            <button class="btn btn-primary" type="button" id="add-friend-btn">
-                <i class="bi bi-person-plus-fill me-2"></i>Ajouter
-            </button>
         </ul>
 
         <!-- Contenu des onglets -->
         <div class="tab-content">
             <!-- Onglet Mes amis -->
             <div class="tab-pane fade show active" id="friends" role="tabpanel" aria-labelledby="friends-tab">
-                <div class="row row-cols-1 row-cols-md-2 g-4">
-               
-              
-                    <!-- Ami 3 -->
-                    <div class="col">
-                        <div class="card-custom friend-card">
-                            <div class="card-body">
-                                <div class="friend-header d-flex align-items-center">
-                                    <div class="friend-avatar-wrapper me-3">
-                                        <div class="friend-avatar">
-                                            <img src="../media/ficello.png" alt="Avatar">
-                                        </div>
-                                    </div>
-                                    
-                                    <div class="friend-info">
-                                        <h5 class="friend-name">Joueur3</h5>
-                                        <div class="friend-status">
-                                            <span class="status-indicator online"></span>
-                                            <span class="status-text">En ligne</span>
-                                        </div>
-                                    </div>
-                                    
-                                    <div class="friend-menu ms-auto">
-                                        <button class="menu-button" type="button" data-bs-toggle="dropdown" aria-expanded="true">
-                                            <span class="material-symbols-outlined">more_vert</span>
-                                        </button>
-                                        <ul class="dropdown-menu dropdown-menu-end custom-dropdown">
-                                            <li>
-                                                <a class="dropdown-item text-danger" href="#">
-                                                    <span class="material-symbols-outlined">person_remove</span>
-                                                    <span>Supprimer</span>
-                                                </a>
-                                            </li>
-                                            <li>
-                                                <a class="dropdown-item text-danger" href="#">
-                                                    <span class="material-symbols-outlined">block</span>
-                                                    <span>Bloquer</span>
-                                                </a>
-                                            </li>
-                                        </ul>                                        
-                                    </div>
-                                </div>
-                                
-                                <div class="friend-actions">
-                                    <button class="action-button message-button" onclick="openChat('Joueur3')">
-                                        <span class="material-symbols-outlined">chat</span>
-                                        <span>Message</span>
-                                    </button>
-                                    <button class="action-button invite-button" enabled>
-                                        <span class="material-symbols-outlined">sports_esports</span>
-                                        <span>Inviter à jouer</span>
-                                    </button>
-                                </div>
-                            </div>
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h5>Liste d'amis</h5>
+                    <div class="input-group search-container" style="width: 300px;">
+                        <input type="text" id="friendSearch" class="form-control" placeholder="Rechercher un ami...">
+                        <span class="input-group-text"><i class="bi bi-search"></i></span>
+                    </div>
+                </div>
+                
+                <!-- Container pour la liste d'amis -->
+                <div id="friendsContainer" class="friends-grid">
+                    <!-- Les amis seront chargés ici dynamiquement -->
+                    <div class="d-flex justify-content-center">
+                        <div class="spinner-border text-primary" role="status">
+                            <span class="visually-hidden">Chargement...</span>
                         </div>
                     </div>
                 </div>
@@ -134,66 +94,32 @@
                         <div class="text-muted small">Demandes d'amis en attente</div>
                     </div>
                     <div class="card-body">
-                        <ul class="list-group">
-                            <!-- Demande 1 -->
-                            <li class="list-group-item d-flex align-items-center">
-                                <div class="friend-avatar me-3">
-                                    <img src="../media/ficello.png" alt="Avatar">
+                        <div id="friendRequestsContainer">
+                            <!-- Les demandes seront chargées dynamiquement ici -->
+                            <div class="d-flex justify-content-center">
+                                <div class="spinner-border spinner-border-sm text-primary" role="status">
+                                    <span class="visually-hidden">Chargement...</span>
                                 </div>
-                                <div class="friend-info">
-                                    <h6 class="mb-0">Joueur4</h6>
-                                </div>
-                                <div class="ms-auto">
-                                    <button class="btn btn-sm btn-success me-2">
-                                        <i class="bi bi-check-lg me-1"></i>Accepter
-                                    </button>
-                                    <button class="btn btn-sm btn-danger">
-                                        <i class="bi bi-x-lg me-1"></i>Refuser
-                                    </button>
-                                </div>
-                            </li>
-                            <!-- Demande 2 -->
-                            <li class="list-group-item d-flex align-items-center">
-                                <div class="friend-avatar me-3">
-                                    <img src="../media/ficello.png" alt="Avatar">
-                                </div>
-                                <div class="friend-info">
-                                    <h6 class="mb-0">Joueur5</h6>
-                                </div>
-                                <div class="ms-auto">
-                                    <button class="btn btn-sm btn-success me-2">
-                                        <i class="bi bi-check-lg me-1"></i>Accepter
-                                    </button>
-                                    <button class="btn btn-sm btn-danger">
-                                        <i class="bi bi-x-lg me-1"></i>Refuser
-                                    </button>
-                                </div>
-                            </li>
-                        </ul>
+                            </div>
+                        </div>
                     </div>
                 </div>
+            </div>
+            
+            <!-- Onglet Recherche -->
+            <div class="tab-pane fade" id="search" role="tabpanel" aria-labelledby="search-tab">
                 <div class="card">
-                    <div class="card-header requests-sent-header">
-                        <h5 class="card-title mb-0">Demandes envoyées</h5>
-                        <div class="text-muted small">Demandes en attente de réponse</div>
+                    <div class="card-header">
+                        <h5 class="card-title mb-0">Rechercher des utilisateurs</h5>
                     </div>
                     <div class="card-body">
-                        <ul class="list-group">
-                            <!-- Demande envoyée 1 -->
-                            <li class="list-group-item d-flex align-items-center">
-                                <div class="friend-avatar me-3">
-                                    <img src="../media/ficello.png" alt="Avatar">
-                                </div>
-                                <div class="friend-info">
-                                    <h6 class="mb-0">Joueur6</h6>
-                                </div>
-                                <div class="ms-auto">
-                                    <button class="btn btn-sm btn-outline-danger">
-                                        <i class="bi bi-x-lg me-1"></i>Annuler
-                                    </button>
-                                </div>
-                            </li>
-                        </ul>
+                        <div class="input-group mb-3">
+                            <input type="text" id="userSearch" class="form-control" placeholder="Rechercher par nom d'utilisateur...">
+                            <span class="input-group-text"><i class="bi bi-search"></i></span>
+                        </div>
+                        <div id="searchResults">
+                            <p class="text-muted">Entrez au moins 3 caractères pour rechercher</p>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -206,103 +132,82 @@
                         <div class="text-muted small">Ces utilisateurs ne peuvent pas vous contacter</div>
                     </div>
                     <div class="card-body">
-                        <ul class="list-group">
-                            <!-- Utilisateur bloqué 1 -->
-                            <li class="list-group-item d-flex align-items-center">
-                                <div class="friend-avatar me-3">
-                                    <img src="../media/ficello.png" alt="Avatar">
+                        <div id="blockedUsersContainer">
+                            <!-- Les utilisateurs bloqués seront chargés ici -->
+                            <div class="d-flex justify-content-center">
+                                <div class="spinner-border spinner-border-sm text-primary" role="status">
+                                    <span class="visually-hidden">Chargement...</span>
                                 </div>
-                                <div class="friend-info">
-                                    <h6 class="mb-0">Joueur7</h6>
-                                </div>
-                                <div class="ms-auto">
-                                    <button class="btn btn-sm btn-outline-secondary">
-                                        <i class="bi bi-unlock-fill me-1"></i>Débloquer
-                                    </button>
-                                </div>
-                            </li>
-                        </ul>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-        <!-- Fin contenu des onglets -->
     </div>
+    
+    <!-- Container pour les notifications toast -->
+    <div id="toastContainer" class="toast-container position-fixed bottom-0 end-0 p-3"></div>
 </section>
 
-<!-- Modal pour ajouter un ami -->
-<div class="modal fade" id="addFriendModal" tabindex="-1" aria-labelledby="addFriendModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="addFriendModalLabel">Ajouter un ami</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+<!-- Templates pour les cartes et éléments dynamiques (cachés) -->
+<div class="d-none">
+    <!-- Template pour la carte ami -->
+    <div id="friendCardTemplate">
+        <div class="friend-card" data-friend-id="{id}">
+            <div class="friend-avatar">
+                <img src="{avatar}" alt="{username}" class="avatar">
+                <span class="status-indicator {status}"></span>
             </div>
-            <div class="modal-body">
-                <div class="mb-3">
-                    <label for="friend-username" class="form-label">Nom d'utilisateur</label>
-                    <input type="text" class="form-control" id="friend-username" placeholder="Entrez le nom d'utilisateur">
-                </div>
+            <div class="friend-info">
+                <h6 class="friend-name">{username}</h6>
+                <div class="friend-status">{statusText}</div>
             </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
-                <button type="button" class="btn btn-primary" id="send-friend-request">Envoyer la demande</button>
+            <div class="friend-actions dropdown">
+                <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                    Actions
+                </button>
+                <ul class="dropdown-menu">
+                    <li><a class="dropdown-item" href="#" onclick="openChat('{id}'); return false;">
+                        <i class="bi bi-chat-dots me-2"></i>
+                        <span>Message privé</span>
+                    </a></li>
+                    <li><a class="dropdown-item" href="#" onclick="inviteToGame('{id}'); return false;">
+                        <i class="bi bi-controller me-2"></i>
+                        <span>Inviter à jouer</span>
+                    </a></li>
+                    <li><a class="dropdown-item" href="/profile/{id}">
+                        <i class="bi bi-person me-2"></i>
+                        <span>Voir le profil</span>
+                    </a></li>
+                    <li><hr class="dropdown-divider"></li>
+                    <li><a class="dropdown-item text-warning" href="#" onclick="removeFriend('{id}'); return false;">
+                        <i class="bi bi-person-dash me-2"></i>
+                        <span>Supprimer</span>
+                    </a></li>
+                    <li><a class="dropdown-item text-danger" href="#" onclick="blockFriend('{id}'); return false;">
+                        <i class="bi bi-slash-circle me-2"></i>
+                        <span>Bloquer</span>
+                    </a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div id="blockedUserCardTemplate">
+        <div class="blocked-user-card" data-user-id="{id}">
+            <div class="blocked-user-avatar">
+                <img src="{avatar}" alt="{username}" class="avatar">
+            </div>
+            <div class="blocked-user-info">
+                <h6 class="blocked-user-name">{username}</h6>
+                <div class="blocked-date text-muted small">Bloqué le {blockedDate}</div>
+            </div>
+            <div class="blocked-user-actions">
+                <button class="btn btn-sm btn-outline-secondary" onclick="unblockUser('{id}'); return false;">
+                    <i class="bi bi-unlock me-1"></i>Débloquer
+                </button>
             </div>
         </div>
     </div>
 </div>
-
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        // Ouvrir le modal d'ajout d'ami
-        const addFriendBtn = document.getElementById('add-friend-btn');
-        if (addFriendBtn) {
-            addFriendBtn.addEventListener('click', function() {
-                const addFriendModal = new bootstrap.Modal(document.getElementById('addFriendModal'));
-                addFriendModal.show();
-            });
-        }
-        
-        // Envoyer une demande d'ami
-        const sendFriendRequestBtn = document.getElementById('send-friend-request');
-        if (sendFriendRequestBtn) {
-            sendFriendRequestBtn.addEventListener('click', function() {
-                const username = document.getElementById('friend-username').value;
-                const message = document.getElementById('friend-message') ? document.getElementById('friend-message').value : '';
-                
-                if (username.trim() === '') {
-                    alert('Veuillez entrer un nom d\'utilisateur');
-                    return;
-                }
-                
-                // Simuler l'envoi de la demande
-                alert(`Demande d'ami envoyée à ${username}`);
-                
-                // Fermer le modal
-                const addFriendModal = bootstrap.Modal.getInstance(document.getElementById('addFriendModal'));
-                addFriendModal.hide();
-                
-                // Réinitialiser les champs
-                document.getElementById('friend-username').value = '';
-                if (document.getElementById('friend-message')) {
-                    document.getElementById('friend-message').value = '';
-                }
-            });
-        }
-    });
-    
-    // Fonction pour ouvrir le chat avec un ami
-    function openChat(username) {
-        console.log(`Ouverture du chat avec ${username}`);
-        if (typeof openChatWithUser === 'function') {
-            openChatWithUser(username);
-        } else {
-            const chatLink = document.getElementById('openChatLink');
-            if (chatLink) {
-                chatLink.click();
-            }
-            alert(`Chat ouvert avec ${username}`);
-        }
-    }
-</script>
 
