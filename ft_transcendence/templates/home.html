@@ -73,14 +73,14 @@
         <aside>
             <ul class="sidebar-links">
                 <h4>Main menu</h4>
-                <li><a href="#home" id="homeLink"><span class="material-symbols-outlined" style="color: #F75A6A;">home</span>Home</a></li>
-                <li><a id="openTournamentLink" href="#"><span class="material-symbols-outlined" style="color: #E5C462">trophy</span>Tournament</a></li>
-                <li><a href="#friends" id="friendsLink"><span class="material-symbols-outlined" style="color: #62E573">group</span>Friends</a></li>
-                <li><a id="openChatLink" href="#livechat"><span class="material-symbols-outlined" style="color: #628BE5;">chat</span>Chat</a></li>
-                <li><a href="#board" id="boardLink"><span class="material-symbols-outlined" style="color: #96725F;">leaderboard</span>Board</a></li>
-                <h4>Account</h4>
-                <li><a id="settings-btn" href="#settings"><span class="material-symbols-outlined">Settings</span>Settings</a></li>
-                <li><a href="{% url 'login' %}"><span class="material-symbols-outlined" style="color: #CF0E0F">Logout</span>Log out</a></li>
+                <li><a href="#home" id="homeLink"><span class="material-symbols-outlined" style="color: #F75A6A;">home</span>{% trans "Home" %}</a></li>
+                <li><a id="openTournamentLink" href="#"><span class="material-symbols-outlined" style="color: #E5C462">trophy</span>{% trans "Tournament" %}</a></li>
+                <li><a href="#friends" id="friendsLink"><span class="material-symbols-outlined" style="color: #62E573">group</span>{% trans "Friends" %}</a></li>
+                <li><a id="openChatLink" href="#livechat"><span class="material-symbols-outlined" style="color: #628BE5;">chat</span>{% trans "Chat" %}</a></li>
+                <li><a href="#board" id="boardLink"><span class="material-symbols-outlined" style="color: #96725F;">leaderboard</span>{% trans "Board" %}</a></li>
+                <h4>{% trans "Account" %}</h4>
+                <li><a id="settings-btn" href="#settings"><span class="material-symbols-outlined">Settings</span>{% trans "Settings" %}</a></li>
+                <li><a href="{% url 'login' %}"><span class="material-symbols-outlined" style="color: #CF0E0F">Logout</span>{% trans "Log out" %}</a></li>
             </ul>
         </aside>
 
@@ -88,20 +88,20 @@
         <div id="main-content">
             <div class="main-grid">
                 <div class="gameMode">
-                    <h3>Choose a game mode :</h3>
+                    <h3>{% trans "Choose a game mode :" %}</h3>
                 </div>
                 <div class="flex-container">
                     <div class="card">
                         <div class="centeredTextonImage">solo</div>
                         <button id="localGameBtn" class="glow-on-hover" type="button">
-                            Play local
+                            {% trans "Play local" %}
                             <span class="material-symbols-outlined">arrow_forward</span>
                         </button>
                     </div>
                     <div class="card">
                         <div class="centeredTextonImage">duo</div>
                         <button id="onlineGameBtn" class="glow-on-hover" type="button">
-                            Play online
+                            {% trans "Play online" %}
                             <span class="material-symbols-outlined">language</span>
                         </button>
                     </div>
