@@ -163,3 +163,11 @@ CHANNEL_LAYERS = {
         },
     },
 }
+
+
+# 42 OAuth Settings
+from decouple import config
+
+FT_CLIENT_ID = config("FT_CLIENT_ID")
+FT_CLIENT_SECRET = config("FT_CLIENT_SECRET")
+FT_REDIRECT_URI = "http://localhost:8000/auth/callback/"
