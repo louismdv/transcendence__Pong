@@ -24,23 +24,21 @@
 
     <!-- Custom Styles -->
     <link rel="stylesheet" href="{% static 'games.css' %}">
+    <link rel="stylesheet" href="{% static 'style.css' %}">
     <link rel="stylesheet" href="{% static 'login.css' %}">
     <link rel="stylesheet" href="{% static 'register.css' %}">
-    <link rel="stylesheet" href="{% static 'liveChat.css' %}">
     <link rel="stylesheet" href="{% static 'home.css' %}">
-    <link rel="stylesheet" href="{% static 'style.css' %}">
     <link rel="stylesheet" href="{% static 'settings-page.css' %}">
     <link rel="stylesheet" href="{% static 'friendspage.css' %}">
     <link rel="stylesheet" href="{% static 'gameroom.css' %}">
     <link rel="stylesheet" href="{% static 'lobby.css' %}">
     <link rel="stylesheet" href="{% static 'tournament.css' %}">
+    <link rel="stylesheet" href="{% static 'chatpage.css' %}">
+    <link rel="stylesheet" href="{% static 'liveChat.css' %}">
 
     <!-- Sound Effects -->
     <audio id="hitSoundL" src="{% static 'media/novakL.mp3' %}" preload="auto"></audio>
     <audio id="hitSoundR" src="{% static 'media/novakR.mp3' %}" preload="auto"></audio>
-
-    <!-- HTMX -->
-    <script src="https://unpkg.com/htmx.org@2.0.4" integrity="sha384-HGfztofotfshcF7+8n44JQL2oJmowVChPTg48S+jvZoztPfvwD79OC/LTtG6dMp+" crossorigin="anonymous"></script>
 
     {% block title %}<title>Pong Game Home</title>{% endblock title %}
     {% block extra-head %}{% endblock extra-head %}
@@ -72,11 +70,11 @@
         <!-- Sidebar -->
         <aside>
             <ul class="sidebar-links">
-                <h4>Main menu</h4>
+                <h4>{% trans "Main menu" %}</h4>
                 <li><a href="#home" id="homeLink"><span class="material-symbols-outlined" style="color: #F75A6A;">home</span>{% trans "Home" %}</a></li>
-                <li><a id="openTournamentLink" href="#"><span class="material-symbols-outlined" style="color: #E5C462">trophy</span>{% trans "Tournament" %}</a></li>
+                <li><a id="openTournamentLink" href="#tournament"><span class="material-symbols-outlined" style="color: #E5C462">trophy</span>{% trans "Tournament" %}</a></li>
                 <li><a href="#friends" id="friendsLink"><span class="material-symbols-outlined" style="color: #62E573">group</span>{% trans "Friends" %}</a></li>
-                <li><a id="openChatLink" href="#livechat"><span class="material-symbols-outlined" style="color: #628BE5;">chat</span>{% trans "Chat" %}</a></li>
+                <li><a id="chatLink" href="#chat"><span class="material-symbols-outlined" style="color: #628BE5;">chat</span> {% trans "Chat" %}<span class="badge bg-danger rounded-pill ms-2 unread-count">0</span></a></li>
                 <li><a href="#board" id="boardLink"><span class="material-symbols-outlined" style="color: #96725F;">leaderboard</span>{% trans "Board" %}</a></li>
                 <h4>{% trans "Account" %}</h4>
                 <li><a id="settings-btn" href="#settings"><span class="material-symbols-outlined">Settings</span>{% trans "Settings" %}</a></li>
@@ -86,59 +84,69 @@
 
         <!-- Main Content -->
         <div id="main-content">
-            <div class="main-grid">
-                <div class="gameMode">
-                    <h3>{% trans "Choose a game mode :" %}</h3>
-                </div>
-                <div class="flex-container">
-                    <div class="card">
-                        <div class="centeredTextonImage">solo</div>
-                        <button id="localGameBtn" class="glow-on-hover" type="button">
-                            {% trans "Play local" %}
-                            <span class="material-symbols-outlined">arrow_forward</span>
-                        </button>
+            <!-- Home Section - Explicitement défini avec un ID -->
+            {% comment %} <section id="home-section"> {% endcomment %}
+                <div class="main-grid">
+                    <div class="gameMode">
+                        <h3>{% trans "Choose a game mode :" %}</h3>
                     </div>
-                    <div class="card">
-                        <div class="centeredTextonImage">duo</div>
-                        <button id="onlineGameBtn" class="glow-on-hover" type="button">
-                            {% trans "Play online" %}
-                            <span class="material-symbols-outlined">language</span>
-                        </button>
+                    <div class="flex-container">
+                        <div class="card">
+                            <div class="centeredTextonImage">solo</div>
+                            <button id="localGameBtn" class="glow-on-hover" type="button">
+                                {% trans "Play local" %}
+                                <span class="material-symbols-outlined">arrow_forward</span>
+                            </button>
+                        </div>
+                        <div class="card">
+                            <div class="centeredTextonImage">duo</div>
+                            <button id="onlineGameBtn" class="glow-on-hover" type="button">
+                                {% trans "Play online" %}
+                                <span class="material-symbols-outlined">language</span>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="gameMode">
+                        <h3>{% trans "DashBoard :" %}</h3>
+                    </div>
+                    <div class="dash">{% trans "Checkout your stats" %}
+                        <span class="material-symbols-outlined">Open_in_new</span>
                     </div>
                 </div>
-                <div class="gameMode">
-                    <h3>DashBoard :</h3>
-                </div>
-                <div class="dash">Checkout your stats
-                    <span class="material-symbols-outlined">Open_in_new</span>
-                </div>
-            </div>
+            {% comment %} </section> {% endcomment %}
 
-            <!-- Sections -->
+            <!-- Autres sections -->
             <section id="localgame-section" style="display: none;">{% include 'localgame.html' %}</section>
             <section id="onlinegame-section" style="display: none;">{% include 'lobby.html' %}</section>
             <section id="game-room-section" style="display: none;">{% include 'gameroom.html' %}</section>
             <section id="settings-section" style="display: none;">{% include 'settingspage.html' %}</section>
             <section id="tournament-section" style="display: none;">{% include 'tournament.html' %}</section>
-            <section id="friendspage" style="display: none;">{% include 'friendspage.html' %}</section>
+            <section id="friends-section" style="display: none;">{% include 'friendspage.html' %}</section>
+            <section id="chat-section" style="display: none;">{% include 'chatpage.html' %}</section>
         </div>
 
+        <!-- Bouton de chat flottant -->
+        <div class="chat-float-button" id="chatFloatButton">
+            <span class="material-symbols-outlined">chat</span>
+            <span class="chat-notification-badge" id="chatNotificationBadge" style="display: none;">0</span>
+        </div>
         <!-- Footer -->
         <footer>
             42Transcendence
         </footer>
+        {% include 'livechat.html' %}
     </div>
-
-    <!-- Live Chat -->
-    {% include 'livechat.html' %}
 
     <!-- JS Scripts -->
     <script src="{% static 'js/home.js' %}"></script>
-    <script src="{% static 'js/livechat.js' %}"></script>
-    <script src="{% static 'js/tournament.js' %}"></script>
-    <script src="{% static 'js/navigation.js' %}"></script>
     <script src="{% static 'js/localgame.js' %}"></script>
     <script src="{% static 'js/onlinegame.js' %}"></script>
+    <script src="{% static 'js/tournament.js' %}"></script>
+    <script src="{% static 'js/settings-page.js' %}"></script>
+    <script src="{% static 'js/chatpage.js' %}"></script>
+    <script src="{% static 'js/livechat.js' %}"></script>
+    <script src="{% static 'js/navigation.js' %}"></script>
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
 </body>
 
