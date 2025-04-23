@@ -37,8 +37,8 @@
     <link rel="stylesheet" href="{% static 'liveChat.css' %}">
 
     <!-- Sound Effects -->
-    <audio id="hitSoundL" src="{% static 'media/novakL.mp3' %}" preload="auto"></audio>
-    <audio id="hitSoundR" src="{% static 'media/novakR.mp3' %}" preload="auto"></audio>
+    <audio id="hitSoundL" src="{% static '../media/novakL.mp3' %}" preload="auto"></audio>
+    <audio id="hitSoundR" src="{% static '../media/novakR.mp3' %}" preload="auto"></audio>
 
     {% block title %}<title>Pong Game Home</title>{% endblock title %}
     {% block extra-head %}{% endblock extra-head %}
@@ -49,7 +49,7 @@
         <!-- Header -->
         <header>
             <div class="logo">
-                <img src="{% static 'media/logo.svg' %}" alt="Pong logo" width="40" height="40">
+                <img src="{% static '../media/logo.svg' %}" alt="Pong logo" width="40" height="40">
                 PONG
             </div>
             <div id="page-title" class="page-index">Home</div>
