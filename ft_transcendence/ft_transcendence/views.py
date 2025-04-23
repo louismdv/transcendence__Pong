@@ -769,3 +769,9 @@ def set_language_ajax(request):
             translation.activate(lang)
             return JsonResponse({'status': 'ok'})
     return JsonResponse({'status': 'error'}, status=400)
+
+@login_required
+def chatpage(request):
+    if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+        return render(request, 'chatpage.html')
+    return redirect('home')

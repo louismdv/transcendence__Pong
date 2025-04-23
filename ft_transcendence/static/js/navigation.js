@@ -5,12 +5,15 @@ document.addEventListener('DOMContentLoaded', function() {
     const settingsBtn = document.getElementById('settings-btn');
     const openTournamentLink = document.getElementById('openTournamentLink');
     const boardLink = document.getElementById('boardLink');
+    const chatLink = document.getElementById('chatLink'); // Ajout du lien chat
+    
     // Ces variables représentent les sections de ton SPA
     const gameSection = document.querySelector('.main-grid');
     const settingsSection = document.getElementById('settings-section');
     const tournamentSection = document.getElementById('tournament-section');
-    const friendsSection = document.getElementById('friendspage');
+    const friendsSection = document.getElementById('friends-section');
     const boardSection = document.getElementById('board-section');
+    const chatSection = document.getElementById('chat-section'); // Ajout de la section chat
     const pageTitle = document.getElementById('page-title');
     const localGameSection = document.getElementById("localgame-section");
     const joinRoomBtn = document.getElementById('room-name-submit');
@@ -30,7 +33,8 @@ document.addEventListener('DOMContentLoaded', function() {
         localGameSection.style.display = "none";
         onlineGameSection.style.display = "none";
         gameRoomSection.style.display = "none";
-        if (boardSection) boardSection.style.display = "none"; 
+        if (boardSection) boardSection.style.display = "none";
+        if (chatSection) chatSection.style.display = "none"; // Ajout de la section chat
     }
     
     function updateActiveLink(activeElement) {
@@ -59,14 +63,6 @@ document.addEventListener('DOMContentLoaded', function() {
         window.location.hash = '#friends';
     }
     
-    function navigateToSettings() {
-        hideAllSections();
-        if (settingsSection) settingsSection.style.display = 'block';
-        pageTitle.textContent = 'Settings';
-        pageTitle.className = 'page-settings';
-        updateActiveLink(settingsBtn);
-        window.location.hash = '#settings';
-    }
     
     function navigateToTournament() {
         hideAllSections();
@@ -85,6 +81,17 @@ document.addEventListener('DOMContentLoaded', function() {
         updateActiveLink(boardLink);
         window.location.hash = '#board';
     }
+    
+    // Nouvelle fonction pour naviguer vers la page de chat
+    function navigateToChat() {
+        hideAllSections();
+        if (chatSection) chatSection.style.display = 'block';
+        pageTitle.textContent = 'Chat';
+        pageTitle.className = 'page-chat';
+        updateActiveLink(chatLink);
+        window.location.hash = '#chat';
+    }
+    
     function navigateToLocalGame() {
         hideAllSections(); 
         if (localGameSection) {
@@ -92,19 +99,28 @@ document.addEventListener('DOMContentLoaded', function() {
         }
         window.location.hash = '#localgame';
     }
+    
     function navigateToGameRoom(roomName) {
         hideAllSections();
         if (gameRoomSection) {
             gameRoomSection.style.display = 'block';
         }
         window.location.hash = `#game/${roomName}`;
-    
+        
         const roomDisplay = document.getElementById('room-name-display');
         if (roomDisplay) {
             roomDisplay.textContent = `Room: ${roomName}`;
         }
     }
     
+    function navigateToSettings() {
+        hideAllSections();
+        if (settingsSection) settingsSection.style.display = 'block';
+        pageTitle.textContent = 'Settings';
+        pageTitle.className = 'page-settings';
+        updateActiveLink(settingsBtn);
+        window.location.hash = '#settings';
+    }
     function navigateToOnlineGameLobby() {
         hideAllSections();
         if (onlineGameSection) {
@@ -121,11 +137,10 @@ document.addEventListener('DOMContentLoaded', function() {
             const roomName = roomNameInput.value.trim();
             if (roomName) {
                 navigateToGameRoom(roomName);
-            } else {
-                alert("Veuillez entrer un nom de room valide.");
-            }
+            } 
         });
     }
+
     if (homeLink) {
         homeLink.addEventListener('click', function(e) {
             e.preventDefault();
@@ -156,6 +171,13 @@ document.addEventListener('DOMContentLoaded', function() {
             navigateToBoard();
         });
     }
+    // Ajout de l'écouteur d'événement pour le lien chat
+    if (chatLink) {
+        chatLink.addEventListener('click', function(e) {
+            e.preventDefault();
+            navigateToChat();
+        });
+    }
     if (localGameBtn) {
         localGameBtn.addEventListener("click", function (e) {
             e.preventDefault();
@@ -183,15 +205,13 @@ document.addEventListener('DOMContentLoaded', function() {
             navigateToTournament();
         } else if (hash === '#board') {
             navigateToBoard();
-        } 
-        else if (hash === '#localgame') {
+        } else if (hash === '#chat') { // Ajout de la gestion du hash pour le chat
+            navigateToChat();
+        } else if (hash === '#localgame') {
             navigateToLocalGame();
-        }
-        else if (hash === '#onlinegame') {
+        } else if (hash === '#onlinegame') {
             navigateToOnlineGameLobby();
-        }
-        
-       else if (match) {
+        } else if (match) {
             const roomName = match[1];
             navigateToGameRoom(roomName); // Rediriger vers la game room avec le nom
         } else {

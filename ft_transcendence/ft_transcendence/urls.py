@@ -8,6 +8,7 @@ urlpatterns = [
     path('', views.home, name='home'),
     path('online-game/', include('online_game.urls')),
     path('login/', views.login_view, name='login'),
+    path('chatpage/', views.chatpage, name='chatpage'),
     path('register/', views.register, name='register'),
     path('livechat/', views.livechat, name='livechat'),
     path('local-game/', views.localgame, name='localgame'),
