@@ -104,7 +104,8 @@
 #game-header {
     display: flex;
     flex-direction: row;
-    width: 80%;
+    width: 50%;
+    min-width: 500px;
     font-size: 20px;
     justify-content: space-evenly;
     align-items: center;

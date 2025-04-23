@@ -48,9 +48,9 @@ document.addEventListener('DOMContentLoaded', function() {
     function navigateToHome() {
         hideAllSections();
         if (gameSection) gameSection.style.display = 'grid';
-        pageTitle.textContent = 'Home';
+        pageTitle.textContent = "Home"; // Replace with localized string if needed
         pageTitle.className = 'page-index';
-        updateActiveLink(homeLink);
+        updateActiveLink(homeLink); 
         window.location.hash = '#home';
     }
     
@@ -105,12 +105,9 @@ document.addEventListener('DOMContentLoaded', function() {
         if (gameRoomSection) {
             gameRoomSection.style.display = 'block';
         }
+        pageTitle.textContent = 'Online Game';
         window.location.hash = `#game/${roomName}`;
-        
-        const roomDisplay = document.getElementById('room-name-display');
-        if (roomDisplay) {
-            roomDisplay.textContent = `Room: ${roomName}`;
-        }
+        document.getElementById('roomCode').value = roomName;
     }
     
     function navigateToSettings() {
@@ -126,7 +123,6 @@ document.addEventListener('DOMContentLoaded', function() {
         if (onlineGameSection) {
             onlineGameSection.style.display = 'block';
         }
-        pageTitle.textContent = 'Online Game';
         pageTitle.className = 'page-online';
         window.location.hash = '#onlinegame';
     }
@@ -214,6 +210,7 @@ document.addEventListener('DOMContentLoaded', function() {
         } else if (match) {
             const roomName = match[1];
             navigateToGameRoom(roomName); // Rediriger vers la game room avec le nom
+            document.getElementById('roomCode').value = roomName;
         } else {
             navigateToHome();
         }

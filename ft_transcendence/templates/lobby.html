@@ -15,22 +15,50 @@
         {% endif %}
     </div>
 </section>
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const roomNameInput = document.getElementById('room-name-input');
-        const joinRoomBtn = document.getElementById('room-name-submit');
 
-        joinRoomBtn.addEventListener('click', function () {
-            const roomName = roomNameInput.value.trim();
-            if (roomName) {
-                // Met à jour le hash pour déclencher `navigateToGameRoom()` dans navigation.js
-                window.location.hash = `#game/${roomName}`;
-            } else {
-                alert("Please enter a valid room name.");
-            }
-        });
+<script>
+    const inputField = document.querySelector('#room-name-input');
+    const submitButton = document.querySelector('#room-name-submit');
+
+    // Focus on input field
+    inputField.focus();
+
+    // Trigger submit on Enter key
+    inputField.onkeyup = function(e) {
+        if (e.key === 'Enter') {  
+            submitButton.click();
+        }
+    };
+
+    // Trigger submit when user pastes content
+    inputField.addEventListener('paste', function() {
+        setTimeout(() => submitButton.click(), 0); // Ensures pasted text is captured
     });
-    
+
+    function validateRoomName(roomName) {
+        // Regular expression that only allows alphanumeric characters
+        const validPattern = /^[a-zA-Z0-9]+$/;
+        
+        if (!roomName) {
+            alert("Room Name Error: Room name cannot be empty");
+            return false;
+        }
+        
+        if (!validPattern.test(roomName)) {
+            alert("Invalid Format: Room name can only contain letters and numbers (no spaces or special characters)");
+            return false;
+        }
+        
+        return true;
+    }
+
+    submitButton.onclick = function() {
+        const roomName = inputField.value.trim();
+        console.log(roomName);
+        if (validateRoomName(roomName)) {
+            window.location.hash = `#game/${roomName}`;
+        }
+    };
 </script>
 
 <script src="{% static 'js/navigation.js' %}"></script>

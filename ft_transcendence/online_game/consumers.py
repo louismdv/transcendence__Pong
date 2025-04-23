@@ -43,60 +43,60 @@ class GameConsumer(AsyncWebsocketConsumer):
         await self.accept()
         print(f"[connection] New ws connection accepted: {self.room_name}")
 
-    
+        
 ## **************** DISCONNECTION MGNT **************** ##
 
-    async def end_game(self):
-        """Mark the current game as finished but keep the room code"""
-        redis_client.hset(self.room_name, "game_status", "end_game")
-        
-        print("Game room destroyed after 10 seconds")
-        
-
-    async def disconnect(self, close_code):
+    async def disconnect(self, code=1000):
 
         playerL_id = await self.get_value_from_player("playerL", "id")
         playerR_id = await self.get_value_from_player("playerR", "id")
-        game_state = redis_client.hgetall(self.room_name)
-        # Check if room is empty
-        if playerL_id == self.id or playerR_id == self.id:
+        is_playerL = self.id == playerL_id
+        is_playerR = self.id == playerR_id
+        playerL_connected = await self.get_value_from_player("playerL", "connected")
+        playerR_connected = await self.get_value_from_player("playerR", "connected")
+
+        # Decrease player count if the disconnecting player was marked as connected
+        if (is_playerL and playerL_connected):
             redis_client.hincrby(self.room_name, "player_count", -1)
-        self.player_count = int(redis_client.hget(self.room_name, "player_count"))
-        print(f"updated player_count aft: {self.player_count}")
-        
-        
+            await self.update_redis_dict("playerL", "connected", False)
+        elif (is_playerR and playerR_connected):
+            redis_client.hincrby(self.room_name, "player_count", -1)
+            await self.update_redis_dict("playerR", "connected", False)
+
+        # Update local count
+        self.player_count = int(redis_client.hget(self.room_name, "player_count") or 0)
+        print(f"[disconnect] Updated player_count: {self.player_count}")
+
+        # Clean up if no one is left
         if self.player_count <= 0:
-            # Remove room data from Redis
-            
-            # add data to postgres db
-            print(game_state)
-
+            print(f"[disconnect] No players left. Cleaning up room {self.room_name}")
             redis_client.delete(self.room_name)
-            # Remove from active rooms set
             redis_client.srem("active_game_rooms", self.room_name)
-            print(f"Room {self.room_name} removed from active rooms")
-            
-        elif (self.id == playerL_id or self.id == playerR_id) and self.player_count == 1:
-            # pause game if a players
+        # Pause game and save state if only one player remains
+        if (is_playerL or is_playerR) and self.player_count == 1:
+            print(f"[disconnect] Pausing game for room {self.room_name}")
             redis_client.hset(self.room_name, "game_status", "paused")
-            # Save game state for reconnection
-            game_state = redis_client.hgetall(self.room_name) # Implement this method to get the current game state
-            redis_client.hset(self.room_name, "interrupted_game_state", json.dumps(game_state))
-            print(f"Game state saved for room {self.room_name}")
-        
-        # Leave room group
-        await self.channel_layer.group_discard(
-            self.room_group_name,
-            self.channel_name
-        )
-        print(f"WebSocket disconnected: {self.room_name}")
 
+            # Optional: Clean old state before saving
+            redis_client.hdel(self.room_name, "interrupted_game_state")
+
+            # Get full game state and save it for reconnection
+            game_state = redis_client.hgetall(self.room_name)
+            redis_client.hset(self.room_name, "interrupted_game_state", json.dumps(game_state))
+
+            print(f"[disconnect] Game state saved for room {self.room_name}")
+
+        # Leave the room group
+        await self.channel_layer.group_discard(self.room_group_name, self.channel_name)
+        await self.close()
+        print(f"[disconnect] WebSocket disconnected: {self.room_name}")
+        
     async def receive(self, text_data):
-    
         data = json.loads(text_data)
-        # print(f"data recieved type: {data.get('type')}")
         
         match data.get('type'):
+            case 'player_left_game_section':
+                await self.disconnect()
             case 'initial_message':
                 await self.handle_initial_message(data)
             case 'ready':
@@ -181,6 +181,16 @@ class GameConsumer(AsyncWebsocketConsumer):
 
 ## **************** HANDLERs **************** ##
 
+
+
+    async def start_game(self, event):
+        game_state = event['game_state']
+        print(f"Game started! Initial game state: {game_state}")
+      
+        await self.send(text_data=json.dumps({
+            'type': 'start_game',
+            'game_state': game_state
+        }))        
     async def start_game(self, event):
         game_state = event['game_state']
         print(f"Game started! Initial game state: {game_state}")
@@ -243,26 +253,16 @@ class GameConsumer(AsyncWebsocketConsumer):
         print(f"game_status: {game_status}, player_count: {current_player_count}")
         
         # Validate connection
-        connection_allowed = True
-        rejection_message = ""
-        
-        # Case 1: Game is paused (interrupted)
-        if game_status == "paused":
-            # Only original players can reconnect
-            if self.id != playerL_id and self.id != playerR_id:
-                connection_allowed = False
-                rejection_message = "This game is waiting for the original players to reconnect"
-        
-        # Case 2: Room is full (2 players already)
-        elif current_player_count >= 2 and self.id != playerL_id and self.id != playerR_id:
-            connection_allowed = False
-            rejection_message = "Game is full! This room already has 2 players."
-        
-        # Case 3: Game is actively playing
-        elif game_status == "playing" and self.id != playerL_id and self.id != playerR_id:
-            connection_allowed = False
-            rejection_message = "This game is already in progress"
-        
+        connection_allowed = False
+
+        # Allowed if reconnecting as existing player
+        if self.id == playerL_id or self.id == playerR_id:
+            connection_allowed = True
+        # Allowed if room has space and you're a new player
+        elif current_player_count < 2:
+            connection_allowed = True
+        else:
+            rejection_message = "Game is full or in progress. You are not part of this room."
         # If connection is not allowed, reject it
         if not connection_allowed:
             await self.send(text_data=json.dumps({
@@ -273,27 +273,26 @@ class GameConsumer(AsyncWebsocketConsumer):
             await self.close(1000)  # Close the connection with a normal closure status code
             return
         
-        # Connection allowed - join room and increment counter
-        await self.channel_layer.group_add(
-            self.room_group_name,
-            self.channel_name
-        )
-        
-        # Only increment player count if this is not a reconnection
-        # if not (game_status == "paused" and (self.id == playerL_id or self.id == playerR_id)):
+        # --- Proceed with connection ---
+        # Add player to room group
+        await self.channel_layer.group_add(self.room_group_name, self.channel_name)
+
+        # Save the current channel name for future disconnect handling (optional)
+        redis_client.hset(f"user:{self.id}", "channel_name", self.channel_name)
+
+        # Don't count reconnecting players again
+        # if self.id != playerL_id and self.id != playerR_id:
         redis_client.hincrby(self.room_name, "player_count", 1)
-        
         self.player_count = int(redis_client.hget(self.room_name, "player_count") or 0)
-        print(f"Updated player_count: {self.player_count}")
+
+        print(f"[handle_initial_message] Connection accepted. Updated player_count: {self.player_count}")
         
-        # Check if the player is reconnecting to an interrupted game
+        # either restore player state in room else create own player in room
         if game_status == "paused" and (self.id == playerL_id or self.id == playerR_id):
             if await self.restore_game_state():
                 print(f"Player {self.id} has reconnected to interrupted game")
         else:
-            # Create new player in Redis
-            await self.create_redis_players()
-            
+            await self.create_redis_players()            
 
     async def handle_gameover(self, data):
         """Handles game over state."""
@@ -301,14 +300,11 @@ class GameConsumer(AsyncWebsocketConsumer):
         # Optionally save any game stats you want to persist
         redis_client.hset(self.room_name, "game_status", "game_over")
         redis_client.hset(self.room_name, "winner", data.get("winner"))
-        print(f"Game over! Winner: {data.get('winner')}")
         print("Game over message received.")
-        await self.end_game()
-        print(self.player_count)
-        redis_client.hincrby(self.room_name, "player_count", -1)
+        print(f"Game over! Winner: {data.get('winner')}")
         self.player_count = int(redis_client.hget(self.room_name, "player_count"))
         print(self.player_count)
-        await self.disconnect(1000)  # Close the connection with a normal closure status code
+        await self.close()  # Close the connection with a normal closure status code
         
 
 
@@ -325,7 +321,8 @@ class GameConsumer(AsyncWebsocketConsumer):
                 "x": MARGIN,
                 "y": WIN_H / 2 - PLAYER_H / 2,
                 "old_y": None,
-                "confirmed_ready": False
+                "confirmed_ready": False,
+                "connected": True
             }))
         elif (player_key == "playerR"):
                         redis_client.hset(self.room_name, player_key, json.dumps({
@@ -334,7 +331,8 @@ class GameConsumer(AsyncWebsocketConsumer):
                 "x": WIN_W - MARGIN - PLAYER_W,
                 "y": WIN_H / 2 - PLAYER_H / 2,
                 "old_y": None,
-                "confirmed_ready": False
+                "confirmed_ready": False,
+                "connected": True
             }))
         print(f"{player_key} stored in Redis:", redis_client.hget(self.room_name, player_key))
 
@@ -480,7 +478,11 @@ class GameConsumer(AsyncWebsocketConsumer):
         
         if playerL_id == self.id or playerR_id == self.id:
             game_state_json = redis_client.hget(self.room_name, "interrupted_game_state")
-            
+            if (playerL_id == self.id):
+                await self.update_redis_dict("playerL", "connected", True)
+            elif (playerR_id == self.id):
+                await self.update_redis_dict("playerR", "connected", True)
+
             if game_state_json is None:
                 print(f"No interrupted game state found for room {self.room_name}")
                 await self.send(text_data=json.dumps({
