@@ -36,8 +36,8 @@
     <link rel="stylesheet" href="{% static 'tournament.css' %}">
 
     <!-- Sound Effects -->
-    <audio id="hitSoundL" src="{% static 'media/novakL.mp3' %}" preload="auto"></audio>
-    <audio id="hitSoundR" src="{% static 'media/novakR.mp3' %}" preload="auto"></audio>
+    <audio id="hitSoundL" src="{% static '../media/novakL.mp3' %}" preload="auto"></audio>
+    <audio id="hitSoundR" src="{% static '../media/novakR.mp3' %}" preload="auto"></audio>
 
     <!-- HTMX -->
     <script src="https://unpkg.com/htmx.org@2.0.4" integrity="sha384-HGfztofotfshcF7+8n44JQL2oJmowVChPTg48S+jvZoztPfvwD79OC/LTtG6dMp+" crossorigin="anonymous"></script>
@@ -51,7 +51,7 @@
         <!-- Header -->
         <header>
             <div class="logo">
-                <img src="{% static 'media/logo.svg' %}" alt="Pong logo" width="40" height="40">
+                <img src="{% static '../media/logo.svg' %}" alt="Pong logo" width="40" height="40">
                 PONG
             </div>
             <div id="page-title" class="page-index">Home</div>
@@ -132,14 +132,17 @@
     <!-- Live Chat -->
     {% include 'livechat.html' %}
 
-
     <script>
-        function loadScriptOnce(src) {
-            if (!document.querySelector(`script[src="${src}"]`)) {
-                const script = document.createElement('script');
-                script.src = src;
-                document.body.appendChild(script);
+        window.currentUserAvatar = "{{ user.userprofile.avatar.url|default:'../media/avatars/default.png' }}";
+        window.currentUsername = "{{ request.user.username }}";
+        function loadScriptFresh(src) {
+            const oldScript = document.querySelector(`script[src="${src}"]`);
+            if (oldScript) {
+                oldScript.remove();
             }
+            const script = document.createElement('script');
+            script.src = src + '?v=' + new Date().getTime(); // cache-buster
+            document.body.appendChild(script);
         }
 
         function handleHashChange() {
@@ -147,17 +150,17 @@
 
             if (hash.includes('#localgame')) {
                 console.log("Loading localgame script");
-                loadScriptOnce("{% static 'js/localgame.js' %}");
+                loadScriptFresh("{% static 'js/localgame.js' %}");
             } else if (hash.includes('#game')) {
                 console.log("Loading onlinegame script");
-                loadScriptOnce("{% static 'js/onlinegame.js' %}");
+                loadScriptFresh("{% static 'js/onlinegame.js' %}");
             }
         }
 
         // Run on page load
         handleHashChange();
 
-        // Run on hash change
+        // // Run on hash change
         window.addEventListener('hashchange', handleHashChange);
     </script>
 

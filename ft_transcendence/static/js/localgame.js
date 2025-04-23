@@ -1,3 +1,6 @@
+
+(() => {
+
 document.getElementById('page-title').textContent = "Local Game Mode";
 const canvas = document.getElementById('localgameCanvas');
 const ctx = canvas.getContext('2d');
@@ -327,3 +330,5 @@ function gameLoop() {
     }
     requestAnimationFrame(updateGame);
 }
+
+})();
