@@ -1,5 +1,5 @@
 const body = document.querySelector('body');
-const btn = document.querySelector('.btn');
+const btn = document.querySelector('.btn-light');
 const icon = document.querySelector('.btn__icon');
 
 //to save the dark mode use the object "local storage".

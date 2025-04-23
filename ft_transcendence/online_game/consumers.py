@@ -44,8 +44,6 @@ class GameConsumer(AsyncWebsocketConsumer):
         print(f"[connection] New ws connection accepted: {self.room_name}")
 
     
-
-
 ## **************** DISCONNECTION MGNT **************** ##
 
     async def end_game(self):
