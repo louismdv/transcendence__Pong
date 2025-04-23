@@ -1,0 +1,82 @@
+/* --primary-color: #313131;
+--background-color: #f2f0ef;
+--text-color: #fff;
+--secondary-color:#451b96;
+--color: #9176FF;
+--dark-color: #141414;
+--full-black:#171719;
+--dark-mode:#3e4147;
+--dark-icon-color: #fff;
+--light-color: #f7f7f7;
+--light-icon-color: #FFDE59;
+--btn-size: 105px;
+--indicator-size: 50px; */
+.darkmode .chat-window-header {
+    background: #3c3c3c;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.5);
+}
+
+.darkmode .chat-user-status-text,
+.darkmode .chat-user-details h6,
+.darkmode .chat-window-header .material-symbols-outlined {
+    color: var(--dark-icon-color);
+}
+
+.darkmode .chat-window-body {
+    background: radial-gradient(circle at bottom right, var(--full-black), var(--color));
+}
+
+.darkmode .chat-window-footer {
+    background: #3c3c3c;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.darkmode .chat-input {
+    background: rgba(42, 42, 42, 0.11);
+    border: 1px solid rgba(0, 0, 0, 0.46);
+    color: var(--dark-icon-color);
+}
+
+.darkmode .chat-input::placeholder {
+    color: rgba(255, 255, 255, 0.5);
+}
+
+.darkmode .chat-message.sent .message-content {
+    background-color: var(--color);
+    color: #fff;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.darkmode .chat-message.received .message-content {
+    background-color: rgba(255, 255, 255, 0.05);
+    color: #eee;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(4px);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+}
+
+.darkmode .message-time {
+    color: rgba(255, 255, 255, 0.5);
+}
+
+.darkmode .chat-send-button {
+    background: var(--color);
+    color: #fff;
+}
+
+.darkmode .chat-send-button:hover {
+    background: var(--secondary-color);
+}
+
+.darkmode .chat-action-button {
+    color: rgba(255, 255, 255, 0.7);
+}
+
+.darkmode .chat-action-button:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: #fff;
+}
+
+.darkmode .chat-day-separator::before {
+    background: rgba(255, 255, 255, 0.1);
+}

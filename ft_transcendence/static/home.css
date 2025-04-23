@@ -1,4 +1,3 @@
-
 /* Globval layout using Grid CSS */
 .grid-wrapper {
     display: grid;
@@ -10,17 +9,19 @@
     grid-template-rows: auto 1fr auto;
     min-height: 100vh;
 }
+
 /* HEADER */
 .logo {
     display: flex;
-    align-items:center;
-    font-family:Fugaz One;
-    font-size:50px;
-    cursor:pointer;
+    align-items: center;
+    font-family: Fugaz One;
+    font-size: 50px;
+    cursor: pointer;
     height: 100%;
     margin-left: 20px;
     width: 300px;
 }
+
 .page-index {
     text-align: center;
     justify-content: center;
@@ -38,6 +39,7 @@
     margin-right: 20px;
     width: 300px;
 }
+
 .left-account-section .user-profile {
     display: flex;
     padding: 10px;
@@ -49,9 +51,12 @@
 }
 
 .left-account-section .user-profile img {
-    width: 50px; /* Adjust the size of the image */
-    height: 50px; /* Adjust the size of the image */
-    border-radius: 50%; /* Ensures the image itself is circular */
+    width: 50px;
+    /* Adjust the size of the image */
+    height: 50px;
+    /* Adjust the size of the image */
+    border-radius: 50%;
+    /* Ensures the image itself is circular */
 }
 
 
@@ -63,26 +68,32 @@
     overflow-x: hidden;
     transition: all 0.4s ease;
 }
+
 aside:hover .sidebar-links {
     transition: all 0.4s ease;
     width: 170px;
 }
-.sidebar-links h4{
+
+.sidebar-links h4 {
     margin: 15px 0 5px;
     font-size: 1.2em;
     opacity: 0;
     width: auto;
     white-space: nowrap;
 }
+
 aside:hover .sidebar-links h4 {
     transition: all 0.4s ease;
     opacity: 1;
-    width: auto; /* removes the issue of text overlapping */
+    width: auto;
+    /* removes the issue of text overlapping */
     white-space: nowrap;
 }
+
 .sidebar-links li {
     margin: 10px 0;
 }
+
 .sidebar-links a {
     text-decoration: none;
     color: #000;
@@ -90,8 +101,9 @@ aside:hover .sidebar-links h4 {
     align-items: center;
     margin-right: 10px;
 }
-.sidebar-links li a{
-    
+
+.sidebar-links li a {
+
     display: flex;
     align-items: center;
     gap: 0 20px;
@@ -100,8 +112,9 @@ aside:hover .sidebar-links h4 {
     text-decoration: none;
     font-weight: 500;
 }
+
 .sidebar-links li a:hover {
-  border-radius: 10px;
+    border-radius: 10px;
 }
 
 
@@ -113,36 +126,44 @@ aside:hover .sidebar-links h4 {
     gap: 10px;
     padding: 20px;
 }
+
 /* .main-grid > div {
     text-align: center;
     font-size: 30px;
 } */
- 
- #main-content, #settings-section{
+
+#main-content,
+#settings-section {
     display: grid;
     grid-template-columns: repeat (4, 1fr);
     gap: 10px;
     padding: 20px;
- }
+}
+
 .gameMode {
-    grid-column: span 4; 
+    grid-column: span 4;
     border-radius: 5px;
     text-align: left;
     margin: 0;
 }
+
 .gameMode h3 {
     margin-bottom: 0 5px;
     margin-left: 25px;
     text-align: left;
 }
-.gameMode h4{
+
+.gameMode h4 {
     margin-bottom: 10px;
-    font-size: 40px;;
+    font-size: 40px;
+    ;
 }
-.gameMode h5{
+
+.gameMode h5 {
     font-size: 15px;
     margin-bottom: 20px;
 }
+
 .flex-container {
     display: flex;
     flex-direction: row;
@@ -150,16 +171,18 @@ aside:hover .sidebar-links h4 {
     gap: 20px;
     padding: 20px;
 }
-.card a{
+
+.card a {
     color: #00ffd5;
     text-decoration: none;
 }
+
 .card {
-/*    border: 2px solid green; */
+    /*    border: 2px solid green; */
     display: flex;
     flex-direction: column;
     align-items: center;
-    background-color:#d7d5d4;
+    background-color: #d7d5d4;
     border-radius: 10px;
     flex: 1 1 300px;
     max-height: 500px;
@@ -177,6 +200,7 @@ aside:hover .sidebar-links h4 {
     left: 50%;
     transform: translate(-50%, -50%);
 }
+
 .glow-on-hover {
     position: relative;
     z-index: 2;
@@ -188,14 +212,16 @@ aside:hover .sidebar-links h4 {
     color: var(--text-color);
     border-radius: 5px;
 }
+
 .dash {
     grid-column: span 4;
     text-align: center;
     padding: 10px;
     border-radius: 5px;
 }
+
 .card img {
-    opacity:35%;
+    opacity: 35%;
     border-radius: 10px;
     z-index: 1;
     position: relative;
@@ -204,7 +230,8 @@ aside:hover .sidebar-links h4 {
     object-fit: cover;
 }
 
-#localGameBtn, #onlineGameBtn {
+#localGameBtn,
+#onlineGameBtn {
     top: 80%;
     z-index: 3;
     width: 220px;
@@ -218,7 +245,7 @@ aside:hover .sidebar-links h4 {
     background: linear-gradient(45deg, #ff0000, #ff7300, #fffb00, #48ff00, #00ffd5, #002bff, #7a00ff, #ff00c8, #ff0000);
     position: absolute;
     top: -2px;
-    left:-2px;
+    left: -2px;
     background-size: 400%;
     z-index: -1;
     filter: blur(5px);
@@ -229,15 +256,19 @@ aside:hover .sidebar-links h4 {
     transition: opacity .3s ease-in-out;
     border-radius: 5px;
 }
+
 .glow-on-hover:active {
     color: #000
 }
+
 .glow-on-hover:active:after {
     background: transparent;
 }
+
 .glow-on-hover:hover:before {
     opacity: 1;
 }
+
 .glow-on-hover:after {
     z-index: -1;
     content: '';
@@ -247,128 +278,150 @@ aside:hover .sidebar-links h4 {
     background: var(--secondary-color);
     left: 0;
     top: 0;
-    border-radius:5px;
+    border-radius: 5px;
 }
+
 @keyframes glowing {
-    0% { background-position: 0 0; }
-    50% { background-position: 400% 0; }
-    100% { background-position: 0 0; }
+    0% {
+        background-position: 0 0;
+    }
+
+    50% {
+        background-position: 400% 0;
+    }
+
+    100% {
+        background-position: 0 0;
+    }
 }
 
 /* toggle switch */
 /* ------------ VARIABLES ------------ */
-.btn {
-  display: flex;
-  align-items: center;
-  position: relative;
-  background-color: var(--primary-color);
-  width: var(--btn-size);
-  height: 50%;
-  border-radius: 5px;
-  padding: 2px;
-  margin: 5px;
-  box-shadow: inset 0 8px 60px var(--light-shadow),
-              inset 0 8px 8px var(--light-shadow),
-              inset 0 -4px 4px var(--light-shadow);
-  cursor: pointer;
+.btn-light {
+    display: flex;
+    align-items: center;
+    position: relative;
+    background-color: var(--dark-mode);
+    width: var(--btn-size);
+    height: 50%;
+    border-radius: 5px;
+    padding: 2px;
+    margin: 5px;
+    box-shadow: inset 0 8px 60px var(--light-shadow),
+        inset 0 8px 8px var(--light-shadow),
+        inset 0 -4px 4px var(--light-shadow);
+    cursor: pointer;
 }
 
-.btn:hover{
+.btn:hover {
     background-color: var(--primary-color);
 }
+
 .btn__indicator {
-  background-color: #fff;
-  max-width: var(--indicator-size);
-  max-height: var(--indicator-size);
-  border-radius: 5px;
-  position: relative;
-  box-shadow: 0 8px 40px rgba(0,0,0, .2);
-  transition: transform .3s ease;
+    background-color: var( --light-color);
+    max-width: var(--indicator-size);
+    max-height: var(--indicator-size);
+    border-radius: 5px;
+    position: relative;
+    box-shadow: 0 8px 40px rgba(0, 0, 0, .2);
+    transition: transform .3s ease;
 }
 
 .btn__icon-container {
-  max-width: 100%;
-  max-height: 100%;
-  padding: 10px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+    max-width: 100%;
+    max-height: 100%;
+    padding: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
+
 .btn__icon {
-  color: var(--light-icon-color);
-  font-size: 2rem;
+    color: var(--light-icon-color);
+    font-size: 2rem;
 }
+
 /* -------------- ANIMATION ------------ */
 .btn__icon.animated {
-  animation: spin 0.5s;
+    animation: spin 0.5s;
 }
+
 @keyframes spin {
-  to {
-    transform: rotate(360deg);
-  }
+    to {
+        transform: rotate(360deg);
+    }
 }
+
 /* -------------- DARKMODE -------------- */
 body.darkmode {
-  background-color: var(--primary-color);
-  color: var(--text-color);
+    background-color: var(--primary-color);
+    color: var(--text-color);
 }
+
 .darkmode .btn:hover {
     color: #000;
     background-color: var(--background-color);
 }
-.darkmode .sidebar-links a{
+
+.darkmode .sidebar-links a {
     color: var(--text-color);
 }
-.darkmode .btn {
-  box-shadow: inset 0 8px 60px var(--dark-shadow),
-              inset 8px 0 8px var(--dark-shadow),
-              inset 0 -4px 4px var(--dark-shadow);
+
+.darkmode .btn-light {
+    box-shadow: inset 0 8px 60px var(--dark-shadow),
+        inset 8px 0 8px var(--dark-shadow),
+        inset 0 -4px 4px var(--dark-shadow);
 }
+
 .darkmode .btn__indicator {
-  transform: translateX(var(--indicator-size));
-  background-color: #171719;
-  box-shadow: 0 8px 40px var(--dark-shadow);
+    transform: translateX(var(--indicator-size));
+    background-color: #171719;
+    box-shadow: 0 8px 40px var(--dark-shadow);
 }
+
 .darkmode .btn__icon {
-  color: var(--dark-icon-color);
+    color: var(--dark-icon-color);
 }
+
 .darkmode .card {
     /*    border: 2px solid green; */
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        background-color:var(--dark-color);
-        border-radius: 10px;
-        flex: 1 1 300px;
-        max-height: 500px;
-        overflow: auto;
-        position: relative;
-    }
-   .darkmode .btn {
-        display: flex;
-        align-items: center;
-        position: relative;
-        background-color: var(--background-color);
-        width: var(--btn-size);
-        height: 50%;
-        border-radius: 5px;
-        padding: 2px;
-        margin: 5px;
-        box-shadow: inset 0 8px 60px var(--light-shadow),
-                    inset 0 8px 8px var(--light-shadow),
-                    inset 0 -4px 4px var(--light-shadow);
-        cursor: pointer;
-      }
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: var(--dark-color);
+    border-radius: 10px;
+    flex: 1 1 300px;
+    max-height: 500px;
+    overflow: auto;
+    position: relative;
+}
+
+.darkmode .btn-light {
+    display: flex;
+    align-items: center;
+    position: relative;
+    background-color: var(--background-color);
+    width: var(--btn-size);
+    height: 50%;
+    border-radius: 5px;
+    padding: 2px;
+    margin: 5px;
+    box-shadow: inset 0 8px 60px var(--light-shadow),
+        inset 0 8px 8px var(--light-shadow),
+        inset 0 -4px 4px var(--light-shadow);
+    cursor: pointer;
+}
+
 /* -------------- RESPONSIVE DESIGN ------------ */
 @media (max-width: 600px) {
-  :root {
-    --btn-size: 50px;
-    --indicator-size: 5em;
-  }
+    :root {
+        --btn-size: 50px;
+        --indicator-size: 5em;
+    }
 
-  .btn__icon {
-    font-size: 1.5rem;
-  }
+    .btn__icon {
+        font-size: 1.5rem;
+    }
 }
 
 .sidebar-links li a.active {
