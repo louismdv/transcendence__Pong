@@ -18,7 +18,8 @@
 
 .darkmode .chat-user-status-text,
 .darkmode .chat-user-details h6,
-.darkmode .chat-window-header .material-symbols-outlined {
+.darkmode .chat-window-header .material-symbols-outlined
+{
     color: var(--dark-icon-color);
 }
 
@@ -38,9 +39,14 @@
 }
 
 .darkmode .chat-input::placeholder {
+    
     color: rgba(255, 255, 255, 0.5);
 }
 
+.darkmode .mb-0,
+.darkmode .text-muted{
+    color: var(--text-color);
+}
 .darkmode .chat-message.sent .message-content {
     background-color: var(--color);
     color: #fff;
@@ -80,3 +86,15 @@
 .darkmode .chat-day-separator::before {
     background: rgba(255, 255, 255, 0.1);
 }
+
+.darkmode .friends-content {
+    background-color: var(--dark-color);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.darkmode .nav-tabs .nav-link.active{
+    color: var(--text-color);
+    background-color: var(--dark-color);
+    --bs-nav-tabs-link-active-border-color: var(--bs-border-color) var(--bs-border-color) #575757;
+}
+.nav-link.
