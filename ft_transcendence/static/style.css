@@ -6,7 +6,7 @@
     --text-color: #fff;
     --secondary-color:#451b96;
     --color: #9176FF;
-    --dark-color: #141414;
+    --dark-color: #575757;
     --full-black:#171719;
     --dark-mode:#3e4147;
     --dark-icon-color: #fff;
@@ -109,4 +109,10 @@ form {
     width: 40px; /* Adjust the size as needed */
     height: 40px;
     border-radius: 25%; /* Makes the image circular */
+}
+.nav-tabs .nav-link {
+    color: #000000;
+}
+.darkmode .nav-tabs .nav-link {
+    color: #ffffff;
 }
