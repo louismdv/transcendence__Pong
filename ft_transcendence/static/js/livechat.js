@@ -461,20 +461,7 @@ function openChat(userId, username) {
       }
   }
   
-  // Fonction pour ouvrir le chat avec un utilisateur spécifique (exportée globalement)
-  window.openChatWithUser = function(username) {
-      // Trouver l'utilisateur par son nom
-      const userItem = document.querySelector(`.contact-item[data-username="${username}"]`);
-      
-      if (userItem) {
-          const userId = userItem.getAttribute('data-user-id');
-          openChat(userId, username);
-      } else {
-          // Créer une nouvelle conversation
-          const userId = 'new-' + Date.now();
-          openChat(userId, username);
-      }
-  };
+
   
   // Réinitialiser les écouteurs d'événements lorsque le contenu de la page change
   // Cela est nécessaire si vous chargez dynamiquement le contenu de la page de chat

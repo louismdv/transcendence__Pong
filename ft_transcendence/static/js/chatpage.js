@@ -3,12 +3,30 @@
  * Version améliorée avec gestion d'erreurs et vérifications
  */
 
+// Fonction pour ouvrir le chat avec un utilisateur spécifique (exportée globalement)
+window.openChatWithUser = function(username) {
+    // Trouver l'utilisateur par son nom
+    const userItem = document.querySelector(`.contact-item[data-username="${username}"]`);
+    
+    if (userItem) {
+        const userId = userItem.getAttribute('data-user-id');
+        openChat(userId, username);
+    } else {
+        // Créer une nouvelle conversation
+        const userId = 'new-' + Date.now();
+        openChat(userId, username);
+    }
+};
+
 document.addEventListener('DOMContentLoaded', function() {
     console.log("ChatPage.js chargé");
     
+
+
     //Initiate the page
     loadChatCards("online");
     loadChatCards("offline");
+
     initializeChatPage();
 
     // Éléments de la page de chat
@@ -35,13 +53,6 @@ document.addEventListener('DOMContentLoaded', function() {
             console.error("Section de chat introuvable");
             return;
         }
-        
-        // Récupérer les éléments à l'intérieur de la section
-        chatList = chatSection.querySelector('.chat-list');
-        chatArea = chatSection.querySelector('.chat-area');
-        messageInput = chatSection.querySelector('.message-input');
-        sendButton = chatSection.querySelector('.send-button');
-        userSearch = chatSection.querySelector('.user-search');
         
         // Vérifier si les éléments existent
         if (!chatList || !chatArea || !messageInput || !sendButton) {
@@ -268,8 +279,6 @@ document.addEventListener('DOMContentLoaded', function() {
         return `${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}`;
     }
     
-    // Initialiser la page de chat
-    initializeChatPage();
     
     // Exposer les fonctions pour une utilisation externe
     window.chatPageSystem = {
@@ -278,19 +287,18 @@ document.addEventListener('DOMContentLoaded', function() {
     };
 });
 
-
-// Charger la liste des amis depuis l'API
 function loadChatCards(status) {
     let chatContainer;
-    let chats = [];
 
+    // Get the correct container based on status (online or offline)
     if (status === "online")
         chatContainer = document.getElementById('online-chats-grid');
     else if (status === "offline")
         chatContainer = document.getElementById('offline-chats-grid');
-    if (!chatContainer) return;
     
-    // Afficher un spinner pendant le chargement
+    if (!chatContainer) return;  // If container not found, exit
+
+    // Show a loading spinner while the data is being fetched
     chatContainer.innerHTML = `
         <div class="d-flex justify-content-center">
             <div class="spinner-border text-primary" role="status">
@@ -298,18 +306,26 @@ function loadChatCards(status) {
             </div>
         </div>
     `;
-    
+
+    // Fetch data from the server
     fetch('/api/friends/')
         .then(response => {
+            console.log('Response received:', response);  // Log the response object
+            // Check if the response status is OK
             if (!response.ok) {
+                console.error(`HTTP error! Status: ${response.status}`);
                 throw new Error(`HTTP error! Status: ${response.status}`);
             }
-            return response.json();
+            return response.json();  // Parse the JSON response
         })
         .then(data => {
+            console.log('Data received:', data);  // Log the received data
+            // Filter the friends based on online/offline status
             const chats = data.friends.filter(friend =>
                 status === "online" ? friend.online : !friend.online
             );
+
+            // Handle the case when no friends are found
             if (chats.length === 0) {
                 chatContainer.innerHTML = `
                     <div class="empty-state">
@@ -317,20 +333,43 @@ function loadChatCards(status) {
                         <p class="text-muted">Veuillez revenir plus tard.</p>
                     </div>
                 `;
-                updateFriendCounter();
-                return;
+                return 0;  // Return 0 if no friends are found
             }
-            
+
+            // Create the HTML for all friends
             let friendsHTML = '';
+            let nbFriends = 0;
             chats.forEach(friend => {
-                friendsHTML += createFriendChatCardHTML(friend);
+                friendsHTML += createFriendChatCardHTML(friend);  // Assuming createFriendChatCardHTML is a function
+                nbFriends++;
             });
-            
+
+            // Insert the generated HTML into the container
             chatContainer.innerHTML = friendsHTML;
-            updateFriendCounter();
+
+            // Return the number of friends
+            return nbFriends;
+        })
+        .then(result => {
+            console.log('Number of friends:', result);  // Log the number of friends
+            // Use the result (number of friends) to update the user count
+            if (status === "online") {
+                const badge = document.querySelector('.contacts-group-header .badge.bg-success');
+                if (badge) {
+                    badge.textContent = result;
+                }
+            } else if (status === "offline") {
+                const badge = document.querySelector('.contacts-group-header .badge.bg-secondary');
+                if (badge) {
+                    badge.textContent = result;
+                }
+            }
         })
         .catch(error => {
-            console.error('Error loading friends:', error);
+            // Log the error to understand what went wrong
+            console.error('Error in fetching or processing friends:', error);
+
+            // Show a user-friendly error message in the chatContainer
             chatContainer.innerHTML = `
                 <div class="alert alert-danger" role="alert">
                     <i class="bi bi-exclamation-triangle-fill me-2"></i>
@@ -339,7 +378,6 @@ function loadChatCards(status) {
             `;
         });
 }
-
 // Créer le HTML pour une carte ami avec menu personnalisé
 function createFriendChatCardHTML(friend) {
     return `
@@ -353,7 +391,7 @@ function createFriendChatCardHTML(friend) {
                 <p class="contact-status">${friend.online ? 'online' : 'offline'}</p>
             </div>
             <div class="contact-actions">
-                <button class="action-button message-button" onclick="openChatWithUser(${friend.username})">
+                <button class="action-button message-button" onclick="openChatWithUser('${friend.username}')">
                     <span class="material-symbols-outlined">chat</span>
                 </button>
                 <button class="action-button invite-button">
