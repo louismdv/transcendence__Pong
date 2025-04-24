@@ -6,6 +6,11 @@
 document.addEventListener('DOMContentLoaded', function() {
     console.log("ChatPage.js chargé");
     
+    //Initiate the page
+    loadChatCards("online");
+    loadChatCards("offline");
+    initializeChatPage();
+
     // Éléments de la page de chat
     let chatSection = document.getElementById('chatpage');
     let chatList = document.querySelector('.chat-list');
@@ -43,12 +48,9 @@ document.addEventListener('DOMContentLoaded', function() {
             console.error("Éléments de la page de chat manquants");
             return;
         }
-        
-        // Ajouter les gestionnaires d'événements
         if (sendButton) {
             sendButton.addEventListener('click', sendMessage);
         }
-        
         if (messageInput) {
             messageInput.addEventListener('keypress', function(e) {
                 if (e.key === 'Enter') {
@@ -56,96 +58,12 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             });
         }
-        
         if (userSearch) {
             userSearch.addEventListener('input', searchUsers);
         }
-        
-        // Charger les contacts (à remplacer par la logique réelle)
-        loadContacts();
-        
         console.log("Initialisation de la page de chat terminée");
     }
-    
-    // Fonction pour charger les contacts
-    function loadContacts() {
-        console.log("Chargement des contacts");
-        
-        // Simuler des contacts (à remplacer par la logique réelle)
-        contacts = [
-            { id: 1, name: 'Alice', status: 'online', avatar: '/placeholder.svg?height=40&width=40' },
-            { id: 2, name: 'Bob', status: 'offline', avatar: '/placeholder.svg?height=40&width=40' },
-            { id: 3, name: 'Charlie', status: 'online', avatar: '/placeholder.svg?height=40&width=40' },
-            { id: 4, name: 'David', status: 'away', avatar: '/placeholder.svg?height=40&width=40' }
-        ];
-        
-        // Afficher les contacts
-        renderContacts();
-    }
-    
-    // Fonction pour afficher les contacts
-    function renderContacts(filteredContacts = null) {
-        if (!chatList) return;
-        
-        // Utiliser les contacts filtrés ou tous les contacts
-        const contactsToRender = filteredContacts || contacts;
-        
-        // Vider la liste
-        chatList.innerHTML = '';
-        
-        // Ajouter chaque contact
-        contactsToRender.forEach(contact => {
-            const contactElement = document.createElement('div');
-            contactElement.className = `chat-contact ${contact.status}`;
-            contactElement.dataset.userId = contact.id;
-            
-            contactElement.innerHTML = `
-                <div class="contact-avatar">
-                    <img src="${contact.avatar}" alt="${contact.name}">
-                    <span class="status-indicator"></span>
-                </div>
-                <div class="contact-info">
-                    <div class="contact-name">${contact.name}</div>
-                    <div class="contact-status">${contact.status}</div>
-                </div>
-            `;
-            
-            // Ajouter le gestionnaire de clic
-            contactElement.addEventListener('click', function() {
-                selectContact(contact.id);
-            });
-            
-            chatList.appendChild(contactElement);
-        });
-    }
-    
-    // Fonction pour sélectionner un contact
-    function selectContact(userId) {
-        console.log(`Sélection du contact: ${userId}`);
-        
-        // Trouver le contact
-        const contact = contacts.find(c => c.id === userId);
-        if (!contact) return;
-        
-        // Mettre à jour le contact actuel
-        currentContact = contact;
-        
-        // Mettre à jour l'interface
-        updateChatHeader();
-        
-        // Charger les messages
-        loadMessages(userId);
-        
-        // Mettre en évidence le contact sélectionné
-        const contactElements = document.querySelectorAll('.chat-contact');
-        contactElements.forEach(el => {
-            el.classList.remove('selected');
-            if (parseInt(el.dataset.userId) === userId) {
-                el.classList.add('selected');
-            }
-        });
-    }
-    
+
     // Fonction pour mettre à jour l'en-tête du chat
     function updateChatHeader() {
         if (!chatArea || !currentContact) return;
@@ -359,3 +277,89 @@ document.addEventListener('DOMContentLoaded', function() {
         receiveMessage: receiveMessage
     };
 });
+
+
+// Charger la liste des amis depuis l'API
+function loadChatCards(status) {
+    let chatContainer;
+    let chats = [];
+
+    if (status === "online")
+        chatContainer = document.getElementById('online-chats-grid');
+    else if (status === "offline")
+        chatContainer = document.getElementById('offline-chats-grid');
+    if (!chatContainer) return;
+    
+    // Afficher un spinner pendant le chargement
+    chatContainer.innerHTML = `
+        <div class="d-flex justify-content-center">
+            <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden">Chargement...</span>
+            </div>
+        </div>
+    `;
+    
+    fetch('/api/friends/')
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+            return response.json();
+        })
+        .then(data => {
+            const chats = data.friends.filter(friend =>
+                status === "online" ? friend.online : !friend.online
+            );
+            if (chats.length === 0) {
+                chatContainer.innerHTML = `
+                    <div class="empty-state">
+                        <h6>Aucun ami ${status === "online" ? 'en ligne' : 'hors ligne'} pour le moment.</h6>
+                        <p class="text-muted">Veuillez revenir plus tard.</p>
+                    </div>
+                `;
+                updateFriendCounter();
+                return;
+            }
+            
+            let friendsHTML = '';
+            chats.forEach(friend => {
+                friendsHTML += createFriendChatCardHTML(friend);
+            });
+            
+            chatContainer.innerHTML = friendsHTML;
+            updateFriendCounter();
+        })
+        .catch(error => {
+            console.error('Error loading friends:', error);
+            chatContainer.innerHTML = `
+                <div class="alert alert-danger" role="alert">
+                    <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                    Erreur lors du chargement des amis. Veuillez réessayer.
+                </div>
+            `;
+        });
+}
+
+// Créer le HTML pour une carte ami avec menu personnalisé
+function createFriendChatCardHTML(friend) {
+    return `
+        <div class="contact-item" data-user-id=${friend.id} data-username=${friend.username}>
+            <div class="contact-avatar">
+                <img src="${friend.avatar || '/media/avatars/default.png'}" alt="${friend.username}">
+                <span class="status-indicator ${friend.online ? 'online' : 'offline'}"></span>
+            </div>
+            <div class="contact-info">
+                <h6 class="contact-name">${friend.username}</h6>
+                <p class="contact-status">${friend.online ? 'online' : 'offline'}</p>
+            </div>
+            <div class="contact-actions">
+                <button class="action-button message-button" onclick="openChatWithUser(${friend.username})">
+                    <span class="material-symbols-outlined">chat</span>
+                </button>
+                <button class="action-button invite-button">
+                    <span class="material-symbols-outlined">sports_esports</span>
+                </button>
+            </div>
+        </div>
+    `;
+}

@@ -34,7 +34,6 @@ def login_42(request):
     return redirect(auth_url)
 
 # Step 2: Handle callback
-
 from urllib.request import urlopen
 from django.core.files.base import ContentFile
 import os
@@ -92,8 +91,6 @@ def callback_42(request):
     # Step 5: Log in user
     login(request, user)
     return redirect("/")
-
-
 
 
 def main(request):

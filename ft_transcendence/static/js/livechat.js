@@ -7,87 +7,12 @@
       conversations: {},
       activeChats: new Set() // Pour suivre les chats actifs
   };
-// Dans la fonction initChat()
 
-  // Initialisation du chat
-  function initChat() {
-      // Éléments DOM
-      const contactItems = document.querySelectorAll('.contact-item');
-      const chatWindow = document.getElementById('chatWindow');
-      const chatUserName = document.getElementById('chatUserName');
-      const chatUserAvatar = document.getElementById('chatUserAvatar');
-      const chatUserStatus = document.getElementById('chatUserStatus');
-      const chatUserStatusText = document.getElementById('chatUserStatusText');
-      const chatMessages = document.getElementById('chatMessages');
-      const chatInput = document.getElementById('chatInput');
-      const sendMessageBtn = document.getElementById('sendMessageBtn');
-      const minimizeChatBtn = document.getElementById('minimizeChatBtn');
-      const closeChatBtn = document.getElementById('closeChatBtn');
-      const inviteToGameBtn = document.getElementById('inviteToGameBtn');
-      const chatSearch = document.getElementById('chatSearch');
-      
-      // Initialiser les conversations avec des données fictives
-      initializeConversations();
-      
-      // Recherche dans les contacts
-      if (chatSearch) {
-          chatSearch.addEventListener('input', function() {
-              const searchTerm = this.value.toLowerCase();
-              filterContacts(searchTerm);
-          });
-      }
-      
-      // Ajouter des écouteurs d'événements aux contacts existants
-      attachContactListeners();
-      
-      // Envoyer un message
-      if (sendMessageBtn) {
-          sendMessageBtn.addEventListener('click', sendMessage);
-      }
-      
-      if (chatInput) {
-          chatInput.addEventListener('keypress', function(e) {
-              if (e.key === 'Enter') {
-                  sendMessage();
-              }
-          });
-      }
-      
-      // Minimiser la fenêtre de chat
-      if (minimizeChatBtn) {
-          minimizeChatBtn.addEventListener('click', function() {
-              if (chatState.minimized) {
-                  chatWindow.style.height = '450px';
-                  chatState.minimized = false;
-                  this.innerHTML = '<span class="material-symbols-outlined">minimize</span>';
-              } else {
-                  chatWindow.style.height = '40px';
-                  chatState.minimized = true;
-                  this.innerHTML = '<span class="material-symbols-outlined">expand_less</span>';
-              }
-          });
-      }
-      
-      // Fermer la fenêtre de chat
-      if (closeChatBtn) {
-          closeChatBtn.addEventListener('click', function() {
-              chatWindow.style.display = 'none';
-              document.getElementById('chatFloatButton').style.display = 'flex';
-              chatState.currentChat = null;
-              chatState.activeChats.delete(chatState.currentChat?.userId);
-          });
-      }
-      
-      // Inviter à jouer
-      if (inviteToGameBtn) {
-          inviteToGameBtn.addEventListener('click', function() {
-              if (chatState.currentChat) {
-                  alert(`Invitation à jouer envoyée à ${chatState.currentChat.username}`);
-              }
-          });
-      }
+  // Fonction pour vérifier si un élément existe
+  function elementExists(id) {
+      return document.getElementById(id) !== null;
   }
-  
+
   // Attacher des écouteurs d'événements aux contacts
   function attachContactListeners() {
       const contactItems = document.querySelectorAll('.contact-item');
@@ -114,29 +39,31 @@
           const userId = item.getAttribute('data-user-id');
           const username = item.getAttribute('data-username');
           
-          chatState.conversations[userId] = {
-              userId: userId,
-              username: username,
-              messages: [
-                  // Messages fictifs pour la démonstration
-                  {
-                      sender: 'them',
-                      text: 'Salut, tu veux faire une partie ?',
-                      time: '10:45'
-                  },
-                  {
-                      sender: 'me',
-                      text: 'Oui, avec plaisir !',
-                      time: '10:46'
-                  },
-                  {
-                      sender: 'them',
-                      text: 'Super ! Je t\'envoie une invitation.',
-                      time: '10:47'
-                  }
-              ],
-              unread: false
-          };
+          if (userId && username) {
+              chatState.conversations[userId] = {
+                  userId: userId,
+                  username: username,
+                  messages: [
+                      // Messages fictifs pour la démonstration
+                      {
+                          sender: 'them',
+                          text: 'Salut, tu veux faire une partie ?',
+                          time: '10:45'
+                      },
+                      {
+                          sender: 'me',
+                          text: 'Oui, avec plaisir !',
+                          time: '10:46'
+                      },
+                      {
+                          sender: 'them',
+                          text: 'Super ! Je t\'envoie une invitation.',
+                          time: '10:47'
+                      }
+                  ],
+                  unread: false
+              };
+          }
       });
   }
   
@@ -146,9 +73,9 @@
       
       // Filtrer les contacts
       contactItems.forEach(item => {
-          const username = item.getAttribute('data-username').toLowerCase();
+          const username = item.getAttribute('data-username');
           
-          if (username.includes(searchTerm)) {
+          if (username && username.toLowerCase().includes(searchTerm)) {
               item.style.display = '';
           } else {
               item.style.display = 'none';
@@ -157,61 +84,124 @@
   }
   
   // Fonction pour ouvrir une conversation
-  function openChat(userId, username) {
-      const chatWindow = document.getElementById('chatWindow');
-      const chatUserName = document.getElementById('chatUserName');
-      const chatUserStatus = document.getElementById('chatUserStatus');
-      const chatUserStatusText = document.getElementById('chatUserStatusText');
-      const chatInput = document.getElementById('chatInput');
-      
-      // Mettre à jour l'état actuel
-      chatState.currentChat = {
-          userId: userId,
-          username: username
-      };
-      
-      // Ajouter à la liste des chats actifs
-      chatState.activeChats.add(userId);
-      
-      // Mettre à jour l'interface de la fenêtre de chat
-      chatUserName.textContent = username;
-      
-      // Trouver le statut de l'utilisateur
-      const userItem = document.querySelector(`.contact-item[data-user-id="${userId}"]`);
-      
-      if (userItem) {
-          const statusIndicator = userItem.querySelector('.status-indicator');
-          if (statusIndicator) {
-              // Mettre à jour l'indicateur de statut
-              chatUserStatus.className = statusIndicator.className;
-              
-              // Mettre à jour le texte du statut
-              if (statusIndicator.classList.contains('online')) {
-                  chatUserStatusText.textContent = 'En ligne';
-              } else if (statusIndicator.classList.contains('away')) {
-                  chatUserStatusText.textContent = 'Absent';
-              } else {
-                  chatUserStatusText.textContent = 'Hors ligne';
-              }
-          }
-      }
-      
-      // Charger les messages
-      loadMessages(userId);
-      
-      // Afficher la fenêtre de chat
-      chatWindow.style.display = 'flex';
-      chatWindow.style.height = '450px';
-      chatState.minimized = false;
-      document.getElementById('chatFloatButton').style.display = 'none';
+  // Fonction pour ouvrir une conversation
+function openChat(userId, username) {
+    const chatWindow = document.getElementById('chatWindow');
+    const chatUserName = document.getElementById('chatUserName');
+    const chatUserAvatar = document.getElementById('chatUserAvatar');
+    const chatUserStatus = document.getElementById('chatUserStatus');
+    const chatUserStatusText = document.getElementById('chatUserStatusText');
+    const chatInput = document.getElementById('chatInput');
+    const chatFloatButton = document.getElementById('chatFloatButton');
+    
+    // Vérifier que les éléments nécessaires existent
+    if (!chatWindow || !chatUserName || !chatInput) {
+        console.error('Éléments du chat manquants');
+        return;
+    }
+    
+    // Mettre à jour l'état actuel
+    chatState.currentChat = {
+        userId: userId,
+        username: username
+    };
+    
+    // Ajouter à la liste des chats actifs
+    chatState.activeChats.add(userId);
+    
+    // Mettre à jour l'interface de la fenêtre de chat
+    chatUserName.textContent = username;
+    
+    // Trouver le statut et l'avatar de l'utilisateur
+    const userItem = document.querySelector(`.contact-item[data-user-id="${userId}"]`);
+    
+    if (userItem) {
+        // Gestion de l'avatar
+        if (chatUserAvatar) {
+            // Essayer de trouver l'avatar dans l'élément du contact
+            const contactAvatar = userItem.querySelector('.contact-avatar img');
+            
+            if (contactAvatar && contactAvatar.src) {
+                // Utiliser l'image de l'avatar du contact
+                chatUserAvatar.src = contactAvatar.src;
+                chatUserAvatar.alt = `Avatar de ${username}`;
+                chatUserAvatar.style.display = 'block';
+            } else {
+                // Chercher un attribut data-avatar sur l'élément contact
+                const avatarUrl = userItem.getAttribute('data-avatar');
+                
+                if (avatarUrl) {
+                    chatUserAvatar.src = avatarUrl;
+                    chatUserAvatar.alt = `Avatar de ${username}`;
+                    chatUserAvatar.style.display = 'block';
+                } else {
+                    // Utiliser un avatar par défaut si aucun n'est trouvé
+                    chatUserAvatar.src = 'images/default-avatar.png';
+                    chatUserAvatar.alt = `Avatar par défaut`;
+                    chatUserAvatar.style.display = 'block';
+                }
+            }
+        }
+        
+        // Gestion du statut (code existant)
+        if (chatUserStatus && chatUserStatusText) {
+            const statusIndicator = userItem.querySelector('.status-indicator');
+            if (statusIndicator) {
+                // Mettre à jour l'indicateur de statut
+                chatUserStatus.className = statusIndicator.className;
+                
+                // Mettre à jour le texte du statut
+                if (statusIndicator.classList.contains('online')) {
+                    chatUserStatusText.textContent = 'En ligne';
+                } else if (statusIndicator.classList.contains('away')) {
+                    chatUserStatusText.textContent = 'Absent';
+                } else {
+                    chatUserStatusText.textContent = 'Hors ligne';
+                }
+            }
+        }
+    } else {
+        // Si l'utilisateur n'existe pas dans la liste de contacts (nouveau chat)
+        if (chatUserAvatar) {
+            // Utiliser un avatar par défaut
+            chatUserAvatar.src = 'images/default-avatar.png';
+            chatUserAvatar.alt = `Avatar par défaut`;
+            chatUserAvatar.style.display = 'block';
+        }
+        
+        if (chatUserStatus && chatUserStatusText) {
+            // Réinitialiser le statut pour un nouvel utilisateur
+            chatUserStatus.className = 'status-indicator';
+            chatUserStatusText.textContent = 'Statut inconnu';
+        }
+    }
+    
+    // Charger les messages
+    loadMessages(userId);
+    
+    // Afficher la fenêtre de chat
+    chatWindow.style.display = 'flex';
+    chatWindow.style.height = '450px';
+    chatState.minimized = false;
+    
+    if (chatFloatButton) {
+        chatFloatButton.style.display = 'none';
+    }
 
-      // Focus sur l'input
-      chatInput.focus();
-  }
+    // Focus sur l'input
+    if (chatInput) {
+        chatInput.focus();
+    }
+}
   
   // Fonction pour charger les messages d'une conversation
   function loadMessages(userId) {
       const chatMessages = document.getElementById('chatMessages');
+      
+      if (!chatMessages) {
+          console.error('Élément chatMessages manquant');
+          return;
+      }
       
       // Vider le conteneur de messages
       chatMessages.innerHTML = '';
@@ -248,9 +238,15 @@
   function sendMessage() {
       const chatInput = document.getElementById('chatInput');
       const chatMessages = document.getElementById('chatMessages');
+      
+      if (!chatInput || !chatMessages || !chatState.currentChat) {
+          console.error('Éléments manquants pour l\'envoi de message');
+          return;
+      }
+      
       const messageText = chatInput.value.trim();
       
-      if (messageText && chatState.currentChat) {
+      if (messageText) {
           // Créer un nouvel objet message
           const now = new Date();
           const time = `${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}`;
@@ -333,6 +329,12 @@
       // Si cette conversation est actuellement ouverte, afficher le message
       if (chatState.currentChat && chatState.currentChat.userId === userId) {
           const chatMessages = document.getElementById('chatMessages');
+          
+          if (!chatMessages) {
+              console.error('Élément chatMessages manquant pour la réponse');
+              return;
+          }
+          
           const messageElement = document.createElement('div');
           messageElement.className = 'chat-message received';
           
@@ -357,6 +359,108 @@
       }
   }
   
+  // Initialisation du chat
+  function initChat() {
+      // Éléments DOM
+      const contactItems = document.querySelectorAll('.contact-item');
+      const chatWindow = document.getElementById('chatWindow');
+      const chatUserName = document.getElementById('chatUserName');
+      const chatUserAvatar = document.getElementById('chatUserAvatar');
+      const chatUserStatus = document.getElementById('chatUserStatus');
+      const chatUserStatusText = document.getElementById('chatUserStatusText');
+      const chatMessages = document.getElementById('chatMessages');
+      const chatInput = document.getElementById('chatInput');
+      const sendMessageBtn = document.getElementById('sendMessageBtn');
+      const minimizeChatBtn = document.getElementById('minimizeChatBtn');
+      const closeChatBtn = document.getElementById('closeChatBtn');
+      const inviteToGameBtn = document.getElementById('inviteToGameBtn');
+      const chatSearch = document.getElementById('chatSearch');
+      const chatFloatButton = document.getElementById('chatFloatButton');
+      
+      // Initialiser les conversations avec des données fictives
+      initializeConversations();
+      
+      // Recherche dans les contacts
+      if (chatSearch) {
+          chatSearch.addEventListener('input', function() {
+              const searchTerm = this.value.toLowerCase();
+              filterContacts(searchTerm);
+          });
+      }
+      
+      // Ajouter des écouteurs d'événements aux contacts existants
+      attachContactListeners();
+      
+      // Envoyer un message
+      if (sendMessageBtn) {
+          sendMessageBtn.addEventListener('click', sendMessage);
+      }
+      
+      if (chatInput) {
+          chatInput.addEventListener('keypress', function(e) {
+              if (e.key === 'Enter') {
+                  sendMessage();
+              }
+          });
+      }
+      
+      // Minimiser la fenêtre de chat
+      if (minimizeChatBtn && chatWindow) {
+          minimizeChatBtn.addEventListener('click', function() {
+              if (chatState.minimized) {
+                  chatWindow.style.height = '450px';
+                  chatState.minimized = false;
+                  this.innerHTML = '<span class="material-symbols-outlined">minimize</span>';
+              } else {
+                  chatWindow.style.height = '40px';
+                  chatState.minimized = true;
+                  this.innerHTML = '<span class="material-symbols-outlined">expand_less</span>';
+              }
+          });
+      }
+      
+      // Fermer la fenêtre de chat
+      if (closeChatBtn && chatWindow && chatFloatButton) {
+          closeChatBtn.addEventListener('click', function() {
+              chatWindow.style.display = 'none';
+              chatFloatButton.style.display = 'flex';
+              if (chatState.currentChat) {
+                  chatState.activeChats.delete(chatState.currentChat.userId);
+                  chatState.currentChat = null;
+              }
+          });
+      }
+      
+      // Inviter à jouer
+      if (inviteToGameBtn) {
+          inviteToGameBtn.addEventListener('click', function() {
+              if (chatState.currentChat) {
+                  alert(`Invitation à jouer envoyée à ${chatState.currentChat.username}`);
+              }
+          });
+      }
+      
+      // Gestion du bouton flottant de chat
+      if (chatFloatButton) {
+          chatFloatButton.addEventListener('click', function() {
+              // Afficher la liste des conversations actives ou la dernière conversation
+              if (chatState.activeChats.size > 0) {
+                  // Récupérer le dernier chat actif
+                  const lastChatId = Array.from(chatState.activeChats).pop();
+                  if (lastChatId && chatState.conversations[lastChatId]) {
+                      const lastChat = chatState.conversations[lastChatId];
+                      openChat(lastChat.userId, lastChat.username);
+                  } else {
+                      window.location.hash = '#chat';
+                  }
+              } else {
+                  // Rediriger vers la page de contacts si aucun chat n'est actif
+                  window.location.hash = '#chat';
+              }
+          });
+      }
+  }
+  
   // Fonction pour ouvrir le chat avec un utilisateur spécifique (exportée globalement)
   window.openChatWithUser = function(username) {
       // Trouver l'utilisateur par son nom
@@ -371,9 +475,6 @@
           openChat(userId, username);
       }
   };
-  
-  // Initialiser le chat au chargement de la page
-  document.addEventListener('DOMContentLoaded', initChat);
   
   // Réinitialiser les écouteurs d'événements lorsque le contenu de la page change
   // Cela est nécessaire si vous chargez dynamiquement le contenu de la page de chat
@@ -394,23 +495,10 @@
           observer.observe(mainContent, { childList: true, subtree: true });
       }
   }
-  const chatFloatButton = document.getElementById('chatFloatButton');
-  if (chatFloatButton) {
-      chatFloatButton.addEventListener('click', function() {
-          // Afficher la liste des conversations actives ou la dernière conversation
-          if (chatState.activeChats.size > 0) {
-              // Récupérer le dernier chat actif
-              const lastChatId = Array.from(chatState.activeChats).pop();
-              const lastChat = chatState.conversations[lastChatId];
-              if (lastChat) {
-                  openChat(lastChat.userId, lastChat.username);
-              }
-          } else {
-              // Rediriger vers la page de contacts si aucun chat n'est actif
-              window.location.hash = '#chat';
-          }
-      });
-  }
   
-  setupMutationObserver();
+  // Initialiser le chat au chargement de la page
+  document.addEventListener('DOMContentLoaded', initChat);
+  
+  // Configurer l'observateur de mutations
+  document.addEventListener('DOMContentLoaded', setupMutationObserver);
 })();
