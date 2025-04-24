@@ -12,7 +12,9 @@ from django.core.asgi import get_asgi_application
 from channels.routing import ProtocolTypeRouter, URLRouter
 from channels.auth import AuthMiddlewareStack
 from channels.security.websocket import AllowedHostsOriginValidator
-from online_game.routing import websocket_urlpatterns  # Import your WebSocket URL patterns
+from online_game.routing import websocket_urlpatterns as onlinegame_routing
+from livechat.routing import websocket_urlpatterns as livechat_routing
+
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'ft_transcendence.settings')  # Replace with your project name
 
@@ -21,7 +23,7 @@ application = ProtocolTypeRouter({
     "websocket": AllowedHostsOriginValidator(
         AuthMiddlewareStack(
             URLRouter(
-                websocket_urlpatterns
+                onlinegame_routing + livechat_routing
             )
         )
     ),
