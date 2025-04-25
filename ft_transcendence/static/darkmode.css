@@ -90,17 +90,14 @@
  .darkmode .settings-content,
  .darkmode .form-control,
  .darkmode .chat-content,
- .darkmode .card {
+ .darkmode .card,
+ .darkmode .nav-tabs .nav-link.active,
+ .darkmode .dashboard-card  {
     background-color: var(--dark-color);
     color: var(--text-color);
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 }
 
-.darkmode .nav-tabs .nav-link.active{
-    color: var(--text-color);
-    background-color: var(--dark-color);
-    --bs-nav-tabs-link-active-border-color: var(--bs-border-color) var(--bs-border-color) #575757;
-}
 .darkmode .nav-tabs .nav-link, 
 .darkmode .my-card-header .my-card-title{
     color: #ffffff;

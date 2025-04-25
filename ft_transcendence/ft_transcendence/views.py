@@ -772,3 +772,75 @@ def chatpage(request):
     if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
         return render(request, 'chatpage.html')
     return redirect('home')
+
+def dashboard_data(request):
+    # Get the current user
+    user = request.user
+    
+    # Example data - replace with your actual data retrieval logic
+    user_stats = {
+        'wins': 24,
+        'losses': 12,
+        'winRate': 67,
+        'totalGames': 36,
+        'tournamentsWon': 3,
+        'recentGames': [
+            {
+                'date': '2023-05-15',
+                'opponent': 'Joueur2',
+                'result': 'Victoire',
+                'score': '10-7',
+                'duration': '3:24'
+            },
+            {
+                'date': '2023-05-14',
+                'opponent': 'Joueur3',
+                'result': 'Défaite',
+                'score': '5-10',
+                'duration': '4:12'
+            },
+            {
+                'date': '2023-05-12',
+                'opponent': 'Joueur1',
+                'result': 'Victoire',
+                'score': '10-3',
+                'duration': '2:45'
+            },
+            {
+                'date': '2023-05-10',
+                'opponent': 'Joueur4',
+                'result': 'Victoire',
+                'score': '10-8',
+                'duration': '5:30'
+            },
+            {
+                'date': '2023-05-08',
+                'opponent': 'Joueur5',
+                'result': 'Défaite',
+                'score': '8-10',
+                'duration': '4:50'
+            }
+        ],
+        'tournaments': [
+            {
+                'date': '2023-05-20',
+                'name': 'Tournoi du weekend',
+                'placement': '1ère Place',
+                'players': 4
+            },
+            {
+                'date': '2023-05-13',
+                'name': 'Tournoi du vendredi',
+                'placement': '2ème Place',
+                'players': 4
+            },
+            {
+                'date': '2023-05-06',
+                'name': 'Défi hebdomadaire',
+                'placement': '1ère Place',
+                'players': 4
+            }
+        ]
+    }
+    
+    return JsonResponse(user_stats)

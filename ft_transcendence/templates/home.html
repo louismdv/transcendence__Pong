@@ -36,6 +36,8 @@
     <link rel="stylesheet" href="{% static 'chatpage.css' %}">
     <link rel="stylesheet" href="{% static 'liveChat.css' %}">
     <link rel="stylesheet" href="{% static 'darkmode.css' %}">
+    <link rel="stylesheet" href="{% static 'dashboard.css' %}">
+
 
 
     <!-- Sound Effects -->
@@ -59,7 +61,7 @@
                 <img src="{% static '../media/logo.svg' %}" alt="Pong logo" width="40" height="40">
                 PONG
             </div>
-            <div id="page-title" class="page-index">Home</div>
+            <div id="page-title" class="page-index"></div>
             <div class="left-account-section">
                 <div class="btn-light">
                     <div class="btn__indicator">
@@ -82,11 +84,11 @@
                 <li><a id="openTournamentLink" href="#tournament"><span class="material-symbols-outlined" style="color: #E5C462">trophy</span>{% trans "Tournament" %}</a></li>
                 <li><a href="#friends" id="friendsLink"><span class="material-symbols-outlined" style="color: #62E573">group</span>{% trans "Friends" %}</a></li>
                 <li><a id="chatLink" href="#chat"><span class="material-symbols-outlined" style="color: #628BE5;">chat</span> {% trans "Chat" %}<span class="badge bg-danger rounded-pill ms-2 unread-count">0</span></a></li>
-                <li><a href="#board" id="boardLink"><span class="material-symbols-outlined" style="color: #96725F;">leaderboard</span>{% trans "Board" %}</a></li>
+                <li><a href="#dashboard" id="dashboardLink"><span class="material-symbols-outlined" style="color: #96725F;">leaderboard</span>{% trans "Tableau de bord" %}</a></li>
                 <h4>{% trans "Account" %}</h4>
                 <li><a id="settings-btn" href="#settings"><span class="material-symbols-outlined">Settings</span>{% trans "Settings" %}</a></li>
                 <li><a href="{% url 'login' %}"><span class="material-symbols-outlined" style="color: #CF0E0F">Logout</span>{% trans "Log out" %}</a></li>
-            </ul>
+            </ul>            
         </aside>
 
         <!-- Main Content -->
@@ -130,6 +132,8 @@
             <section id="tournament-section" style="display: none;">{% include 'tournament.html' %}</section>
             <section id="friends-section" style="display: none;">{% include 'friendspage.html' %}</section>
             <section id="chat-section" style="display: none;">{% include 'chatpage.html' %}</section>
+            <section id="dashboard-section" style="display: none;">{% include 'dashboard.html' %}</section>
+
         </div>
 
         <!-- Bouton de chat flottant -->
@@ -141,7 +145,6 @@
         <footer>
             42Transcendence
         </footer>
-        {% include 'livechat.html' %}
     </div>
 
     <!-- Live Chat -->
@@ -185,6 +188,8 @@
     <script src="{% static 'js/livechat.js' %}"></script>
     <script src="{% static 'js/tournament.js' %}"></script>
     <script src="{% static 'js/navigation.js' %}"></script>
+    <script src="{% static 'js/dashboard.js' %}"></script>
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
 </body>
 
