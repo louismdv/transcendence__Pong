@@ -16,7 +16,7 @@
     --indicator-size: 50px;
 }
 
-body{
+body.perso{
     margin: 0;
     padding: 0;
     background-color: var(--background-color);
@@ -111,8 +111,5 @@ form {
     border-radius: 25%; /* Makes the image circular */
 }
 .nav-tabs .nav-link {
-    color: #000000;
-}
-.darkmode .nav-tabs .nav-link {
-    color: #ffffff;
+    color: var(--full-black);
 }
