@@ -21,6 +21,7 @@
     const inviteToGameBtn = document.getElementById('inviteToGameBtn');
     const chatFloatButton = document.getElementById('chatFloatButton');
 
+
     function openChat(userId, username) {
         if (!chatWindow || !chatUserName || !chatInput) return;
 
@@ -34,31 +35,51 @@
         loadMessages(userId);
 
         if (!chatState.sockets[userId]) {
-            const socket = new WebSocket(`ws://${window.location.host}/ws/chat/${userId}/`);
+            const roomId = [currentUserId, userId].sort().join('_');
+            const socket = new WebSocket(`ws://${window.location.host}/ws/chat/${roomId}/`);
             chatState.sockets[userId] = socket;
 
-            socket.onopen = () => console.log(`WebSocket connecté à l'utilisateur ${username} id: ${userId}`);
-            socket.onmessage = e => {
-                const data = JSON.parse(e.data);
-                const { message, sender, time } = data;
+            socket.onopen = () => console.log(`WebSocket from ${currentUserId} ws: ${roomId}`);
+            socket.onmessage = (event) => {
+                try {
+                    // Parse the incoming message data
+                    const data = JSON.parse(event.data);
+                    console.log('Received message:', data);
 
-                const newMessage = { sender, text: message, time };
-                const conversation = chatState.conversations[userId] ??= {
-                    userId, username, messages: [], unread: false
-                };
-                conversation.messages.push(newMessage);
+                    // Ensure data contains the expected structure
+                    const { text, sender, receiver, time, error } = data;
+                    console.log(data.sender);
+                    console.log(data.receiver);
 
-                if (chatState.currentChat.userId === userId) {
+                    if (error) {
+                        console.error('Error from server:', error);
+                        return; // If there's an error, log and return
+                    }
+
+                    // Create a new message object
+                    const newMessage = {
+                        sender,
+                        receiver,
+                        text,
+                        time
+                    };
+                    console.log(newMessage);
+                    console.log(newMessage.receiver);
+
+                    // adding ther messages to the cahat box according to sender or receiver
                     const msg = document.createElement('div');
-                    msg.className = `chat-message received`;
+                    msg.className = `chat-message ${newMessage.sender === currentUsername ? 'sent' : 'received'}`;
                     msg.innerHTML = `
                         <div class="message-content">
-                            <p>${message}</p>
+                            <p>${newMessage.text}</p>
                             <span class="message-time">${time}</span>
                         </div>
                     `;
                     chatMessages.appendChild(msg);
                     chatMessages.scrollTop = chatMessages.scrollHeight;
+                
+                } catch (error) {
+                    console.error('Error parsing WebSocket message:', error);
                 }
             };
 
@@ -73,7 +94,6 @@
         if (chatFloatButton) chatFloatButton.style.display = 'none';
         if (chatInput) chatInput.focus();
     }
-
     function sendMessage() {
         if (!chatInput || !chatMessages || !chatState.currentChat) return;
 
@@ -83,40 +103,36 @@
         const now = new Date();
         const time = now.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
 
-        const newMessage = { sender: 'me', text: messageText, time };
+        const newMessage = { 
+            sender: 'me',  // This marks the sender as 'me' for the current user
+            text: messageText,
+            time
+        };
+
         const userId = chatState.currentChat.userId;
 
+        // Add the new message to the conversation state (no appending in the DOM here)
         const conversation = chatState.conversations[userId] ??= {
             userId, username: chatState.currentChat.username, messages: [], unread: false
         };
         conversation.messages.push(newMessage);
 
-        const msg = document.createElement('div');
-        msg.className = 'chat-message sent';
-        msg.innerHTML = `
-            <div class="message-content">
-                <p>${messageText}</p>
-                <span class="message-time">${time}</span>
-            </div>
-        `;
-        chatMessages.appendChild(msg);
-        chatMessages.scrollTop = chatMessages.scrollHeight;
+        // Clear the input field after sending the message
         chatInput.value = '';
 
-        // 🚀 Envoi via WebSocket
+        // 🚀 Send the message via WebSocket
         const socket = chatState.sockets[userId];
         if (socket && socket.readyState === WebSocket.OPEN) {
             socket.send(JSON.stringify({
                 text: messageText,
-                sender: currentUsername,
-                receiver: chatUserName.textContent,
+                sender: currentUsername, // Assuming `currentUsername` is defined elsewhere
+                receiver: chatUserName.textContent, // Assuming this is the receiver's username
                 time
             }));
         } else {
             console.warn("WebSocket non disponible pour l'utilisateur", userId);
         }
     }
-
     function updateUserAvatar(userItem, username) {
         if (!chatUserAvatar) return;
 
@@ -158,17 +174,14 @@
             }
         });
     }
-
     function loadMessages(userId) {
         if (!chatMessages) {
             console.error('Élément chatMessages manquant');
             return;
         }
 
-        chatMessages.innerHTML = ''; // Clear previous messages
-
         // Fetch messages from the backend
-        fetch(`livechat/load_messages/${userId}/`)
+        fetch(`livechat/load_chat_log/${userId}/`)
             .then(response => response.json())
             .then(data => {
                 if (data.error) {
@@ -177,6 +190,8 @@
                 }
 
                 const messages = data.messages;
+                console.log(messages);
+                chatMessages.innerHTML = ''; // Clear previous messages
 
                 if (messages.length === 0) {
                     const noMessages = document.createElement('div');
@@ -186,18 +201,14 @@
                     return;
                 }
 
-                const daySeparator = document.createElement('div');
-                daySeparator.className = 'chat-day-separator';
-                daySeparator.innerHTML = `<span>Aujourd'hui</span>`;
-                chatMessages.appendChild(daySeparator);
-
                 // Append each message to the chat
                 messages.forEach(({ sender, text, time }) => {
                     const msg = document.createElement('div');
-                    msg.className = `chat-message ${sender === 'me' ? 'sent' : 'received'}`;
+                    // Use the correct variable 'sender' for comparison
+                    msg.className = `chat-message ${sender === currentUsername ? 'sent' : 'received'}`;
                     msg.innerHTML = `
                         <div class="message-content">
-                            <p>${text}</p>
+                            <p>${text}</p> <!-- Use 'text' instead of 'messages.text' -->
                             <span class="message-time">${time}</span>
                         </div>
                     `;
@@ -210,11 +221,10 @@
             .catch(error => {
                 console.error('Error loading messages:', error);
                 response.text().then(text => {
-                console.error("Response text:", text); // Log the raw response text to see if it contains HTML or an error message
+                    console.error("Response text:", text); // Log the raw response text to see if it contains HTML or an error message
                 });
             });
     }
-
    function attachContactListeners() {
         document.querySelectorAll('.contact-item').forEach(item => {
             const messageBtn = item.querySelector('.message-button');
@@ -226,7 +236,6 @@
             }
         });
     }
-
     function initChatListeners() {
         attachContactListeners();
 
@@ -268,7 +277,6 @@
             }
         });
     }
-
     function setupMutationObserver() {
         const mainContent = document.getElementById('main-content');
         if (!mainContent) return;
@@ -284,7 +292,6 @@
 
         observer.observe(mainContent, { childList: true, subtree: true });
     }
-
     document.addEventListener('DOMContentLoaded', () => {
         initChatListeners();
         setupMutationObserver();

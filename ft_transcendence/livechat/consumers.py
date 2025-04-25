@@ -52,14 +52,14 @@ class ChatConsumer(AsyncWebsocketConsumer):
                 await self.send(text_data=json.dumps({'error': 'Invalid sender'}))
                 return
             print(f'sender {sender}')
-            reciever = await self.get_user(receiver_username)
-            if not reciever:
+            receiver = await self.get_user(receiver_username)
+            if not receiver:
                 await self.send(text_data=json.dumps({'error': 'Invalid reciever'}))
                 return
-            print(f'reciever {reciever}')
+            print(f'reciever {receiver}')
 
             # Attempt to create the new message
-            new_message = await self.create_message(sender, reciever, message)
+            new_message = await self.create_message(sender, receiver, message)
             # If the message creation failed (i.e., new_message is None or invalid), return an error
             if not new_message or not hasattr(new_message, 'text'):
                 await self.send(text_data=json.dumps({'error': 'Message creation failed'}))
@@ -74,7 +74,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
                     'message': {
                         'text': new_message.text,
                         'sender': sender.username,
-                        'reciever': reciever.username,
+                        'receiver': receiver.username,
                         'time': new_message.created_at.strftime('%H:%M'),
                     }
                 }

@@ -5,25 +5,31 @@ from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth import get_user_model
 import json
 
-def load_messages(request, user_id):
-    # Get the receiver user
-    print("DD")
+@login_required
+def load_chat_log(request, user_id):  # Accept 'user_id' here
     try:
-        print("ENTEREDDDDDDDD")
-        receiver = get_user_model().objects.get(id=user_id)
-    except get_user_model().DoesNotExist:
-        return JsonResponse({'error': 'User not found'}, status=404)
+        me = request.user  # Get the logged-in user
+        User = get_user_model()  # Get the user model
+        receiver = User.objects.get(id=user_id)  # Fetch the receiver by their user ID
 
-    # Get all messages for this receiver
-    messages = Message.objects.filter(receiver=receiver).order_by('created_at')
+        # Fetch messages where either the sender or receiver matches the current or other user
+        messages = Message.objects.filter(
+            sender__in=[me, receiver],
+            receiver__in=[me, receiver]
+        ).order_by('created_at')
 
-    # Prepare the message data
-    message_data = []
-    for message in messages:
-        message_data.append({
-            'sender': message.sender.username,
-            'text': message.text,
-            'time': message.created_at.strftime('%H:%M'),
-        })
+        # Prepare the data to return as JSON
+        message_data = [
+            {
+                'sender': message.sender.username,
+                'receiver': message.receiver.username,
+                'text': message.text,
+                'time': message.created_at.strftime('%H:%M'),
+            }
+            for message in messages
+        ]
+        return JsonResponse({'messages': message_data})
 
-    return JsonResponse({'messages': message_data})
+    except Exception as e:
+        print(f"Error in loading messages: {e}")
+        return JsonResponse({'error': 'An error occurred while fetching messages.'}, status=500)
