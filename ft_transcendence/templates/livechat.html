@@ -2,7 +2,7 @@
   <div class="chat-window-header">
       <div class="chat-user-info">
           <div class="chat-user-avatar">
-              <img src="../media/ficello.png" alt="Avatar" id="chatUserAvatar">
+              <img src="" alt="Avatar" id="chatUserAvatar">
               <span class="status-indicator online" id="chatUserStatus"></span>
           </div>
           <div class="chat-user-details">
@@ -31,3 +31,8 @@
       </div>
   </div>
 </div>
+
+<script>
+    const currentUserId = "{{ user.id }}";
+    const currentUsername = "{{ user.username }}";
+</script>

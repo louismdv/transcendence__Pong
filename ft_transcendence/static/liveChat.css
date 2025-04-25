@@ -265,3 +265,14 @@
       border-radius: 0;
   }
 }
+
+.no-messages {
+    color: #ff6f6f; /* Light red text color */
+    background-color: #ffe6e6; /* Light red background color */
+    padding: 10px;
+    border-radius: 5px;
+    text-align: center;
+    font-size: 14px;
+    font-weight: bold;
+    margin-top: 20px;
+}

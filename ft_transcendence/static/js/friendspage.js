@@ -221,11 +221,10 @@ function filterFriends(searchTerm) {
     }
 }
 
-// Ouvrir une conversation avec un ami
-function openChat(friendId) {
-    // Redirection vers la page de chat ou ouverture d'une modal
-    window.location.href = `/chat/${friendId}/`;
-}
+// function openChat(friendId) {
+//     // Redirection vers la page de chat ou ouverture d'une modal
+//     window.location.href = `/chat/${friendId}/`;
+// }
 
 // Inviter un ami à jouer
 function inviteToGame(friendId) {

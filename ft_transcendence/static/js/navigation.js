@@ -106,7 +106,6 @@ document.addEventListener('DOMContentLoaded', function() {
             gameRoomSection.style.display = 'block';
         }
         pageTitle.textContent = 'Online Game';
-        window.location.hash = `#game/${roomName}`;
         document.getElementById('roomCode').value = roomName;
     }
     
@@ -210,10 +209,10 @@ document.addEventListener('DOMContentLoaded', function() {
         } else if (match) {
             const roomName = match[1];
             navigateToGameRoom(roomName); // Rediriger vers la game room avec le nom
-            document.getElementById('roomCode').value = roomName;
-        } else {
-            navigateToHome();
-        }
+        } 
+        // else {
+        //     navigateToHome();
+        // }
     }
     
     // Initialiser à partir du hash

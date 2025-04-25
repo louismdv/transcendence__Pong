@@ -1,3 +1,7 @@
+{% load static %}
+
+<script src="{% static 'js/chatpage.js' %}"></script>
+
 <section id="chat-section">
     <div class="gameMode">
         <h3 style="text-align: left;">Messagerie</h3>
@@ -17,76 +21,19 @@
             <!-- Groupe: En ligne -->
             <div class="contacts-group">
                 <div class="contacts-group-header">
-                    <h6>En ligne <span class="badge bg-success rounded-pill">2</span></h6>
+                    <h6>En ligne <span class="badge bg-success rounded-pill"></span></h6>
                 </div>
-                <div class="contacts-group-items">
-                    <!-- Contact 1 -->
-                    <div class="contact-item" data-user-id="1" data-username="Joueur1">
-                        <div class="contact-avatar">
-                            <img src="../media/ficello.png" alt="Avatar">
-                            <span class="status-indicator online"></span>
-                        </div>
-                        <div class="contact-info">
-                            <h6 class="contact-name">Joueur1</h6>
-                            <p class="contact-status">En jeu</p>
-                        </div>
-                        <div class="contact-actions">
-                            <button class="action-button message-button" onclick="openChatWithUser('Joueur1')">
-                                <span class="material-symbols-outlined">chat</span>
-                            </button>
-                            <button class="action-button invite-button">
-                                <span class="material-symbols-outlined">sports_esports</span>
-                            </button>
-                        </div>
-                    </div>
-
-                    <!-- Contact 4 -->
-                    <div class="contact-item" data-user-id="4" data-username="Joueur4">
-                        <div class="contact-avatar">
-                            <img src="../media/ficello.png" alt="Avatar">
-                            <span class="status-indicator online"></span>
-                        </div>
-                        <div class="contact-info">
-                            <h6 class="contact-name">Joueur4</h6>
-                            <p class="contact-status">Disponible</p>
-                        </div>
-                        <div class="contact-actions">
-                            <button class="action-button message-button" onclick="openChatWithUser('Joueur4')">
-                                <span class="material-symbols-outlined">chat</span>
-                            </button>
-                            <button class="action-button invite-button">
-                                <span class="material-symbols-outlined">sports_esports</span>
-                            </button>
-                        </div>
-                    </div>
+                <div class="contacts-group-items" id = "online-chats-grid">
+                    <!-- Les chats seront chargés ici dynamiquement -->
                 </div>
             </div>
-
             <!-- Groupe: Hors ligne -->
             <div class="contacts-group">
                 <div class="contacts-group-header">
-                    <h6>Hors ligne <span class="badge bg-secondary rounded-pill">1</span></h6>
+                    <h6>Hors ligne <span class="badge bg-secondary rounded-pill"></span></h6>
                 </div>
-                <div class="contacts-group-items">
-                    <!-- Contact 3 -->
-                    <div class="contact-item" data-user-id="3" data-username="Joueur3">
-                        <div class="contact-avatar">
-                            <img src="../media/ficello.png" alt="Avatar">
-                            <span class="status-indicator offline"></span>
-                        </div>
-                        <div class="contact-info">
-                            <h6 class="contact-name">Joueur3</h6>
-                            <p class="contact-status">Dernière connexion: il y a 2h</p>
-                        </div>
-                        <div class="contact-actions">
-                            <button class="action-button message-button" onclick="openChatWithUser('Joueur3')">
-                                <span class="material-symbols-outlined">chat</span>
-                            </button>
-                            <button class="action-button invite-button" disabled>
-                                <span class="material-symbols-outlined">sports_esports</span>
-                            </button>
-                        </div>
-                    </div>
+                <div class="contacts-group-items" id = "offline-chats-grid">
+                    <!-- Les chats seront chargés ici dynamiquement -->
                 </div>
             </div>
         </div>

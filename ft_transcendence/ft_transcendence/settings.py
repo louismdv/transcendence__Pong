@@ -23,6 +23,7 @@ INSTALLED_APPS = [
     'channels',
     'channels_redis',
     'online_game',
+    'livechat',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
