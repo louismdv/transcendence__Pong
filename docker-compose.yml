@@ -12,6 +12,7 @@ services:
     ports:
       - "8000:8000"
     environment:
+      - DJANGO_SETTINGS_MODULE=ft_transcendence.settings
       - PYTHONUNBUFFERED=1
       - DEBUG=True
       - POSTGRES_DB=${POSTGRES_DB}

@@ -1,6 +1,7 @@
 
 // chatpage.js - Afficher tous les friends online/offline 
-//               pour pouvoir envoyer un message via le boutton: clas=action-button message-button
+//               pour pouvoir envoyer un message via le boutton: class=action-button message-button
+
 
 
 document.addEventListener('DOMContentLoaded', function() {

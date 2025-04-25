@@ -8,15 +8,16 @@ https://docs.djangoproject.com/en/5.1/howto/deployment/asgi/
 """
 
 import os
+import django
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'ft_transcendence.settings')
+django.setup()  # <-- This is crucial before anything Django-related
+
 from django.core.asgi import get_asgi_application
 from channels.routing import ProtocolTypeRouter, URLRouter
 from channels.auth import AuthMiddlewareStack
 from channels.security.websocket import AllowedHostsOriginValidator
 from online_game.routing import websocket_urlpatterns as onlinegame_routing
 from livechat.routing import websocket_urlpatterns as livechat_routing
-
-
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'ft_transcendence.settings')  # Replace with your project name
 
 application = ProtocolTypeRouter({
     "http": get_asgi_application(),
