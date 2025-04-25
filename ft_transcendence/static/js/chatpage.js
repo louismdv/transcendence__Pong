@@ -7,45 +7,15 @@
 document.addEventListener('DOMContentLoaded', function() {
     console.log("ChatPage.js chargé");
 
+    // Initialisation des statuts en ligne
+    updateOnlineStatus();
     //Initiate the page
     loadChatCards("online");
     loadChatCards("offline");
 
-    
-    // // Fonction pour ajouter un message au chat
-    // function addMessageToChat(sender, text, time, type) {
-    //     const messagesContainer = chatArea.querySelector('.chat-messages');
-    //     if (!messagesContainer) return;
-        
-    //     const messageElement = document.createElement('div');
-    //     messageElement.className = `chat-message ${type}`;
-    //     messageElement.innerHTML = `
-    //         <div class="message-content">
-    //             <div class="message-sender">${sender}</div>
-    //             <div class="message-text">${text}</div>
-    //             <div class="message-time">${time || getCurrentTime()}</div>
-    //         </div>
-    //     `;
-        
-    //     messagesContainer.appendChild(messageElement);
-        
-    //     // Faire défiler vers le bas
-    //     messagesContainer.scrollTop = messagesContainer.scrollHeight;
-    // }
-    
-
-    // Fonction utilitaire pour obtenir l'heure actuelle
-    function getCurrentTime() {
-        const now = new Date();
-        return `${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}`;
-    }
-    
-    
-    // Exposer les fonctions pour une utilisation externe
-    // window.chatPageSystem = {
-    //     selectContact: selectContact,
-    //     receiveMessage: receiveMessage
-    // };
+    setInterval(updateOnlineStatus, 5000);
+    setInterval(() => loadChatCards("online"), 5000);
+    setInterval(() => loadChatCards("offline"), 5000);
 });
 
 function loadChatCards(status) {
@@ -60,14 +30,6 @@ function loadChatCards(status) {
     
     if (!chatContainer) return;  // If container not found, exit
 
-    // Show a loading spinner while the data is being fetched
-    chatContainer.innerHTML = `
-        <div class="d-flex justify-content-center">
-            <div class="spinner-border text-primary" role="status">
-                <span class="visually-hidden">Chargement...</span>
-            </div>
-        </div>
-    `;
 
     // Fetch data from the server
     fetch('/api/friends/')
