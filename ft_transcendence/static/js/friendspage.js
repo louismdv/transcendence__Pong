@@ -23,7 +23,7 @@ document.addEventListener('DOMContentLoaded', function() {
     updateOnlineStatus();
     
     // Actualiser les statuts toutes les 30 secondes
-    setInterval(updateOnlineStatus, 30000);
+    setInterval(updateOnlineStatus, 5000);
     
     // Ajouter des écouteurs pour les onglets
     document.querySelectorAll('.nav-link').forEach(tab => {
