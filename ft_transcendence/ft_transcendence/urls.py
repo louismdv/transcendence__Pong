@@ -37,6 +37,7 @@ urlpatterns = [
     path('api/friends/<int:user_id>/unblock/', views.unblock_user, name='unblock_user'),
     path('api/update-online-status/', views.update_online_status, name='update_online_status'),
     path('api/friends/status/', views.get_friend_statuses, name='get_friend_statuses'),
+    path('api/dashboard-data/', views.dashboard_data, name='dashboard_data'),
     path('api/game/invite/<int:user_id>/', views.invite_to_game, name='invite_to_game'),
     path('profile/<int:user_id>/', views.user_profile, name='user_profile'),
     path('chat/<int:user_id>/', views.chat_with_user, name='chat_with_user'),

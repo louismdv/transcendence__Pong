@@ -353,7 +353,7 @@ aside:hover .sidebar-links h4 {
 }
 
 /* -------------- DARKMODE -------------- */
-body.darkmode {
+body.perso.darkmode {
     background-color: var(--primary-color);
     color: var(--text-color);
 }
