@@ -82,7 +82,8 @@ function initGame() {
 
 // ************ WEBSOCKETS ************ //
 function setupNewSocket(roomName, clientName) {
-    gameSocket = new WebSocket(`ws://${window.location.host}/ws/game/${roomName}/`);
+    const wsProtocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+    gameSocket = new WebSocket(`${wsProtocol}//${window.location.host}/ws/game/${roomName}/`);
 
     gameSocket.onopen = () => { console.log("✅ WebSocket open: handshake sent to server");
         sendMessage({ type: 'initial_message', username: clientName });

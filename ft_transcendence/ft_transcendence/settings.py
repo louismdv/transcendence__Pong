@@ -181,4 +181,26 @@ from decouple import config
 
 FT_CLIENT_ID = config("FT_CLIENT_ID")
 FT_CLIENT_SECRET = config("FT_CLIENT_SECRET")
-FT_REDIRECT_URI = "http://localhost:8000/auth/callback/"
+FT_REDIRECT_URI = "https://localhost:8000/auth/callback/"
+
+
+CSRF_TRUSTED_ORIGINS = [
+    'https://localhost:8000',
+    'http://localhost:8000',
+    'https://localhost',
+    'http://localhost', 
+    'https://127.0.0.1:8000',
+    'http://127.0.0.1:8000'
+]
+
+CSRF_COOKIE_SECURE = False
+CSRF_USE_SESSIONS = False
+CSRF_COOKIE_HTTPONLY = False
+CSRF_COOKIE_SAMESITE = None
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+CSRF_COOKIE_NAME = 'csrftoken'
+CSRF_COOKIE_DOMAIN = None
+CSRF_COOKIE_PATH = '/'
+
+# Désactivez temporairement la vérification du référent
+CSRF_TRUSTED_REFERERS = None

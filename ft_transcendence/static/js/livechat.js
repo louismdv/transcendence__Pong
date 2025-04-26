@@ -39,7 +39,8 @@
 
         if (!chatState.sockets[userId]) {
             const roomId = [currentUserId, userId].sort().join('_');
-            const socket = new WebSocket(`ws://${window.location.host}/ws/chat/${roomId}/`);
+            const wsProtocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+            const socket = new WebSocket(`${wsProtocol}//${window.location.host}/ws/chat/${roomId}/`);
             chatState.sockets[userId] = socket;
 
             socket.onopen = () => console.log(`WebSocket from ${currentUserId} ws: ${roomId}`);

@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect
-from django.views.decorators.csrf import csrf_protect
+from django.views.decorators.csrf import csrf_protect, ensure_csrf_cookie
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import login, authenticate
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
@@ -18,12 +18,12 @@ from .models import Friendship, UserProfile
 import os
 import json
 from django.utils import translation
-
-
+from django.http import HttpResponseForbidden
 import requests
 from django.contrib.auth.models import User
 
 # Step 1: Redirect to 42
+@ensure_csrf_cookie
 def login_42(request):
     auth_url = (
         f"https://api.intra.42.fr/oauth/authorize?"
@@ -38,6 +38,7 @@ from urllib.request import urlopen
 from django.core.files.base import ContentFile
 import os
 
+@ensure_csrf_cookie
 def callback_42(request):
     code = request.GET.get("code")
     if not code:
@@ -92,21 +93,25 @@ def callback_42(request):
     login(request, user)
     return redirect("/")
 
-
+@ensure_csrf_cookie
 def main(request):
     return render(request, 'main.html')
 
+@ensure_csrf_cookie
 @login_required(login_url='/login')
 def home(request):
     return render(request, 'home.html')
 
+@ensure_csrf_cookie
 def livechat(request):
     return render(request, 'livechat.html')
 
+@ensure_csrf_cookie
 @login_required(login_url='/login')
 def localgame(request):
     return render(request, 'localgame.html')
 
+@ensure_csrf_cookie
 @login_required(login_url='/login')
 @csrf_protect
 def settingspage(request):
@@ -266,10 +271,13 @@ def settingspage(request):
         messages.error(request, f"Erreur lors du chargement des paramètres: {str(e)}")
         return redirect('home')
 
+@ensure_csrf_cookie
 @login_required(login_url='/login')
 def friendspage(request):
     return render(request, 'friendspage.html')
 
+@ensure_csrf_cookie
+@csrf_protect
 def register(request):
     if request.method == 'POST':
         form = UserCreationForm(request.POST)
@@ -286,6 +294,7 @@ def register(request):
         form = UserCreationForm()
     return render(request, 'register.html', {'form': form})
 
+@ensure_csrf_cookie
 @csrf_protect
 def login_view(request):
     if request.method == 'POST':
@@ -299,12 +308,14 @@ def login_view(request):
         form = AuthenticationForm()
     return render(request, 'login.html', {'form': form})
 
+@ensure_csrf_cookie
 @login_required(login_url='/login')
 def tournament(request):
     if not hasattr(request.user, 'userprofile'):
         UserProfile.objects.create(user=request.user)
     return render(request, 'tournament.html')
 
+@ensure_csrf_cookie
 @login_required(login_url='/login')
 @csrf_protect
 def tournament_join(request):
@@ -317,6 +328,7 @@ def tournament_join(request):
         })
     return JsonResponse({'status': 'error', 'message': 'Méthode non autorisée'})
 
+@ensure_csrf_cookie
 @login_required(login_url='/login')
 @csrf_protect
 def tournament_leave(request):
@@ -324,6 +336,7 @@ def tournament_leave(request):
         return JsonResponse({'status': 'success', 'message': 'Tournoi quitté'})
     return JsonResponse({'status': 'error', 'message': 'Méthode non autorisée'})
 
+@ensure_csrf_cookie
 @login_required(login_url='/login')
 @csrf_protect
 def tournament_ready(request):
@@ -336,7 +349,7 @@ def tournament_ready(request):
             return JsonResponse({'status': 'error', 'message': 'JSON invalide'})
     return JsonResponse({'status': 'error', 'message': 'Méthode non autorisée'})
 
-
+@ensure_csrf_cookie
 @login_required
 def get_friends(request):
     # Récupérer les amis (statut "accepted")
@@ -365,6 +378,7 @@ def get_friends(request):
     
     return JsonResponse({'friends': friends_data})
 
+@ensure_csrf_cookie
 @login_required
 def get_friend_requests(request):
     # Récupérer les demandes d'amis reçues (statut "pending")
@@ -381,6 +395,7 @@ def get_friend_requests(request):
     
     return JsonResponse({'requests': requests_data})
 
+@ensure_csrf_cookie
 @login_required
 def search_users(request):
     query = request.GET.get('q', '')
@@ -419,6 +434,7 @@ def search_users(request):
     
     return JsonResponse({'users': users_data})
 
+@ensure_csrf_cookie
 @login_required
 @require_POST
 def send_friend_request(request, user_id):
@@ -440,6 +456,7 @@ def send_friend_request(request, user_id):
     except User.DoesNotExist:
         return JsonResponse({'success': False, 'message': 'Utilisateur non trouvé'})
 
+@ensure_csrf_cookie
 @login_required
 @require_POST
 def handle_friend_request(request, request_id):
@@ -464,6 +481,7 @@ def handle_friend_request(request, request_id):
     except json.JSONDecodeError:
         return JsonResponse({'success': False, 'message': 'Données invalides'})
 
+@ensure_csrf_cookie
 @login_required
 @require_POST
 def remove_friend(request, friend_id):
@@ -480,6 +498,7 @@ def remove_friend(request, friend_id):
     except Exception as e:
         return JsonResponse({'success': False, 'message': str(e)})
 
+@ensure_csrf_cookie
 @login_required
 @require_POST
 def block_user(request, user_id):
@@ -500,7 +519,7 @@ def block_user(request, user_id):
     except User.DoesNotExist:
         return JsonResponse({'success': False, 'message': 'Utilisateur non trouvé'})
 
-
+@ensure_csrf_cookie
 def update_online_status(request):
     """Met à jour automatiquement les statuts des utilisateurs inactifs"""
     # Définir le délai après lequel un utilisateur est considéré comme hors ligne (10s)
@@ -513,6 +532,7 @@ def update_online_status(request):
     
     return JsonResponse({'success': True, 'updated': updated_count})
 
+@ensure_csrf_cookie
 @login_required
 def get_friend_statuses(request):
     # Récupérer les amis (statut "accepted")
@@ -539,6 +559,7 @@ def get_friend_statuses(request):
     
     return JsonResponse({'friends': friend_statuses})
 
+@ensure_csrf_cookie
 @login_required
 @require_POST
 def remove_friend(request, friend_id):
@@ -563,6 +584,7 @@ def remove_friend(request, friend_id):
     except Exception as e:
         return JsonResponse({'success': False, 'message': str(e)})
 
+@ensure_csrf_cookie
 @login_required
 @require_POST
 def block_user(request, user_id):
@@ -590,6 +612,7 @@ def block_user(request, user_id):
     except Exception as e:
         return JsonResponse({'success': False, 'message': str(e)})
 
+@ensure_csrf_cookie
 @login_required
 @require_POST
 def invite_to_game(request, user_id):
@@ -609,25 +632,13 @@ def invite_to_game(request, user_id):
         # Ici, vous pourriez implémenter la logique d'envoi d'invitation au jeu
         # Par exemple, via des notifications WebSocket ou en sauvegardant dans la base de données
         
-        # Code exemple pour une invitation via WebSocket
-        # from channels.layers import get_channel_layer
-        # from asgiref.sync import async_to_sync
-        # channel_layer = get_channel_layer()
-        # async_to_sync(channel_layer.group_send)(
-        #     f'user_{user_to_invite.id}',
-        #     {
-        #         'type': 'game_invitation',
-        #         'sender_id': request.user.id,
-        #         'sender_name': request.user.username
-        #     }
-        # )
-        
         return JsonResponse({'success': True, 'message': 'Invitation envoyée !'})
     except User.DoesNotExist:
         return JsonResponse({'success': False, 'message': 'Utilisateur non trouvé'})
     except Exception as e:
         return JsonResponse({'success': False, 'message': str(e)})
 
+@ensure_csrf_cookie
 @login_required
 def user_profile(request, user_id):
     """Affiche le profil d'un utilisateur."""
@@ -658,6 +669,7 @@ def user_profile(request, user_id):
         messages.error(request, "Utilisateur non trouvé.")
         return redirect('friends')
 
+@ensure_csrf_cookie
 @login_required
 def chat_with_user(request, user_id):
     """Affiche ou crée une conversation avec un utilisateur."""
@@ -686,6 +698,7 @@ def chat_with_user(request, user_id):
         messages.error(request, "Utilisateur non trouvé.")
         return redirect('friends')
 
+@ensure_csrf_cookie
 @login_required
 def get_blocked_users(request):
     """Récupère la liste des utilisateurs bloqués par l'utilisateur connecté."""
@@ -720,6 +733,7 @@ def get_blocked_users(request):
         print(f"Error in get_blocked_users: {e}")
         return JsonResponse({'blocked_users': [], 'error': str(e)})
 
+@ensure_csrf_cookie
 @login_required
 @require_POST
 def unblock_user(request, user_id):
@@ -755,6 +769,8 @@ def unblock_user(request, user_id):
             'success': False, 
             'message': f'Une erreur est survenue: {str(e)}'
         })
+
+@ensure_csrf_cookie
 @login_required
 def set_language_ajax(request):
     if request.method == 'POST':
@@ -767,12 +783,14 @@ def set_language_ajax(request):
             return JsonResponse({'status': 'ok'})
     return JsonResponse({'status': 'error'}, status=400)
 
+@ensure_csrf_cookie
 @login_required
 def chatpage(request):
     if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
         return render(request, 'chatpage.html')
     return redirect('home')
 
+@ensure_csrf_cookie
 def dashboard_data(request):
     # Get the current user
     user = request.user
