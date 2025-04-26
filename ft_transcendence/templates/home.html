@@ -182,6 +182,11 @@
         window.addEventListener('hashchange', handleHashChange);
     </script>
 
+    <script>
+        const currentUserId = "{{ user.id }}";
+        const currentUsername = "{{ user.username }}";
+    </script>
+
     <!-- JS Scripts -->
     <script src="{% static 'js/home.js' %}"></script>
     <script src="{% static 'js/chatpage.js' %}"></script>
