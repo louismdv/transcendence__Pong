@@ -9,8 +9,8 @@ services:
                     daphne -p 8000 -b 0.0.0.0 ft_transcendence.asgi:application"
     volumes:
       - .:/app
-    ports:
-      - "8000:8000"
+    # ports:
+    #   - "8000:8000"
     environment:
       - DJANGO_SETTINGS_MODULE=ft_transcendence.settings
       - PYTHONUNBUFFERED=1
@@ -54,13 +54,13 @@ services:
       - backend
 
   nginx:
-    image: nginx:latest
-    ports:
-      - "8080:8080"
+    build: ./nginx
     volumes:
-      - ./nginx/nginx.conf:/etc/nginx/conf.d/default.conf:ro
+      - ./nginx/nginx.conf:/etc/nginx/conf.d/default.conf
       - ./staticfiles:/app/staticfiles:ro
       - ./ft_transcendence/media:/app/media:ro
+    ports:
+      - "8000:8000"
     depends_on:
       - web
     networks:
