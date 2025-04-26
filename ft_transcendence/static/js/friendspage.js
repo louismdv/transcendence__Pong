@@ -118,7 +118,7 @@ function createFriendCardHTML(friend) {
                     Actions
                 </button>
                 <div id="action-menu-${friend.id}" class="custom-action-menu">
-                    <div class="action-option" onclick="openChat('${friend.id}')">
+                    <div class="action-option" onclick="openChat('${friend.id}', '${friend.username}')">
                         <i class="bi bi-chat-dots me-2"></i>
                         <span>Message privé</span>
                     </div>
@@ -220,11 +220,6 @@ function filterFriends(searchTerm) {
         }
     }
 }
-
-// function openChat(friendId) {
-//     // Redirection vers la page de chat ou ouverture d'une modal
-//     window.location.href = `/chat/${friendId}/`;
-// }
 
 // Inviter un ami à jouer
 function inviteToGame(friendId) {

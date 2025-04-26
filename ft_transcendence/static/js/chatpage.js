@@ -34,7 +34,7 @@ function loadChatCards(status) {
     // Fetch data from the server
     fetch('/api/friends/')
         .then(response => {
-            console.log('Response received:', response);  // Log the response object
+            // console.log('Response received:', response);  // Log the response object
             // Check if the response status is OK
             if (!response.ok) {
                 console.error(`HTTP error! Status: ${response.status}`);
@@ -43,7 +43,7 @@ function loadChatCards(status) {
             return response.json();  // Parse the JSON response
         })
         .then(data => {
-            console.log('Data received:', data);  // Log the received data
+            // console.log('Data received:', data);  // Log the received data
             // Filter the friends based on online/offline status
             const chats = data.friends.filter(friend =>
                 status === "online" ? friend.online : !friend.online

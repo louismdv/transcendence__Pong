@@ -23,6 +23,9 @@
 
 
     function openChat(userId, username) {
+
+        console.log ("userID: ", userId, "username: ", username);
+
         if (!chatWindow || !chatUserName || !chatInput) return;
 
         chatState.currentChat = { userId, username };
@@ -225,17 +228,17 @@
                 });
             });
     }
-   function attachContactListeners() {
-        document.querySelectorAll('.contact-item').forEach(item => {
-            const messageBtn = item.querySelector('.message-button');
-            if (messageBtn) {
-                messageBtn.addEventListener('click', e => {
-                    e.stopPropagation();
-                    openChat(item.dataset.userId, item.dataset.username);
-                });
-            }
-        });
-    }
+//    function attachContactListeners() {
+//         document.querySelectorAll('.contact-item').forEach(item => {
+//             const messageBtn = item.querySelector('.message-button');
+//             if (messageBtn) {
+//                 messageBtn.addEventListener('click', e => {
+//                     e.stopPropagation();
+//                     openChat(item.dataset.userId, item.dataset.username);
+//                 });
+//             }
+//         });
+//     }
     function initChatListeners() {
         attachContactListeners();
 
@@ -297,4 +300,5 @@
         setupMutationObserver();
     });
 
+    window.openChat = openChat; 
 })();
