@@ -286,9 +286,14 @@
             }
         });
     }
-    function inviteFriendToGame(userId, username) {
-        openChat(userId, username);
-        if (chatState.currentChat) {
+function inviteFriendToGame(userId, username) {
+    openChat(userId, username);
+
+    // Delay the invite until chatState.currentChat is correctly set
+    const checkChatReady = setInterval(() => {
+        if (chatState.currentChat?.userId === userId) {
+            clearInterval(checkChatReady);
+
             function generateRoomCode(length = 6) {
                 const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
                 let roomCode = '';
@@ -297,21 +302,25 @@
                 }
                 return roomCode;
             }
-            const roomName = generateRoomCode();
 
+            const roomName = generateRoomCode();
             chatInput.value = `Salut t'es dispo pour une partie? Voici un code: ${roomName}`;
-            setTimeout(() => sendMessageBtn.click(), 0); // Ensures pasted text is captured
+            setTimeout(() => sendMessageBtn.click(), 0); // Ensure the text is actually in input before clicking send
+
             alert(`L'invitation pour jouer avec ${chatState.currentChat.username} est envoyée!`);
 
             if (validateRoomName(roomName)) {
                 window.location.hash = `#game/${roomName}`;
             }
         }
-    }
+    }, 100); // Check every 100ms
+}
 
     function setupMutationObserver() {
         const mainContent = document.getElementById('main-content');
         if (!mainContent) return;
+
+        attachContactListeners();
 
         const observer = new MutationObserver(mutations => {
             for (const mutation of mutations) {
