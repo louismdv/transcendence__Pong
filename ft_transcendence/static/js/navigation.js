@@ -73,6 +73,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const roomNameInput = document.getElementById("room-name-input")
     const localGameBtn = document.getElementById("localGameBtn")
     const onlineGameBtn = document.getElementById("onlineGameBtn")
+    const pageTitle = document.getElementById("page-title") // Adjust selector as needed
   
     // Fonction pour masquer toutes les sections
     function hideAllSections() {
