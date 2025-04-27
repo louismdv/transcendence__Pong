@@ -3,4 +3,3 @@ __pycache__/
 .DS_Store
 .vscode/
 staticfiles/
-ft_transcendence/ft_transcendence/migrations/

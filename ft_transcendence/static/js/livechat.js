@@ -168,12 +168,24 @@
     }
     function attachContactListeners() {
         document.querySelectorAll('.contact-item').forEach(item => {
-            const messageBtn = item.querySelector('.message-button');
-            if (messageBtn) {
-                messageBtn.addEventListener('click', e => {
-                    e.stopPropagation();
-                    openChat(item.dataset.userId, item.dataset.username);
-                });
+            if (!item.dataset.listenerAttached) {
+                const messageBtn = item.querySelector('.message-button');
+                if (messageBtn) {
+                    messageBtn.addEventListener('click', e => {
+                        e.stopPropagation();
+                        openChat(item.dataset.userId, item.dataset.username);
+                    });
+                }
+
+                const inviteGameBtn = item.querySelector('.invite-button');
+                if (inviteGameBtn) {
+                    inviteGameBtn.addEventListener('click', e => {
+                        e.stopPropagation();
+                        inviteFriendToGame(item.dataset.userId, item.dataset.username);
+                    });
+                }
+
+                item.dataset.listenerAttached = "true"; // Mark this element as already attached
             }
         });
     }
@@ -228,17 +240,6 @@
                 });
             });
     }
-//    function attachContactListeners() {
-//         document.querySelectorAll('.contact-item').forEach(item => {
-//             const messageBtn = item.querySelector('.message-button');
-//             if (messageBtn) {
-//                 messageBtn.addEventListener('click', e => {
-//                     e.stopPropagation();
-//                     openChat(item.dataset.userId, item.dataset.username);
-//                 });
-//             }
-//         });
-//     }
     function initChatListeners() {
         attachContactListeners();
 
@@ -264,8 +265,12 @@
         });
 
         inviteToGameBtn?.addEventListener('click', () => {
-            if (chatState.currentChat) {
-                alert(`Invitation à jouer envoyée à ${chatState.currentChat.username}`);
+            const userId = chatState.currentChat?.userId;
+            const username = chatState.currentChat?.username;
+            if (userId && username) {
+                inviteFriendToGame(userId, username);
+            } else {
+                console.error('Cannot invite to game: No active chat or missing user information.');
             }
         });
 
@@ -280,6 +285,29 @@
             }
         });
     }
+    function inviteFriendToGame(userId, username) {
+        openChat(userId, username);
+        if (chatState.currentChat) {
+            function generateRoomCode(length = 6) {
+                const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+                let roomCode = '';
+                for (let i = 0; i < length; i++) {
+                    roomCode += characters.charAt(Math.floor(Math.random() * characters.length));
+                }
+                return roomCode;
+            }
+            const roomName = generateRoomCode();
+
+            chatInput.value = `Salut t'es dispo pour une partie? Voici un code: ${roomName}`;
+            setTimeout(() => sendMessageBtn.click(), 0); // Ensures pasted text is captured
+            alert(`L'invitation pour jouer avec ${chatState.currentChat.username} est envoyée!`);
+
+            if (validateRoomName(roomName)) {
+                window.location.hash = `#game/${roomName}`;
+            }
+        }
+    }
+
     function setupMutationObserver() {
         const mainContent = document.getElementById('main-content');
         if (!mainContent) return;
@@ -300,5 +328,6 @@
         setupMutationObserver();
     });
 
-    window.openChat = openChat; 
+    window.openChat = openChat;
+    window.inviteFriendToGame = inviteFriendToGame;
 })();
