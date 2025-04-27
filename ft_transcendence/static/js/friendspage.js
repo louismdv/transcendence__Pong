@@ -122,7 +122,7 @@ function createFriendCardHTML(friend) {
                         <i class="bi bi-chat-dots me-2"></i>
                         <span>Message privé</span>
                     </div>
-                    <div class="action-option" onclick="inviteToGame('${friend.id}')">
+                    <div class="action-option" onclick="window.inviteFriendToGame('${friend.id}', '${friend.username}')">
                         <i class="bi bi-controller me-2"></i>
                         <span>Inviter à jouer</span>
                     </div>
