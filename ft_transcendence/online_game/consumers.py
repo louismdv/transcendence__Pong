@@ -10,7 +10,6 @@ from django.core.files.base import ContentFile
 from django.core.exceptions import ObjectDoesNotExist
 from django.db import connection
 from django.conf import settings
-
 from asgiref.sync import sync_to_async
 import os
 
@@ -296,17 +295,38 @@ class GameConsumer(AsyncWebsocketConsumer):
 
     async def handle_gameover(self, data):
         """Handles game over state."""
-        
-        # Optionally save any game stats you want to persist
+
+        # Save any game stats you want to persist
         redis_client.hset(self.room_name, "game_status", "game_over")
-        redis_client.hset(self.room_name, "winner", data.get("winner"))
+        winner = data.get("winner")
+        redis_client.hset(self.room_name, "winner", winner)
         print("Game over message received.")
-        print(f"Game over! Winner: {data.get('winner')}")
+        print(f"Game over! Winner: {winner}")
+        
+        # Update the database for wins and losses
+        playerL_id = await self.get_value_from_player("playerL", "id")
+        playerR_id = await self.get_value_from_player("playerR", "id")
+        
+        if playerL_id and playerR_id:
+            await self.update_wins_and_losses(playerL_id, playerR_id, winner)
+        
         self.player_count = int(redis_client.hget(self.room_name, "player_count"))
         print(self.player_count)
         await self.close()  # Close the connection with a normal closure status code
-        
 
+
+    @sync_to_async
+    def update_wins_and_losses(self, playerL_id, playerR_id, winner):
+        """This runs in sync mode, safe for DB operations."""
+        with connection.cursor() as cursor:
+            if winner == playerL_id:
+                # Increment wins for playerL and losses for playerR
+                cursor.execute("UPDATE ft_transcendence_userprofile SET wins = wins + 1 WHERE user_id = %s", [playerL_id])
+                cursor.execute("UPDATE ft_transcendence_userprofile SET losses = losses + 1 WHERE user_id = %s", [playerR_id])
+            elif winner == playerR_id:
+                # Increment wins for playerR and losses for playerL
+                cursor.execute("UPDATE ft_transcendence_userprofile SET wins = wins + 1 WHERE user_id = %s", [playerR_id])
+                cursor.execute("UPDATE ft_transcendence_userprofile SET losses = losses + 1 WHERE user_id = %s", [playerL_id])
 
 ## **************** UTILS Fn **************** ##
 

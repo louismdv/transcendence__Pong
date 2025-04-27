@@ -793,14 +793,14 @@ def chatpage(request):
 @ensure_csrf_cookie
 def dashboard_data(request):
     # Get the current user
-    user = request.user
+    user = request.user.userprofile
     
     # Example data - replace with your actual data retrieval logic
     user_stats = {
-        'wins': 24,
-        'losses': 12,
-        'winRate': 67,
-        'totalGames': 36,
+        'wins': user.wins,
+        'losses': user.losses,
+        'totalGames': user.total_local_games,
+        'totalGames': user.total_online_games,
         'tournamentsWon': 3,
         'recentGames': [
             {
