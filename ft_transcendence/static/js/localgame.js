@@ -1,4 +1,4 @@
-(() => {
+(function() {
     // Vérifier si l'élément existe avant d'y accéder
     const pageTitle = document.getElementById('page-title');
     if (pageTitle) {
@@ -50,6 +50,32 @@
     let isTournamentMode = false;
     let tournamentPlayer1 = null;
     let tournamentPlayer2 = null;
+    
+    // IMPORTANT: Exposer la fonction pour le tournoi de manière globale
+    window.startTournamentGame = function(player1Name, player2Name) {
+        console.log("Démarrage direct du jeu de tournoi:", player1Name, "vs", player2Name);
+        
+        // Réinitialiser le canvas
+        if (!initCanvas()) {
+            console.error("Canvas non disponible");
+            return false;
+        }
+        
+        // Configuration du tournoi
+        isTournamentMode = true;
+        tournamentPlayer1 = player1Name;
+        tournamentPlayer2 = player2Name;
+        gameRunning = true;
+        
+        // Reset et démarrer le jeu
+        resetGame();
+        displayTournamentPlayerNames();
+        
+        // Démarrage explicite du jeu
+        gameLoop();
+        
+        return true;
+    };
     
     // CLASSES: Player and Ball
     class Player {
@@ -524,4 +550,4 @@
     if (!isTournamentMode) {
         pregameLoop();
     }
-})();
+})(); // Notez le changement ici: utilisez une fonction anonyme standard au lieu d'une fonction fléchée

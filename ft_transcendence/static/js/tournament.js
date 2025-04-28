@@ -425,8 +425,10 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Show match announcement overlay
     function showMatchAnnouncement(player1, player2, callback) {
+        // Créer l'élément overlay (c'était le problème - il manquait cette ligne)
         const overlay = document.createElement('div');
         overlay.className = 'match-announcement-overlay';
+        
         overlay.innerHTML = `
             <div class="match-announcement card">
                 <h4>Next Match</h4>
@@ -460,34 +462,40 @@ document.addEventListener('DOMContentLoaded', function() {
     // Launch the local game
     function launchLocalGame(player1Name, player2Name) {
         console.log("Lancement du jeu:", player1Name, "vs", player2Name);
-        
-        // Hide tournament page
+    
         const tournamentPage = document.getElementById('tournamentpage');
         if (tournamentPage) {
             tournamentPage.style.display = 'none';
         }
-        
-        // Show game container
+    
         const gameContainer = document.getElementById('game-container');
         if (gameContainer) {
-            // Forcer l'affichage avec style en ligne
             gameContainer.setAttribute('style', 'display: flex !important; position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 9999; background-color: black;');
             console.log("Game container affiché:", gameContainer);
         } else {
             console.error("Game container introuvable!");
+            return;
         }
-        
-        // Créer l'événement avec un petit délai pour s'assurer que le DOM est prêt
-        setTimeout(() => {
-            const event = new CustomEvent('start-tournament-match', {
-                detail: {
-                    player1: player1Name,
-                    player2: player2Name
-                }
-            });
-            document.dispatchEvent(event);
-        }, 100);
+    
+        if (window.startTournamentGame && typeof window.startTournamentGame === 'function') {
+            console.log("Démarrage direct du jeu via la fonction globale");
+            setTimeout(() => {
+                window.startTournamentGame(player1Name, player2Name);
+            }, 100);
+        } else {
+            console.log("Fonction globale non disponible, tentative avec événement personnalisé");
+            setTimeout(() => {
+                const event = new CustomEvent('start-tournament-match', {
+                    detail: {
+                        player1: player1Name,
+                        player2: player2Name
+                    }
+                });
+                document.dispatchEvent(event);
+            }, 200);
+        }
     }
+    
     
     // Process match results
     function processMatchResults(player1Score, player2Score) {
