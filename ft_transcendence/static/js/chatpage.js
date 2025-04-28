@@ -75,7 +75,7 @@ function loadChatCards(status) {
             return nbFriends;
         })
         .then(result => {
-            console.log('Number of friends:', result);  // Log the number of friends
+            // console.log('Number of friends:', result);  // Log the number of friends
             // Use the result (number of friends) to update the user count
             if (status === "online") {
                 const badge = document.querySelector('.contacts-group-header .badge.bg-success');
