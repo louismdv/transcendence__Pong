@@ -186,7 +186,6 @@ aside:hover .sidebar-links h4 {
     border-radius: 10px;
     flex: 1 1 300px;
     max-height: 500px;
-    /* overflow: auto; */
     position: relative;
 }
 
@@ -381,19 +380,6 @@ body.perso.darkmode {
 
 .darkmode .btn__icon {
     color: var(--dark-icon-color);
-}
-
-.darkmode .card {
-    /*    border: 2px solid green; */
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    background-color: var(--dark-color);
-    border-radius: 10px;
-    flex: 1 1 300px;
-    max-height: 500px;
-    overflow: auto;
-    position: relative;
 }
 
 .darkmode .btn-light {

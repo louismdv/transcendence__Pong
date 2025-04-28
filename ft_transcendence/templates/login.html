@@ -1,56 +1,39 @@
 {% load static %}
+{% load i18n %}
+
 <link rel="stylesheet" href="{% static 'login.css' %}">
 <link rel="stylesheet" href="{% static 'style.css' %}">
 <link rel="stylesheet" href="{% static 'home.css' %}">
 
 <section id="login">
-    <!-- <div class="login-header">
-        <img src="../media/logo.svg" alt="Pong logo" width="40" height="40">
-        <span>PONG</span>
-    </div>
-    -->
     <div class="login-content">
-        <h2 class="h2-login">Login</h2>
+        <h2 class="h2-login">{% trans "Login" %}</h2>
         {% if messages %}
         <div class="messages {% for message in messages %}{% if message.tags %}{{ message.tags }}{% endif %}{% endfor %}">
             {% for message in messages %}
                 <p>{{ message }}</p>
             {% endfor %}
         </div>
-    {% endif %}
-    
-    
-    
-    
+        {% endif %}
+        
         <form action="{% url 'login' %}" method="POST">
             {% csrf_token %}
             <div class="login-form">
-                <label for="username">Username</label>
+                <label for="username">{% trans "Username" %}</label>
                 <input type="text" id="username" name="username" required>
             </div>
             <div class="login-form">
-                <label for="password">Password</label>
+                <label for="password">{% trans "Password" %}</label>
                 <input type="password" id="password" name="password" required>
             </div>
             <div class="register">
-                <button class="button-login" type="submit">Login</button>
-                <p>Need an account? <a href="{% url 'register' %}">SIGN UP</a></p>
+                <button class="button-login" type="submit">{% trans "Login" %}</button>
+                <p>{% trans "Need an account?" %} <a href="{% url 'register' %}">{% trans "SIGN UP" %}</a></p>
                 <div class="styled-text">
-                    <span>OR</span>
+                    <span>{% trans "OR" %}</span>
                 </div>
             </div>
         </form>
-        <button class="button-login"><a href="{% url 'login_42' %}">Login with 42</a></button>
+        <button class="button-login"><a href="{% url 'login_42' %}">{% trans "Login with 42" %}</a></button>
     </div>
 </section>
-{% comment %} <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const messages = document.querySelectorAll('.messages p');
-        messages.forEach(function(message) {
-            alert(message.textContent);
-        });
-        if (performance.navigation.type === 2) {
-            location.reload(true);
-        }
-    });
-</script> {% endcomment %}

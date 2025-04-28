@@ -1,13 +1,14 @@
 {% load static %}
+{% load i18n %}
 
 <section id="onlinegame-section">
     <div id="gameWrapper">
-        <h1>Create a new game:</h1>
+        <h1>{% trans "Create a new game:" %}</h1>
         
-        What game room would you like to join/create?<br><br><br>
+        {% trans "What game room would you like to join/create?" %}<br><br><br>
         <div id="input-container">
-            <input id="room-name-input" type="text" size="100" placeholder="Enter room name ..."><br>
-            <button id="room-name-submit" type="button" class="glow-on-hover">Enter</button>
+            <input id="room-name-input" type="text" size="100" placeholder="{% trans 'Enter room name ...' %}"><br>
+            <button id="room-name-submit" type="button" class="glow-on-hover">{% trans 'Enter' %}</button>
         </div>
         
         {% if error %}
@@ -15,6 +16,7 @@
         {% endif %}
     </div>
 </section>
+
 
 <script>
     const inputField = document.querySelector('#room-name-input');
