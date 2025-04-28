@@ -40,6 +40,7 @@ let loadingAnimation;
 let winner_id = null;
 let gameSocket;
 let animationId;
+loadingAnimation = writeLoadingText("orange");
 
 
 function initGame() {
@@ -59,7 +60,6 @@ function initGame() {
         animationId = null;
     }
     clearInterval(loadingAnimation);
-    loadingAnimation = writeLoadingText("orange");
 
     gameRunning = false;
 
@@ -146,14 +146,15 @@ function setupNewSocket(roomName, clientName, userId) {
                 handle_restore_game(data.game_state);
                 break;
             case 'start_game':
-                clearInterval(loadingAnimation);
+                // clearInterval(loadingAnimation);
                 countdown(3, gameLoop);
                 break;
             case 'update_player':
                 pullPlayerState(data.player_side, data.new_y, data.old_y);
                 break;
             case 'update_ball':
-                pullBallState(data.ball_state);
+                if (ball)
+                    pullBallState(data.ball_state);
                 break;
             default:
                 console.log("Unknown message type:", data.type);
@@ -173,16 +174,27 @@ function initializeWebSocket() {
 }
 
 // ************ HELPER WEBSOCKETS FUNCTIONS ************ //
-function sendMessage(message, retryCount = 5) {
-    if (!gameSocket || gameSocket.readyState === WebSocket.CLOSING || gameSocket.readyState === WebSocket.CLOSED) {
-        console.warn("WebSocket is not available.");
-        return;
-    }
+// function sendMessage(message, retryCount = 5) {
+//     if (!gameSocket || gameSocket.readyState === WebSocket.CLOSING || gameSocket.readyState === WebSocket.CLOSED) {
+//         console.warn("WebSocket is not available.");
+//         return;
+//     }
+//     if (gameSocket.readyState === WebSocket.OPEN) {
+//         gameSocket.send(JSON.stringify(message));
+//     } else if (retryCount > 0) {
+//         console.log("WebSocket not ready, retrying...");
+//         setTimeout(() => sendMessage(message, retryCount - 1), 500);
+//     } else {
+//         console.error("WebSocket failed to open after retries.");
+//     }
+// }
+function sendMessage(message) {
+    // if (!gameSocket || gameSocket.readyState === WebSocket.CLOSING || gameSocket.readyState === WebSocket.CLOSED) {
+    //     console.warn("WebSocket is not available.");
+    //     return;
+    // }
     if (gameSocket.readyState === WebSocket.OPEN) {
         gameSocket.send(JSON.stringify(message));
-    } else if (retryCount > 0) {
-        console.log("WebSocket not ready, retrying...");
-        setTimeout(() => sendMessage(message, retryCount - 1), 500);
     } else {
         console.error("WebSocket failed to open after retries.");
     }
@@ -346,10 +358,6 @@ function gameLoop() {
             winner_id = players.opponent.id;
         if (winner_id) {
             gameRunning = false;
-            console.log(players.me.username)
-            console.log(players.opponent.username)
-            console.log(players.me.id)
-            console.log(winner_id)
             if (winner_id === players.me.id ? winnerAnnouce(players.me.username) : winnerAnnouce(players.opponent.username));
             sendMessage({ type: 'game_over', winner: winner_id });
             updateDashboardData()
