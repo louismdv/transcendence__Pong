@@ -12,10 +12,15 @@
     function initCanvas() {
         canvas = document.getElementById('localgameCanvas');
         if (!canvas) {
-            console.error("Canvas not found!");
+            console.error("[Game] Canvas 'localgameCanvas' introuvable !");
             return false;
         }
         ctx = canvas.getContext('2d');
+        if (!ctx) {
+            console.error("[Game] Contexte 2D du canvas indisponible !");
+            return false;
+        }
+        console.log("[Game] Canvas et contexte 2D initialisés avec succès !");
         return true;
     }
     
@@ -53,29 +58,26 @@
     
     // IMPORTANT: Exposer la fonction pour le tournoi de manière globale
     window.startTournamentGame = function(player1Name, player2Name) {
-        console.log("Démarrage direct du jeu de tournoi:", player1Name, "vs", player2Name);
-        
-        // Réinitialiser le canvas
+        console.log("[Game] startTournamentGame appelé:", player1Name, "vs", player2Name);
+    
         if (!initCanvas()) {
-            console.error("Canvas non disponible");
+            console.error("[Game] Impossible d'initialiser le canvas. Match annulé.");
             return false;
         }
-        
-        // Configuration du tournoi
+    
+        // Continue normalement après
         isTournamentMode = true;
         tournamentPlayer1 = player1Name;
         tournamentPlayer2 = player2Name;
         gameRunning = true;
-        
-        // Reset et démarrer le jeu
+    
         resetGame();
         displayTournamentPlayerNames();
-        
-        // Démarrage explicite du jeu
         gameLoop();
-        
+    
         return true;
     };
+    
     
     // CLASSES: Player and Ball
     class Player {
@@ -314,11 +316,15 @@
                 if (isTournamentMode) {
                     const gameCompletedEvent = new CustomEvent('game-completed', {
                         detail: {
-                            player1Score: 0,
-                            player2Score: 0
+                            player1Score: playerL.score,
+                            player2Score: playerR.score
                         }
                     });
+                    // Envoyer l'événement à la fois à window et document pour être sûr
                     window.dispatchEvent(gameCompletedEvent);
+                    document.dispatchEvent(gameCompletedEvent);
+                    
+                    console.log("[Game] Événement game-completed envoyé avec les scores:", playerL.score, "-", playerR.score);
                     
                     isTournamentMode = false;
                     tournamentPlayer1 = null;
@@ -497,7 +503,7 @@
                 if (isTournamentMode) {
                     console.log("Match de tournoi terminé:", playerL.score, "-", playerR.score);
                     
-                    // Report scores back to tournament system
+                    // Report scores back to tournament system - envoyer à window ET document
                     const gameCompletedEvent = new CustomEvent('game-completed', {
                         detail: {
                             player1Score: playerL.score,
@@ -505,6 +511,9 @@
                         }
                     });
                     window.dispatchEvent(gameCompletedEvent);
+                    document.dispatchEvent(gameCompletedEvent);
+                    
+                    console.log("[Game] Événement game-completed envoyé avec les scores:", playerL.score, "-", playerR.score);
                     
                     // Reset tournament mode
                     isTournamentMode = false;

@@ -282,6 +282,23 @@ document.addEventListener('DOMContentLoaded', function() {
             font-weight: bold;
             margin-left: 10px;
         }
+        
+        .begin-match-btn {
+            display: block;
+            width: 100%;
+            margin-top: 10px;
+            padding: 8px;
+            background: #8e44ad;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        
+        .begin-match-btn:hover {
+            background: #9b59b6;
+        }
     `;
     document.head.appendChild(styleElement);
     
@@ -329,9 +346,56 @@ document.addEventListener('DOMContentLoaded', function() {
         // Update UI
         updateBracket();
         
+        // Add Begin Match buttons to each match if they don't exist
+        addBeginMatchButtons();
+        
         // Start first match
         tournamentState.status = 'matchA';
         startMatch('matchA');
+    }
+    
+    // Add Begin Match buttons to match containers
+    function addBeginMatchButtons() {
+        const containers = document.querySelectorAll('.match-container');
+        
+        containers.forEach(container => {
+            // Check if button already exists
+            if (!container.querySelector('.begin-match-btn')) {
+                const button = document.createElement('button');
+                button.textContent = 'Begin Match';
+                button.className = 'begin-match-btn glow-on-hover';
+                
+                // Add click event
+                button.addEventListener('click', function() {
+                    const matchId = container.id;
+                    let player1, player2;
+                    
+                    switch (matchId) {
+                        case 'match-a':
+                            player1 = tournamentState.matchA.player1?.name || "Player 1";
+                            player2 = tournamentState.matchA.player2?.name || "Player 2";
+                            break;
+                        case 'match-b':
+                            player1 = tournamentState.matchB.player1?.name || "Player 3";
+                            player2 = tournamentState.matchB.player2?.name || "Player 4";
+                            break;
+                        case 'match-losers':
+                            player1 = tournamentState.matchLosers.player1?.name || "Loser 1";
+                            player2 = tournamentState.matchLosers.player2?.name || "Loser 2";
+                            break;
+                        case 'match-final':
+                            player1 = tournamentState.matchFinal.player1?.name || "Winner 1";
+                            player2 = tournamentState.matchFinal.player2?.name || "Winner 2";
+                            break;
+                    }
+                    
+                    // Launch the game directly
+                    launchLocalGame(player1, player2);
+                });
+                
+                container.appendChild(button);
+            }
+        });
     }
     
     // Update bracket display with current match data
@@ -425,7 +489,7 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Show match announcement overlay
     function showMatchAnnouncement(player1, player2, callback) {
-        // Créer l'élément overlay (c'était le problème - il manquait cette ligne)
+        // Créer l'élément overlay
         const overlay = document.createElement('div');
         overlay.className = 'match-announcement-overlay';
         
@@ -461,41 +525,54 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Launch the local game
     function launchLocalGame(player1Name, player2Name) {
-        console.log("Lancement du jeu:", player1Name, "vs", player2Name);
+        console.log("[Tournament] Lancement du jeu:", player1Name, "vs", player2Name);
     
+        // Cacher la page tournoi
         const tournamentPage = document.getElementById('tournamentpage');
         if (tournamentPage) {
             tournamentPage.style.display = 'none';
         }
     
+        // Récupérer et préparer le conteneur de jeu
         const gameContainer = document.getElementById('game-container');
-        if (gameContainer) {
-            gameContainer.setAttribute('style', 'display: flex !important; position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 9999; background-color: black;');
-            console.log("Game container affiché:", gameContainer);
-        } else {
-            console.error("Game container introuvable!");
+        const canvas = document.getElementById('localgameCanvas');
+        
+        if (!gameContainer || !canvas) {
+            console.error("[Tournament] Éléments de jeu introuvables!");
             return;
         }
-    
-        if (window.startTournamentGame && typeof window.startTournamentGame === 'function') {
-            console.log("Démarrage direct du jeu via la fonction globale");
-            setTimeout(() => {
+        
+        // Utiliser une classe plutôt que d'affecter directement le style display
+        gameContainer.classList.add('active');
+        
+        // Dimensionner correctement le canvas en forçant des valeurs
+        canvas.style.width = '1080px';
+        canvas.style.height = '720px';
+        canvas.style.maxWidth = '95vw';
+        canvas.style.maxHeight = '95vh';
+        canvas.style.display = 'block';
+        
+        console.log("[Tournament] Game container affiché:", getComputedStyle(gameContainer).display);
+        
+        // Lancer le jeu après un court délai pour permettre au rendu de s'actualiser
+        setTimeout(() => {
+            if (window.startTournamentGame && typeof window.startTournamentGame === 'function') {
+                console.log("[Tournament] Démarrage direct du jeu via startTournamentGame");
                 window.startTournamentGame(player1Name, player2Name);
-            }, 100);
-        } else {
-            console.log("Fonction globale non disponible, tentative avec événement personnalisé");
-            setTimeout(() => {
-                const event = new CustomEvent('start-tournament-match', {
-                    detail: {
-                        player1: player1Name,
-                        player2: player2Name
-                    }
-                });
-                document.dispatchEvent(event);
-            }, 200);
-        }
+            } else {
+                console.warn("[Tournament] Fonction startTournamentGame non disponible");
+            }
+            
+            // Vérifier si le canvas est visible
+            console.log("Canvas visible:", {
+                display: getComputedStyle(canvas).display,
+                width: canvas.clientWidth,
+                height: canvas.clientHeight,
+                offsetWidth: canvas.offsetWidth,
+                offsetHeight: canvas.offsetHeight
+            });
+        }, 200); // Délai plus long pour s'assurer que le DOM soit mis à jour
     }
-    
     
     // Process match results
     function processMatchResults(player1Score, player2Score) {
@@ -662,15 +739,42 @@ document.addEventListener('DOMContentLoaded', function() {
         
         const gameContainer = document.getElementById('game-container');
         if (gameContainer) {
-            gameContainer.style.display = 'none';
+            gameContainer.classList.remove('active');
         }
     }
+    
+    // Close game function
+    function closeGame() {
+        const gameContainer = document.getElementById('game-container');
+        if (gameContainer) {
+            gameContainer.classList.remove('active');
+        }
+        
+        const tournamentPage = document.getElementById('tournamentpage');
+        if (tournamentPage) {
+            tournamentPage.style.display = 'block';
+        }
+    }
+    
+    // Set up close button event
+    const closeButton = document.getElementById('closeGameButton');
+    if (closeButton) {
+        closeButton.addEventListener('click', closeGame);
+    }
+    
+    // Add escape key to close game
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+            closeGame();
+        }
+    });
     
     // ----------------------------------------------------
     // Event Listeners
     // ----------------------------------------------------
     
     // Listen for game completion event from localgame.js
+
     window.addEventListener('game-completed', function(event) {
         const { player1Score, player2Score } = event.detail;
         
@@ -680,16 +784,18 @@ document.addEventListener('DOMContentLoaded', function() {
             tournamentPage.style.display = 'block';
         }
         
-        // Hide game container
+        // Hide game container - utiliser classList au lieu de style.display
         const gameContainer = document.getElementById('game-container');
         if (gameContainer) {
-            gameContainer.style.display = 'none';
+            gameContainer.classList.remove('active');  // <-- CORRECTION
+            
+            // Pour s'assurer que le jeu est bien caché
+            console.log("[Tournament] Fin du match, conteneur de jeu caché");
         }
         
         // Process match results
         processMatchResults(player1Score, player2Score);
     });
-    
 
     // Start local tournament button
     if (startLocalTournamentBtn) {
