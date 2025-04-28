@@ -17,12 +17,10 @@ document.addEventListener('DOMContentLoaded', function () {
             if (!file) return;
             const validTypes = ['image/jpeg', 'image/png', 'image/gif'];
             if (!validTypes.includes(file.type)) {
-                alert('Format de fichier non supporté. Utilisez JPG, PNG ou GIF.');
                 avatarUpload.value = '';
                 return;
             }
             if (file.size > 2 * 1024 * 1024) {
-                alert("L'image est trop volumineuse (2MB maximum)");
                 avatarUpload.value = '';
                 return;
             }
@@ -83,7 +81,6 @@ document.addEventListener('DOMContentLoaded', function () {
             e.preventDefault();
             const activeTab = document.querySelector('.tab-pane.active');
             if (!activeTab) {
-                alert("Aucun onglet actif détecté !");
                 return;
             }
             const formData = new FormData();
@@ -133,7 +130,6 @@ document.addEventListener('DOMContentLoaded', function () {
                 showNotification("Paramètres sauvegardés avec succès");
             } catch (error) {
                 console.error('Erreur:', error);
-               alert(error.message || 'Une erreur est survenue'); 
             } finally {
                 saveBtn.innerHTML = originalText;
                 saveBtn.disabled = false;
@@ -175,48 +171,6 @@ document.addEventListener('DOMContentLoaded', function () {
                     window.location.href = data.redirect || '/login/';
                 }
             } catch (error) {
-                alert(error.message || 'Erreur lors de la suppression du compte');
-            }
-        });
-    }
-
-    // -------------------------------
-    // Gestion de la réinitialisation
-    // -------------------------------
-    const resetBtn = document.getElementById('reset-btn');
-    if (resetBtn) {
-        resetBtn.addEventListener('click', async function () {
-            if (confirm('Êtes-vous sûr de vouloir réinitialiser tous les paramètres?')) {
-                const originalText = resetBtn.innerHTML;
-                resetBtn.disabled = true;
-                resetBtn.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Réinitialisation...';
-                try {
-                    const response = await fetch('/settingspage/', {
-                        method: 'GET',
-                        headers: {
-                            'X-CSRFToken': getCsrfToken(),
-                            'Accept': 'application/json'
-                        }
-                    });
-                    const data = await response.json();
-                    // Mise à jour des champs avec les données récupérées
-                    document.getElementById('username').value = data.user_data.username;
-                    document.getElementById('email').value = data.user_data.email;
-                    document.getElementById('current-password').value = '';
-                    document.getElementById('new-password').value = '';
-                    document.getElementById('confirm-password').value = '';
-                    document.getElementById('time-format').value = data.user_data.preferences.time_format;
-                    document.getElementById('timezone').value = data.user_data.preferences.timezone;
-                    document.getElementById('language').value = data.user_data.preferences.language;
-                    avatarPreview.src = data.user_data.avatar || '../media/avatars/default.png';
-                    alert('Paramètres réinitialisés avec succès');
-                } catch (error) {
-                    console.error('Erreur:', error);
-                    alert('Erreur lors de la réinitialisation: ' + error.message);
-                } finally {
-                    resetBtn.innerHTML = originalText;
-                    resetBtn.disabled = false;
-                }
             }
         });
     }

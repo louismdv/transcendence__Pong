@@ -1,11 +1,11 @@
 /* Dashboard Styles */
 .dashboard-container {
-  padding: 20px;
+  padding: 40px;
 }
 
 .dashboard-header {
+  margin-left: 20px;
   margin-bottom: 20px;
-  text-align: center;
 }
 
 /* .dashboard-header h2 {

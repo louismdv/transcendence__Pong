@@ -40,14 +40,12 @@
         const validPattern = /^[a-zA-Z0-9]+$/;
         
         if (!roomName) {
-            alert("Room Name Error: Room name cannot be empty");
             return false;
         }
         
-        // if (!validPattern.test(roomName)) {
-        //     alert("Invalid Format: Room name can only contain letters and numbers (no spaces or special characters)");
-        //     return false;
-        // }
+        if (!validPattern.test(roomName)) {
+            return false;
+        }
         
         return true;
     }

@@ -1,5 +1,5 @@
 /* Styles pour la page de chat */
-#chatpage {
+#chat-section {
     padding: 20px;
     width: 100%;
 }
@@ -7,6 +7,7 @@
 .chat-content {
     border-radius: 10px;
     padding: 20px;
+    background-color: var(--text-color);
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
 }
 
