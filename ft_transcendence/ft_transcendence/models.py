@@ -22,6 +22,17 @@ class UserProfile(models.Model):
     is_online = models.BooleanField(default=False)
     last_activity = models.DateTimeField(default=timezone.now)
 
+    # 🏆 Game history fields
+    online_wins = models.PositiveIntegerField(default=0)
+    online_losses = models.PositiveIntegerField(default=0)
+    total_online_games = models.PositiveIntegerField(default=0)
+    
+    local_wins = models.PositiveIntegerField(default=0)
+    local_losses = models.PositiveIntegerField(default=0)
+    total_local_games = models.PositiveIntegerField(default=0)
+    
+    # tournaments_won = models.PositiveIntegerField(default=0)
+
     class Meta:
         verbose_name = 'User Profile'
         verbose_name_plural = 'User Profiles'
@@ -38,6 +49,7 @@ class UserProfile(models.Model):
                 old_profile.avatar.delete(save=False)
         except UserProfile.DoesNotExist:
             pass
+        
         super().save(*args, **kwargs)
 
 class UserPreferences(models.Model):
