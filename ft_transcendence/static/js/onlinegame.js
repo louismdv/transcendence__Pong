@@ -13,7 +13,7 @@ const YELLOW = '#ffff00';
 const ORANGE = '#ffa500';  
 
 // SETTINGS
-const WINNING_SCORE = 5;
+const WINNING_SCORE = 2;
 const WIN_H = 720, WIN_W = 1080;
 const PLAYER_W = 30, PLAYER_H = 175;
 const BALL_SIZE = 40, BALL_RADIUS = BALL_SIZE / 2;
@@ -29,22 +29,25 @@ const hash = window.location.hash;
 console.log('hash: [', hash, ']');
 const roomName = window.location.hash.replace('#', '').split('/')[1];
 console.log('roomname: [', roomName, ']');
-const clientName = window.currentUsername;
+const clientName = currentUsername;
 console.log('clientname: [', clientName, ']');
+const userId = currentUserId;
+console.log('userId: [', userId, ']');
 
 const players = { me: null, opponent: null };
 let downcounting = false;
 let loadingAnimation;
-let winner = null;
+let winner_id = null;
 let gameSocket;
 let animationId;
+loadingAnimation = writeLoadingText("orange");
 
 
 function initGame() {
     console.log("Initializing game...");
 
     // 1. Get canvas and context
-    document.getElementById('page-title').textContent = "Online Game Mode";
+    // document.getElementById('page-title').textContent = "Online Game Mode";
     canvas = document.getElementById('onlinegameCanvas');
     ctx = canvas.getContext("2d");
 
@@ -57,13 +60,8 @@ function initGame() {
         animationId = null;
     }
     clearInterval(loadingAnimation);
-    loadingAnimation = writeLoadingText("orange");
 
     gameRunning = false;
-
-    // 4. Reset logical state
-    // resetGame();
-    // drawCanvas();
 
     // 5. Setup socket and listeners
     initializeWebSocket();
@@ -75,18 +73,20 @@ function initGame() {
 
     // 6. Reset UI
     document.getElementById('username-playerL').textContent = clientName;
-    document.getElementById('username-playerR').textContent = 'Loading';
+    document.getElementById('username-playerR').textContent = 'Loading...';
     document.getElementById("playerL_picture").src = avatarUrl;
     document.getElementById("playerR_picture").src = "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAQABAACAUwAOw";
 }
 
 // ************ WEBSOCKETS ************ //
-function setupNewSocket(roomName, clientName) {
+function setupNewSocket(roomName, clientName, userId) {
     const wsProtocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
     gameSocket = new WebSocket(`${wsProtocol}//${window.location.host}/ws/game/${roomName}/`);
 
     gameSocket.onopen = () => { console.log("✅ WebSocket open: handshake sent to server");
-        sendMessage({ type: 'initial_message', username: clientName });
+        console.log("userId:", userId);
+        console.log("username:", clientName);
+        sendMessage({ type: 'initial_message', username: clientName, userid: userId });
     };
     gameSocket.onerror = (err) => { console.error("❌ WebSocket error", err); };
     gameSocket.onclose = (event) => {
@@ -114,13 +114,13 @@ function setupNewSocket(roomName, clientName) {
 
         switch (data.type) {
             case 'load_player_info':
-                document.getElementById('username-playerL').textContent = data.playerL_id;
+                document.getElementById('username-playerL').textContent = data.playerL_name;
                 startSearch();
                 ctx.clearRect(0, 0, canvas.width, canvas.height);
                 clearInterval(loadingAnimation);
                 loadingAnimation = writeLoadingText("orange");
                 if (data.playerR_id) {
-                    document.getElementById('username-playerR').textContent = data.playerR_id;
+                    document.getElementById('username-playerR').textContent = data.playerR_name;
                     clearInterval(loadingAnimation);
                     opponentFound();
                     setupGame(data);
@@ -146,14 +146,15 @@ function setupNewSocket(roomName, clientName) {
                 handle_restore_game(data.game_state);
                 break;
             case 'start_game':
-                clearInterval(loadingAnimation);
+                // clearInterval(loadingAnimation);
                 countdown(3, gameLoop);
                 break;
             case 'update_player':
                 pullPlayerState(data.player_side, data.new_y, data.old_y);
                 break;
             case 'update_ball':
-                pullBallState(data.ball_state);
+                if (ball)
+                    pullBallState(data.ball_state);
                 break;
             default:
                 console.log("Unknown message type:", data.type);
@@ -165,45 +166,50 @@ function initializeWebSocket() {
         gameSocket.close();
         gameSocket.onclose = () => {
             console.log("Old socket closed. Creating new one...");
-            setupNewSocket(roomName, clientName);
+            setupNewSocket(roomName, clientName, userId);
         };
     } else {
-        setupNewSocket(roomName, clientName);
+        setupNewSocket(roomName, clientName, userId);
     }
 }
 
 // ************ HELPER WEBSOCKETS FUNCTIONS ************ //
-function sendMessage(message, retryCount = 5) {
-    if (!gameSocket || gameSocket.readyState === WebSocket.CLOSING || gameSocket.readyState === WebSocket.CLOSED) {
-        console.warn("WebSocket is not available.");
-        return;
-    }
+// function sendMessage(message, retryCount = 5) {
+//     if (!gameSocket || gameSocket.readyState === WebSocket.CLOSING || gameSocket.readyState === WebSocket.CLOSED) {
+//         console.warn("WebSocket is not available.");
+//         return;
+//     }
+//     if (gameSocket.readyState === WebSocket.OPEN) {
+//         gameSocket.send(JSON.stringify(message));
+//     } else if (retryCount > 0) {
+//         console.log("WebSocket not ready, retrying...");
+//         setTimeout(() => sendMessage(message, retryCount - 1), 500);
+//     } else {
+//         console.error("WebSocket failed to open after retries.");
+//     }
+// }
+function sendMessage(message) {
+    // if (!gameSocket || gameSocket.readyState === WebSocket.CLOSING || gameSocket.readyState === WebSocket.CLOSED) {
+    //     console.warn("WebSocket is not available.");
+    //     return;
+    // }
     if (gameSocket.readyState === WebSocket.OPEN) {
         gameSocket.send(JSON.stringify(message));
-    } else if (retryCount > 0) {
-        console.log("WebSocket not ready, retrying...");
-        setTimeout(() => sendMessage(message, retryCount - 1), 500);
     } else {
         console.error("WebSocket failed to open after retries.");
     }
-}
-function resetGame() {
-
-    players.me = new Player(50, WIN_H / 2 - 175 / 2, 'orange', clientName, 'playerL');
-    players.opponent = new Player(WIN_W - 50 - 30, WIN_H / 2 - 175 / 2, 'red', 'tmp', 'playerR');
-    ball = new Ball(WIN_W / 2, WIN_H / 2, 'blue');
 }
 function setupGame(data) {
 // Abstracted code for both players. Each user gets a player obj and an opponent obj
 
     // creating in-memory player object with pulled game_state
-    if (clientName === data.playerL_id) {
-        players.me = new Player(50, WIN_H / 2 - 175 / 2, 'orange', clientName, 'playerL');
-        players.opponent = new Player(WIN_W - 50 - 30, WIN_H / 2 - 175 / 2, 'red', data.playerR_id, 'playerR');
+    if (userId === data.playerL_id) {
+        players.me = new Player(50, WIN_H / 2 - 175 / 2, 'orange', userId, clientName, 'playerL');
+        players.opponent = new Player(WIN_W - 50 - 30, WIN_H / 2 - 175 / 2, 'red', data.playerR_id, data.playerR_name, 'playerR');
     }
-    else if (clientName === data.playerR_id) {
-        players.me = new Player(WIN_W - 50 - 30, WIN_H / 2 - 175 / 2, 'red', clientName, 'playerR');
-        players.opponent = new Player(50, WIN_H / 2 - 175 / 2, 'orange', data.playerL_id, 'playerL');
+    else if (userId === data.playerR_id) {
+        players.me = new Player(WIN_W - 50 - 30, WIN_H / 2 - 175 / 2, 'red', userId, clientName, 'playerR');
+        players.opponent = new Player(50, WIN_H / 2 - 175 / 2, 'orange', data.playerL_id, data.playerL_name, 'playerL');
     }
     ball = new Ball(WIN_W / 2, WIN_H / 2, 'blue');
     ball.x = data.ball.x;
@@ -255,18 +261,18 @@ function handle_restore_game(gameState) {
 
     console.log("Restoring game state:", gameState);    
 
-    if (clientName === gameState.playerL.id) {
+    if (userId === gameState.playerL.id) {
         console.log("RESTORED playerL");
-        players.me = new Player(gameState.playerL.x, gameState.playerL.y, 'orange', clientName, 'playerL');
-        players.opponent = new Player(gameState.playerR.x, gameState.playerR.y, 'red', gameState.playerR.id, 'playerR');
+        players.me = new Player(gameState.playerL.x, gameState.playerL.y, 'orange', userId, gameState.playerL.username, 'playerL');
+        players.opponent = new Player(gameState.playerR.x, gameState.playerR.y, 'red', gameState.playerR.id, gameState.playerR.username, 'playerR');
     }
-    else if (clientName === gameState.playerR.id) {
+    else if (userId === gameState.playerR.id) {
         console.log("RESTORED playerR");
-        players.me = new Player(gameState.playerR.x, gameState.playerR.y, 'red', gameState.playerR.id, 'playerR');
-        players.opponent = new Player(gameState.playerL.x, gameState.playerL.y, 'orange', clientName, 'playerL');
+        players.me = new Player(gameState.playerR.x, gameState.playerR.y, 'red', userId, gameState.playerR.username, 'playerR');
+        players.opponent = new Player(gameState.playerL.x, gameState.playerL.y, 'orange', gameState.playerR.id, gameState.playerL.username, 'playerL');
     }
-    document.getElementById('username-playerL').textContent = gameState.playerL.id;
-    document.getElementById('username-playerR').textContent = gameState.playerR.id;
+    document.getElementById('username-playerL').textContent = gameState.playerL.username;
+    document.getElementById('username-playerR').textContent = gameState.playerR.username;
 
     // Restore the ball properties
     if (gameState.ball) {
@@ -288,17 +294,19 @@ function handle_restore_game(gameState) {
             players.me.score = gameState.ball.playerR_points;
         }
     }
+    console.log("sidddddddeeeee:", players.me.side);
     sendMessage({ type: 'ready', player_side: players.me.side });
     console.log("Game state restored successfully: ", players.me, players.opponent, ball);
 }
 
 // ************ OBJECT CLASSES ************ //
 class Player {
-    constructor(x, y, color, id, side) {
+    constructor(x, y, color, id, username, side) {
+        this.id = id;
+        this.username = username;
         this.x = x;
         this.y = y;
         this.old_y = y;
-        this.id = id;
         this.side = side,
         this.color = color;
         this.score = 0;
@@ -345,13 +353,14 @@ function gameLoop() {
             return;
         }
         if (players.me.score >= WINNING_SCORE)
-            winner = players.me.id;
+            winner_id = players.me.id;
         else if (players.opponent.score >= WINNING_SCORE)
-            winner = players.opponent.id;
-        if (winner) {
+            winner_id = players.opponent.id;
+        if (winner_id) {
             gameRunning = false;
-            winnerAnnouce();
-            sendMessage({ type: 'game_over', winner: winner });
+            if (winner_id === players.me.id ? winnerAnnouce(players.me.username) : winnerAnnouce(players.opponent.username));
+            sendMessage({ type: 'game_over', winner: winner_id });
+            updateDashboardData()
             return;
         }
         drawCanvas();
@@ -368,7 +377,7 @@ function setupEventListeners() {
         if (gamePart === "#game" && gameSocket && gameSocket.readyState === WebSocket.OPEN) {
             console.log(gamePart)
             console.log("WebSocket is now reopened.");
-            sendMessage({ type: 'initial_message', username: clientName });
+            sendMessage({ type: 'initial_message', username: clientName, userid: userId });
         } else if (gameSocket && gameSocket.readyState === WebSocket.OPEN) {
             sendMessage({ type: "player_left_game_section" });
         }
@@ -474,15 +483,14 @@ function drawDottedLine() {
 
     ctx.stroke(); // Draw the line
 }
-function winnerAnnouce() {
+function winnerAnnouce(winner_name) {
 
     console.log("announcing winner");
     ctx.fillStyle = GREY;
     ctx.fillRect(0, 0, WIN_W, WIN_H);
     ctx.fillStyle = WHITE;
     ctx.font = `${FONT_SIZE_M}px PixelifySans`;
-    const winner_name = `${winner} wins!`;
-    writeToCanvas(`GAME OVER: ${winner_name}`, YELLOW);
+    writeToCanvas(`GAME OVER: ${winner_name} wins!`, YELLOW);
 }
 // Loading animation: When starting to search for an opponent
 function startSearch() {
@@ -512,7 +520,6 @@ function countdown(start, callback) {
         setTimeout(callback, 1000); // Start the game after "Go!" is displayed
     }
 }
-
 
 function main() {
     console.log("Running game main()");

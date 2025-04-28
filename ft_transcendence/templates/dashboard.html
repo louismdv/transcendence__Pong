@@ -1,3 +1,7 @@
+
+<!-- Chart.js CDN -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
 <div class="dashboard-container">
     <div class="dashboard-header">
         <h2>Tableau de bord du joueur</h2>
@@ -5,33 +9,40 @@
     
     <div class="dashboard-grid">
         <!-- User Stats Card -->
-        <div class="dashboard-card  full-width">
+        <div class="dashboard-card full-width">
             <div class="card-header">
                 <h3>Statistiques du joueur</h3>
             </div>
             <div class="card-content">
                 <div class="stat-item">
                     <span class="stat-label">Victoires:</span>
-                    <span class="stat-value" id="user-wins">24</span>
+                    <span class="stat-value" id="user-wins-local"></span>
+                    <span class="stat-value" id="user-wins-online"></span>
+                    <span class="stat-value" id="total-local-games"></span>
                 </div>
                 <div class="stat-item">
                     <span class="stat-label">Défaites:</span>
-                    <span class="stat-value" id="user-losses">12</span>
+                    <span class="stat-value" id="user-losses-local"></span>
+                    <span class="stat-value" id="user-losses-online"></span>
+                    <span class="stat-value" id="total-online-games"></span>
                 </div>
-                <div class="stat-item">
+           <!-- <div class="stat-item">
                     <span class="stat-label">Taux de victoire:</span>
-                    <span class="stat-value" id="win-rate">67%</span>
+                    <span class="stat-value" id="win-rate"></span>
                 </div>
                 <div class="stat-item">
-                    <span class="stat-label">Parties totales:</span>
-                    <span class="stat-value" id="total-games">36</span>
+                    <span class="stat-label">Nombre de parties:</span>
                 </div>
                 <div class="stat-item">
-                    <span class="stat-label">Tournois gagnés:</span>
-                    <span class="stat-value" id="tournaments-won">3</span>
+                    <span class="stat-label">Nombre de parties </span>
+                </div> -->
+                <!-- Camembert ajouté -->
+                <div style="width: 300px; margin: auto; padding-top: 20px;">
+                    <canvas id="statsPieChart"></canvas>
                 </div>
             </div>
         </div>
+
         <!-- Game History -->
         <div class="dashboard-card full-width">
             <div class="card-header">
@@ -49,46 +60,12 @@
                         </tr>
                     </thead>
                     <tbody id="game-history-body">
-                        <tr class="game-win">
-                            <td>2023-05-15</td>
-                            <td>Joueur2</td>
-                            <td>Victoire</td>
-                            <td>10-7</td>
-                            <td>3:24</td>
-                        </tr>
-                        <tr class="game-loss">
-                            <td>2023-05-14</td>
-                            <td>Joueur3</td>
-                            <td>Défaite</td>
-                            <td>5-10</td>
-                            <td>4:12</td>
-                        </tr>
-                        <tr class="game-win">
-                            <td>2023-05-12</td>
-                            <td>Joueur1</td>
-                            <td>Victoire</td>
-                            <td>10-3</td>
-                            <td>2:45</td>
-                        </tr>
-                        <tr class="game-win">
-                            <td>2023-05-10</td>
-                            <td>Joueur4</td>
-                            <td>Victoire</td>
-                            <td>10-8</td>
-                            <td>5:30</td>
-                        </tr>
-                        <tr class="game-loss">
-                            <td>2023-05-08</td>
-                            <td>Joueur5</td>
-                            <td>Défaite</td>
-                            <td>8-10</td>
-                            <td>4:50</td>
-                        </tr>
+                        <!-- Remplir via backend -->
                     </tbody>
                 </table>
             </div>
         </div>
-        
+
         <!-- Tournament Performance -->
         <div class="dashboard-card full-width">
             <div class="card-header">
@@ -105,24 +82,7 @@
                         </tr>
                     </thead>
                     <tbody id="tournament-history-body">
-                        <tr>
-                            <td>2023-05-20</td>
-                            <td>Tournoi du weekend</td>
-                            <td>1ère Place</td>
-                            <td>4</td>
-                        </tr>
-                        <tr>
-                            <td>2023-05-13</td>
-                            <td>Tournoi du vendredi</td>
-                            <td>2ème Place</td>
-                            <td>4</td>
-                        </tr>
-                        <tr>
-                            <td>2023-05-06</td>
-                            <td>Défi hebdomadaire</td>
-                            <td>1ère Place</td>
-                            <td>4</td>
-                        </tr>
+                        <!-- Remplir via backend -->
                     </tbody>
                 </table>
             </div>

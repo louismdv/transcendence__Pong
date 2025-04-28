@@ -39,7 +39,7 @@
         <button class="button-login"><a href="{% url 'login_42' %}">Login with 42</a></button>
     </div>
 </section>
-<script>
+{% comment %} <script>
     document.addEventListener('DOMContentLoaded', function() {
         const messages = document.querySelectorAll('.messages p');
         messages.forEach(function(message) {
@@ -49,4 +49,4 @@
             location.reload(true);
         }
     });
-</script>
+</script> {% endcomment %}

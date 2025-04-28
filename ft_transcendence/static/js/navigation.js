@@ -73,15 +73,16 @@ document.addEventListener("DOMContentLoaded", () => {
     const roomNameInput = document.getElementById("room-name-input")
     const localGameBtn = document.getElementById("localGameBtn")
     const onlineGameBtn = document.getElementById("onlineGameBtn")
+    const pageTitle = document.getElementById("page-title") // Adjust selector as needed
   
     // Fonction pour masquer toutes les sections
     function hideAllSections() {
-      console.log("Hiding all sections")
+    //   console.log("Hiding all sections")
       Object.values(navigationConfig).forEach((config) => {
         const section = document.querySelector(config.sectionSelector)
         if (section) {
           section.style.display = "none"
-          console.log(`Hidden: ${config.sectionSelector}`)
+        //   console.log(`Hidden: ${config.sectionSelector}`)
         } else {
           console.warn(`Section not found: ${config.sectionSelector}`)
         }
@@ -90,7 +91,7 @@ document.addEventListener("DOMContentLoaded", () => {
       // Masquer aussi la section game-room qui est gérée séparément
       if (gameRoomSection) {
         gameRoomSection.style.display = "none"
-        console.log("Hidden: game-room-section")
+        // console.log("Hidden: game-room-section")
       }
     }
   
@@ -104,7 +105,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const activeElement = document.getElementById(activeElementId)
         if (activeElement) {
           activeElement.classList.add("active")
-          console.log(`Active link: ${activeElementId}`)
+        //   console.log(`Active link: ${activeElementId}`)
         } else {
           console.warn(`Active link element not found: ${activeElementId}`)
         }
@@ -113,7 +114,7 @@ document.addEventListener("DOMContentLoaded", () => {
   
     // Fonction générique pour naviguer vers une section
     function navigateTo(sectionKey) {
-      console.log(`Navigating to: ${sectionKey}`)
+    //   console.log(`Navigating to: ${sectionKey}`)
   
       if (!navigationConfig[sectionKey]) {
         console.error(`Section configuration not found for: ${sectionKey}`)
@@ -127,7 +128,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const section = document.querySelector(config.sectionSelector)
       if (section) {
         section.style.display = config.displayStyle
-        console.log(`Showing section: ${config.sectionSelector} with display: ${config.displayStyle}`)
+        // console.log(`Showing section: ${config.sectionSelector} with display: ${config.displayStyle}`)
       } else {
         console.error(`Section not found: ${config.sectionSelector}`)
       }
@@ -138,18 +139,18 @@ document.addEventListener("DOMContentLoaded", () => {
   
       // Exécuter la fonction onShow si elle existe
       if (config.onShow && typeof config.onShow === "function") {
-        console.log(`Executing onShow function for: ${sectionKey}`)
+        // console.log(`Executing onShow function for: ${sectionKey}`)
         config.onShow()
       }
     }
   
     // Fonction pour naviguer vers la game room
     function navigateToGameRoom(roomName) {
-      console.log(`Navigating to game room: ${roomName}`)
+    //   console.log(`Navigating to game room: ${roomName}`)
       hideAllSections()
       if (gameRoomSection) {
         gameRoomSection.style.display = "block"
-        console.log("Showing game room section")
+        // console.log("Showing game room section")
       }
       pageTitle.textContent = "Online Game"
       document.getElementById("roomCode").value = roomName
@@ -160,7 +161,7 @@ document.addEventListener("DOMContentLoaded", () => {
       if (config.linkId) {
         const link = document.getElementById(config.linkId)
         if (link) {
-          console.log(`Adding click event listener for: ${config.linkId}`)
+        //   console.log(`Adding click event listener for: ${config.linkId}`)
           link.addEventListener("click", (e) => {
             e.preventDefault()
             navigateTo(key)
@@ -199,7 +200,7 @@ document.addEventListener("DOMContentLoaded", () => {
     // Gestion du changement de hash dans l'URL
     function handleHashChange() {
       const hash = window.location.hash
-      console.log(`Hash changed to: ${hash}`)
+    //   console.log(`Hash changed to: ${hash}`)
   
       // Vérifier si c'est un hash de game room
       const gameMatch = hash.match(/^#game\/(.+)$/)
@@ -224,13 +225,13 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   
     // Initialiser à partir du hash actuel
-    console.log("Initializing navigation from current hash")
+    // console.log("Initializing navigation from current hash")
     handleHashChange()
   
     // Écouter les changements de hash
     window.addEventListener("hashchange", handleHashChange)
   
   
-    document.body.appendChild(testButton)
+    // document.body.appendChild(testButton)
   })
   
