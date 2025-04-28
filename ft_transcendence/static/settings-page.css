@@ -91,7 +91,7 @@
     border: 1px solid var(--dark-mode);
 }
 .btn-outline-secondary:hover {
-    background-color: #cf0e0f;
+    background-color: var (--dark-color);
     box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2); /* Ombre douce */
 
 }

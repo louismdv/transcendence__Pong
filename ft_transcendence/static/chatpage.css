@@ -6,7 +6,7 @@
 
 .chat-content {
     border-radius: 10px;
-    padding: 20px;
+    padding: 30px;
     background-color: var(--text-color);
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
 }
@@ -78,10 +78,11 @@
     position: absolute;
     bottom: 0;
     right: 0;
-    width: 12px;
-    height: 12px;
+    width: 14px;
+    height: 14px;
     border-radius: 50%;
-    border: 2px solid #121212;
+    border: 2px solid var(--text-color);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
 .status-indicator.online {
@@ -162,7 +163,7 @@
     border-bottom: 1px solid rgba(0,0,0);
 }
 
-.contacts-group-header h6 {
+.contacts-group-header h6, .rounded-pill{
     margin: 0;
     font-weight: 600;
     display: flex;
