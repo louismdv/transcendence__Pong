@@ -759,7 +759,7 @@ function updateOnlineStatus() {
         .then(response => response.json())
         .then(data => {
             if (data.success) {
-                console.log(`${data.updated} utilisateurs marqués comme hors ligne`);
+                // console.log(`${data.updated} utilisateurs marqués comme hors ligne`);
                 // Recharger les statuts des amis
                 updateFriendStatuses();
             }

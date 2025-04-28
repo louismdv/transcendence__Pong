@@ -49,20 +49,18 @@ class GameConsumer(AsyncWebsocketConsumer):
 
     async def disconnect(self, code=1000):
 
+        gameStatus = redis_client.hget(self.room_name, "game_status")
+        print(f"[disconnect] GameStatus: {gameStatus}")
+        
         playerL_id = await self.get_value_from_player("playerL", "id")
         playerR_id = await self.get_value_from_player("playerR", "id")
-        is_playerL = self.id == playerL_id
-        is_playerR = self.id == playerR_id
-        playerL_connected = await self.get_value_from_player("playerL", "connected")
-        playerR_connected = await self.get_value_from_player("playerR", "connected")
 
-        # Decrease player count if the disconnecting player was marked as connected
-        if (is_playerL and playerL_connected):
+        if (self.id == playerL_id):
             redis_client.hincrby(self.room_name, "player_count", -1)
-            await self.update_redis_dict("playerL", "connected", False)
-        elif (is_playerR and playerR_connected):
+            redis_client.hdel(self.room_name, "playerL")
+        elif (self.id == playerR_id):
             redis_client.hincrby(self.room_name, "player_count", -1)
-            await self.update_redis_dict("playerR", "connected", False)
+            redis_client.hdel(self.room_name, "playerR")
 
         # Update local count
         self.player_count = int(redis_client.hget(self.room_name, "player_count") or 0)
@@ -73,24 +71,27 @@ class GameConsumer(AsyncWebsocketConsumer):
             print(f"[disconnect] No players left. Cleaning up room {self.room_name}")
             redis_client.delete(self.room_name)
             redis_client.srem("active_game_rooms", self.room_name)
-        # Pause game and save state if only one player remains
-        if (is_playerL or is_playerR) and self.player_count == 1:
+            
+        elif self.player_count == 1 and gameStatus == "game_over":
+            print(f"[disconnect] Game over. Cleaning up room {self.room_name}")
+            redis_client.delete(self.room_name)
+            redis_client.srem("active_game_rooms", self.room_name)
+            
+        elif (playerL_id or playerR_id) and self.player_count == 1:
             print(f"[disconnect] Pausing game for room {self.room_name}")
             redis_client.hset(self.room_name, "game_status", "paused")
-
-            # Optional: Clean old state before saving
             redis_client.hdel(self.room_name, "interrupted_game_state")
-
-            # Get full game state and save it for reconnection
             game_state = redis_client.hgetall(self.room_name)
             redis_client.hset(self.room_name, "interrupted_game_state", json.dumps(game_state))
-
             print(f"[disconnect] Game state saved for room {self.room_name}")
 
         # Leave the room group
         await self.channel_layer.group_discard(self.room_group_name, self.channel_name)
-        await self.close()
-        print(f"[disconnect] WebSocket disconnected: {self.room_name}")
+        if self.id == playerL_id:
+            print(f"[disconnect] WebSocket disconnected: {playerR_id} : {self.room_name}")
+        elif self.id == playerR_id:
+            print(f"[disconnect] WebSocket disconnected: {playerL_id} : {self.room_name}")
+
 
     async def receive(self, text_data):
         data = json.loads(text_data)
@@ -215,13 +216,16 @@ class GameConsumer(AsyncWebsocketConsumer):
         }))
 
     async def update_ball(self, event):
-        ball_state = event['ball_state']
+        try:
+            ball_state = event['ball_state']
 
-        await self.send(text_data=json.dumps({
-            'type': 'update_ball',
-            'ball_state': ball_state,
-        }))
-
+            await self.send(text_data=json.dumps({
+                'type': 'update_ball',
+                'ball_state': ball_state,
+            }))
+        except Exception as e:
+            print(f"[update_ball] Error while sending: {str(e)}")
+            
     async def load_player_info(self, event):
 
         await self.send(text_data=json.dumps({
@@ -302,19 +306,18 @@ class GameConsumer(AsyncWebsocketConsumer):
         """Handles game over state."""
         print("Game over message received.")
 
-        # Call Redis SET through sync_to_async
-        was_set = await sync_to_async(redis_client.set)(
-            self.room_name + ":game_over_lock",
-            "1",
-            nx=True,
-        )
+        game_status = redis_client.hget(self.room_name, "game_status")
+        was_set = redis_client.set(self.room_name + ":game_over_lock", "1", nx=True)
 
         if not was_set:
+            if game_status != "game_over":
+                redis_client.hset(self.room_name, "game_status", "game_over")
             print("End game already handled, ignoring...")
             await self.close()
             return
-
         winner = data.get("winner")
+        if game_status != "game_over":
+            redis_client.hset(self.room_name, "game_status", "game_over")
         await sync_to_async(redis_client.hset)(self.room_name, "winner", winner)
 
         playerL_id = await self.get_value_from_player("playerL", "id")
@@ -357,7 +360,6 @@ class GameConsumer(AsyncWebsocketConsumer):
                 "y": WIN_H / 2 - PLAYER_H / 2,
                 "old_y": None,
                 "confirmed_ready": False,
-                "connected": True
             }))
         elif (player_key == "playerR"):
             redis_client.hset(self.room_name, player_key, json.dumps({
@@ -368,7 +370,6 @@ class GameConsumer(AsyncWebsocketConsumer):
                 "y": WIN_H / 2 - PLAYER_H / 2,
                 "old_y": None,
                 "confirmed_ready": False,
-                "connected": True
             }))
         print(f"{player_key} stored in Redis:", redis_client.hget(self.room_name, player_key))
 
@@ -467,8 +468,7 @@ class GameConsumer(AsyncWebsocketConsumer):
 
         if (game_status == "waiting_for_confirmation" or game_status == "paused") and playerL["confirmed_ready"] == True and playerR["confirmed_ready"] == True:
             # Check if there's an interrupted game state
-            interrupted_game_state_json_str = redis_client.hget(
-                self.room_name, "interrupted_game_state")
+            interrupted_game_state_json_str = redis_client.hget(self.room_name, "interrupted_game_state")
             # print(f"interrupted_game_state_json: {interrupted_game_state_json_str}")
             if interrupted_game_state_json_str:
                 # Parse the interrupted game state
@@ -514,10 +514,6 @@ class GameConsumer(AsyncWebsocketConsumer):
 
         if playerL_id == self.id or playerR_id == self.id:
             game_state_json = redis_client.hget(self.room_name, "interrupted_game_state")
-            if (playerL_id == self.id):
-                await self.update_redis_dict("playerL", "connected", True)
-            elif (playerR_id == self.id):
-                await self.update_redis_dict("playerR", "connected", True)
 
             if game_state_json is None:
                 print(f"No interrupted game state found for room {self.room_name}")
