@@ -797,9 +797,14 @@ def dashboard_data(request):
     
     # Example data - replace with your actual data retrieval logic
     user_stats = {
-        'wins': user.wins,
-        'losses': user.losses,
-        'totalGames': user.total_local_games,
+        'local_wins': user.local_wins,
+        'local_losses': user.local_losses,
+        'local_total_games': user.total_local_games,
+        
+        'online_wins': user.online_wins,
+        'online_losses': user.online_losses,
+        'online_total_games': user.total_online_games,
+        
         'totalGames': user.total_online_games,
         'tournamentsWon': 3,
         'recentGames': [

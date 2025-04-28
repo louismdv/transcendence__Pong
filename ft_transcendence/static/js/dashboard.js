@@ -23,10 +23,23 @@ function updateDashboardData() {
             console.log("Dashboard data received:", data);
 
             // Met à jour les éléments de statistiques
-            document.getElementById("user-wins").textContent = data.wins;
-            document.getElementById("user-losses").textContent = data.losses;
-            document.getElementById("win-rate").textContent = (data.wins / ( data.losses + data.wins)) + "%";
-            document.getElementById("total-local-games").textContent = data.totalLocalGames;
+            // LOCAL game data
+            document.getElementById("user-wins-local").textContent = "local - " + (data.local_wins ?? 0);
+            document.getElementById("user-losses-local").textContent = "local - " + (data.local_losses ?? 0);
+            document.getElementById("total-local-games").textContent = "Total : " + (data.local_total_games ?? 0);
+
+            // ONLINE game data
+            document.getElementById("user-wins-online").textContent = "online - " + (data.online_wins ?? 0);
+            document.getElementById("user-losses-online").textContent = "online - " + (data.online_losses ?? 0);
+            document.getElementById("total-online-games").textContent = "Total : " + (data.online_total_games ?? 0);
+
+            // document.getElementById("win-rate").textContent = ((data.wins / (data.losses + data.wins)) * 100).toFixed(2) + "%";
+
+            if (data.totalLocalGames === null) {
+                document.getElementById("total-local-games").textContent = 0;
+            } else {
+                document.getElementById("total-local-games").textContent = data.totalLocalGames;
+            }
             document.getElementById("total-online-games").textContent = data.totalOnlineGames;
 
             // Met à jour l'historique des jeux

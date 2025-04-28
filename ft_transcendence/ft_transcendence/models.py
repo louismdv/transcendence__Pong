@@ -23,10 +23,14 @@ class UserProfile(models.Model):
     last_activity = models.DateTimeField(default=timezone.now)
 
     # 🏆 Game history fields
-    wins = models.PositiveIntegerField(default=0)
-    losses = models.PositiveIntegerField(default=0)
-    total_local_games = models.PositiveIntegerField(default=0)
+    online_wins = models.PositiveIntegerField(default=0)
+    online_losses = models.PositiveIntegerField(default=0)
     total_online_games = models.PositiveIntegerField(default=0)
+    
+    local_wins = models.PositiveIntegerField(default=0)
+    local_losses = models.PositiveIntegerField(default=0)
+    total_local_games = models.PositiveIntegerField(default=0)
+    
     # tournaments_won = models.PositiveIntegerField(default=0)
 
     class Meta:
@@ -45,10 +49,6 @@ class UserProfile(models.Model):
                 old_profile.avatar.delete(save=False)
         except UserProfile.DoesNotExist:
             pass
-        
-        # Auto-update total games and win rate
-        self.total_games = self.wins + self.losses
-        self.win_rate = (self.wins / self.total_games * 100) if self.total_games > 0 else 0
         
         super().save(*args, **kwargs)
 

@@ -13,7 +13,7 @@ const YELLOW = '#ffff00';
 const ORANGE = '#ffa500';  
 
 // SETTINGS
-const WINNING_SCORE = 5;
+const WINNING_SCORE = 2;
 const WIN_H = 720, WIN_W = 1080;
 const PLAYER_W = 30, PLAYER_H = 175;
 const BALL_SIZE = 40, BALL_RADIUS = BALL_SIZE / 2;
@@ -352,6 +352,7 @@ function gameLoop() {
             console.log(winner_id)
             if (winner_id === players.me.id ? winnerAnnouce(players.me.username) : winnerAnnouce(players.opponent.username));
             sendMessage({ type: 'game_over', winner: winner_id });
+            updateDashboardData()
             return;
         }
         drawCanvas();
