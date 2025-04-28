@@ -358,9 +358,12 @@ function gameLoop() {
             winner_id = players.opponent.id;
         if (winner_id) {
             gameRunning = false;
-            if (winner_id === players.me.id ? winnerAnnouce(players.me.username) : winnerAnnouce(players.opponent.username));
-            sendMessage({ type: 'game_over', winner: winner_id });
-            updateDashboardData()
+            final_score = (winner_id === players.me.id ? players.me.score : players.opponent.score) + " - " + (winner_id === players.me.id ? players.opponent.score : players.me.score);
+            if (winner_id === players.me.id) winnerAnnouce(players.me.username); 
+            else winnerAnnouce(players.opponent.username);
+            console.log("Game over. Winner:", winner_id, "Final score:", final_score, "Game state:", players.me.id, players.opponent.id,);
+            sendMessage({ type: 'game_over', winner: winner_id, me_id: players.me.id, opponent_id: players.opponent.id, score: final_score});
+            updateDashboardData();
             return;
         }
         drawCanvas();
