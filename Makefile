@@ -23,7 +23,7 @@ collectstatic:
 	docker-compose run web python ft_transcendence/manage.py collectstatic --noinput --clear
 
 reboot:
-	docker system prune -a --volumes
+	docker system prune -a --volumes -f
 	
 down-server:
 	sudo pkill -f runserver
