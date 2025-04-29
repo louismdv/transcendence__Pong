@@ -1,33 +1,37 @@
+{% load i18n %}
+{% load static %}
+
 <div class="chat-window" id="chatWindow" style="display: none;">
-  <div class="chat-window-header">
-      <div class="chat-user-info">
-          <div class="chat-user-avatar">
-              <img src="" alt="Avatar" id="chatUserAvatar">
-              <span class="status-indicator online" id="chatUserStatus"></span>
-          </div>
-          <div class="chat-user-details">
-              <h6 id="chatUserName"></h6>
-              <p class="chat-user-status-text" id="chatUserStatusText">En ligne</p>
-          </div>
-      </div>
-      <div class="chat-window-actions">
-          <button class="chat-action-button" id="inviteToGameBtn">
-              <span class="material-symbols-outlined">sports_esports</span>
-          </button>
-          <button class="chat-action-button" id="closeChatBtn">
-              <span class="material-symbols-outlined">close</span>
-          </button>
-      </div>
+    <div class="chat-window-header">
+        <div class="chat-user-info">
+            <div class="chat-user-avatar">
+                <img src="" alt="Avatar" id="chatUserAvatar">
+                <span class="status-indicator online" id="chatUserStatus"></span>
+            </div>
+            <div class="chat-user-details">
+                <h6 id="chatUserName"></h6>
+                <p class="chat-user-status-text" id="chatUserStatusText">{% trans "En ligne" %}</p>
+            </div>
+        </div>
+        <div class="chat-window-actions">
+            <button class="chat-action-button" id="inviteToGameBtn">
+                <span class="material-symbols-outlined">sports_esports</span>
+            </button>
+            <button class="chat-action-button" id="closeChatBtn">
+                <span class="material-symbols-outlined">close</span>
+            </button>
+        </div>
+    </div>
+    <div class="chat-window-body" id="chatMessages">
+        <!-- Les messages seront ajoutés ici dynamiquement -->
+    </div>
+    <div class="chat-window-footer">
+        <div class="chat-input-container">
+            <input type="text" id="chatInput" class="chat-input"  placeholder="{% trans 'Write your message...' %}" >
+            <button class="chat-send-button" id="sendMessageBtn">
+                <span class="material-symbols-outlined">send</span>
+            </button>
+        </div>
+    </div>
   </div>
-  <div class="chat-window-body" id="chatMessages">
-      <!-- Les messages seront ajoutés ici dynamiquement -->
-  </div>
-  <div class="chat-window-footer">
-      <div class="chat-input-container">
-          <input type="text" id="chatInput" class="chat-input"  placeholder="Écrivez votre message..." >
-          <button class="chat-send-button" id="sendMessageBtn">
-              <span class="material-symbols-outlined">send</span>
-          </button>
-      </div>
-  </div>
-</div>
+  

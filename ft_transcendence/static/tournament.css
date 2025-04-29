@@ -1,9 +1,12 @@
 /* Styles pour la page de tournoi */
-#tournamentpage {
-    padding: 20px;
-    width: 100%;
+#tournament-section {
+    padding: 40px;
 }
-
+.tournament-container .card{
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
 .tournament-container {
     display: grid;
     grid-template-columns: 1fr;

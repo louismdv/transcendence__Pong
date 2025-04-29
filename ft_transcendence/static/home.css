@@ -127,11 +127,6 @@ aside:hover .sidebar-links h4 {
     padding: 20px;
 }
 
-/* .main-grid > div {
-    text-align: center;
-    font-size: 30px;
-} */
-
 #main-content,
 #settings-section {
     display: grid;
@@ -148,15 +143,16 @@ aside:hover .sidebar-links h4 {
 }
 
 .gameMode h3 {
-    margin-bottom: 0 5px;
+    margin-bottom:  40px;
     margin-left: 25px;
+
     text-align: left;
 }
 
 .gameMode h4 {
     margin-bottom: 10px;
     font-size: 40px;
-    ;
+    
 }
 
 .gameMode h5 {
@@ -182,11 +178,10 @@ aside:hover .sidebar-links h4 {
     display: flex;
     flex-direction: column;
     align-items: center;
-    background-color: #d7d5d4;
     border-radius: 10px;
     flex: 1 1 300px;
     max-height: 500px;
-    overflow: auto;
+    overflow: hidden;
     position: relative;
 }
 
@@ -381,19 +376,6 @@ body.perso.darkmode {
 
 .darkmode .btn__icon {
     color: var(--dark-icon-color);
-}
-
-.darkmode .card {
-    /*    border: 2px solid green; */
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    background-color: var(--dark-color);
-    border-radius: 10px;
-    flex: 1 1 300px;
-    max-height: 500px;
-    overflow: auto;
-    position: relative;
 }
 
 .darkmode .btn-light {

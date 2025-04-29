@@ -1,3 +1,5 @@
+{% load i18n %}
+{% load static %}
 
 <!-- Chart.js CDN -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -11,31 +13,27 @@
         <!-- User Stats Card -->
         <div class="dashboard-card full-width">
             <div class="card-header">
-                <h3>Statistiques du joueur</h3>
+                <h3>Player Statistics</h3>
             </div>
-            <div class="card-content">
-                <div class="stat-item">
-                    <span class="stat-label">Victoires:</span>
-                    <span class="stat-value" id="user-wins-local"></span>
-                    <span class="stat-value" id="user-wins-online"></span>
-                    <span class="stat-value" id="total-local-games"></span>
+            <div class="dash-card">
+                <div class="card-content">
+                    <div class="stat-item">
+                        <span class="stat-label">Wins:</span>
+                        <span class="stat-value" id="user-wins"></span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">Losses:</span>
+                        <span class="stat-value" id="user-losses"></span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">Win rate:</span>
+                        <span class="stat-value" id="win-rate"></span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">Total games:</span>
+                        <span class="stat-value" id="total-games"></span>
+                    </div>
                 </div>
-                <div class="stat-item">
-                    <span class="stat-label">Défaites:</span>
-                    <span class="stat-value" id="user-losses-local"></span>
-                    <span class="stat-value" id="user-losses-online"></span>
-                    <span class="stat-value" id="total-online-games"></span>
-                </div>
-           <!-- <div class="stat-item">
-                    <span class="stat-label">Taux de victoire:</span>
-                    <span class="stat-value" id="win-rate"></span>
-                </div>
-                <div class="stat-item">
-                    <span class="stat-label">Nombre de parties:</span>
-                </div>
-                <div class="stat-item">
-                    <span class="stat-label">Nombre de parties </span>
-                </div> -->
                 <!-- Camembert ajouté -->
                 <div style="width: 300px; margin: auto; padding-top: 20px;">
                     <canvas id="statsPieChart"></canvas>
@@ -53,6 +51,7 @@
                     <thead>
                         <tr>
                             <th>Date</th>
+                            <th>Room name</th>
                             <th>Adversaire</th>
                             <th>Résultat</th>
                             <th>Score</th>
@@ -67,7 +66,7 @@
         </div>
 
         <!-- Tournament Performance -->
-        <div class="dashboard-card full-width">
+        <!-- <div class="dashboard-card full-width">
             <div class="card-header">
                 <h3>Performance en tournoi</h3>
             </div>
@@ -82,10 +81,9 @@
                         </tr>
                     </thead>
                     <tbody id="tournament-history-body">
-                        <!-- Remplir via backend -->
                     </tbody>
                 </table>
             </div>
         </div>
-    </div>
+    </div> -->
 </div>

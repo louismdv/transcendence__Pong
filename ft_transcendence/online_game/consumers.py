@@ -3,6 +3,7 @@ import redis
 import random
 import asyncio
 import time
+from datetime import datetime, timezone
 
 import base64
 from io import BytesIO
@@ -11,7 +12,10 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.db import connection
 from django.conf import settings
 from asgiref.sync import sync_to_async
+from django.contrib.auth import get_user_model
 import os
+from datetime import datetime
+
 
 from channels.generic.websocket import AsyncWebsocketConsumer
 from .game import Ball, WIN_W, WIN_H, PLAYER_W, PLAYER_H, MARGIN
@@ -194,15 +198,6 @@ class GameConsumer(AsyncWebsocketConsumer):
             'game_state': game_state
         }))
 
-    async def start_game(self, event):
-        game_state = event['game_state']
-        print(f"Game started! Initial game state: {game_state}")
-
-        await self.send(text_data=json.dumps({
-            'type': 'start_game',
-            'game_state': game_state
-        }))
-
     async def update_player(self, event):
         player_side = event['player_side']
         new_y = event['new_y']
@@ -301,13 +296,12 @@ class GameConsumer(AsyncWebsocketConsumer):
         else:
             await self.create_redis_players()
 
-
     async def handle_gameover(self, data):
         """Handles game over state."""
         print("Game over message received.")
 
         game_status = redis_client.hget(self.room_name, "game_status")
-        was_set = redis_client.set(self.room_name + ":game_over_lock", "1", nx=True)
+        was_set = redis_client.set(self.room_name + ":game_over_lock", "1", nx=True, ex=5)
 
         if not was_set:
             if game_status != "game_over":
@@ -315,22 +309,53 @@ class GameConsumer(AsyncWebsocketConsumer):
             print("End game already handled, ignoring...")
             await self.close()
             return
-        winner = data.get("winner")
+        
+        winner = data.get('winner')
+        me_id = data.get('me_id')
+        opponent_id = data.get('opponent_id')
+        score = data.get('score')
+        
+        start_time_bytes = await sync_to_async(redis_client.get)(f"{self.room_name}:start_time")
+        if start_time_bytes:
+            # decode only if it's bytes
+            if isinstance(start_time_bytes, bytes):
+                start_time_str = start_time_bytes.decode()
+            else:
+                start_time_str = start_time_bytes
+
+            start_time = datetime.fromisoformat(start_time_str)
+            non_formatted_duration = datetime.now(timezone.utc) - start_time  # timedelta object
+
+            # Format duration to MM:SS:MS
+            total_seconds = int(non_formatted_duration.total_seconds())
+            minutes, seconds = divmod(total_seconds, 60)
+            milliseconds = int(non_formatted_duration.microseconds / 10000)
+            duration = f"{minutes}:{seconds:02}:{milliseconds:02}"
+            print(duration)
+        else:
+            duration = None
+            
+        # save game info in table : ft_transcendence_gameroom
+        print(f"[SAVING]: winner={data.get('winner')}, me_id={me_id}, opponent_id={opponent_id}, score={score}, duration={duration}")
+        await self.save_game_info(winner, me_id, opponent_id, score, duration)
+        
         if game_status != "game_over":
             redis_client.hset(self.room_name, "game_status", "game_over")
-        await sync_to_async(redis_client.hset)(self.room_name, "winner", winner)
 
-        playerL_id = await self.get_value_from_player("playerL", "id")
-        playerR_id = await self.get_value_from_player("playerR", "id")
+        print(f"[handle_gameover] PlayerL ID: {me_id}, PlayerR ID: {opponent_id}, winner: {winner}")
 
-        if winner and playerL_id and playerR_id:
-            await self.update_wins_and_losses(playerL_id, playerR_id, winner)
+        # update the userprofile table : ft_transcendence_userprofile
+        if winner and me_id and opponent_id:
+            await self.update_wins_and_losses(me_id, opponent_id, winner)
 
         await self.close()
 
     @sync_to_async
     def update_wins_and_losses(self, playerL_id, playerR_id, winner):
         """This runs in sync mode, safe for DB operations."""
+        
+        print(f"[UPDATE_WL] saving winner={winner}")
+        
         with connection.cursor() as cursor:
             if winner == playerL_id:
                 # Increment wins for playerL and losses for playerR
@@ -344,6 +369,33 @@ class GameConsumer(AsyncWebsocketConsumer):
                 cursor.execute("UPDATE ft_transcendence_userprofile SET total_online_games = total_online_games + 1 WHERE user_id = %s", [playerR_id])
                 cursor.execute("UPDATE ft_transcendence_userprofile SET online_losses = online_losses + 1 WHERE user_id = %s", [playerL_id])
                 cursor.execute("UPDATE ft_transcendence_userprofile SET total_online_games = total_online_games + 1 WHERE user_id = %s", [playerL_id])
+
+    @sync_to_async
+    def save_game_info(self, winner_id, me_id, opponent_id, score, duration=None):
+        """Save finished game into the GameRoom table."""
+        from ft_transcendence.models import GameRoom  # import inside the function to avoid circular imports
+        from django.contrib.auth import get_user_model
+
+        print(f"[SAVE_GAME_INFO] saving game info: winner={winner_id}, me_id={me_id}, opponent_id={opponent_id}, score={score}")
+
+        User = get_user_model()  # Get the user model
+
+        # Fetch User objects based on their IDs
+        me_user = User.objects.get(id=me_id)
+        winner_user = User.objects.get(id=winner_id)
+        opponent_user = User.objects.get(id=opponent_id)
+
+        # Create and save the GameRoom record
+        game_room = GameRoom.objects.create(
+            user=me_user,                  # owner
+            opponent=opponent_user,         # opponent
+            room_name=self.room_name,       # reuse existing room name
+            winner=winner_user,             # winner id
+            score=score,
+            duration=duration,                  # can add later
+        )
+
+        print(f"GameRoom created: {game_room.id} with score {score}")
 
 ## **************** UTILS Fn **************** ##
 
@@ -506,6 +558,10 @@ class GameConsumer(AsyncWebsocketConsumer):
                 }
             )
             # Start the game loop
+
+            start_time = datetime.now(timezone.utc)
+            redis_client.set(f"{self.room_name}:start_time", start_time.isoformat())
+            
             asyncio.create_task(self.game_loop())  # Run the ball movement loop
 
     async def restore_game_state(self):

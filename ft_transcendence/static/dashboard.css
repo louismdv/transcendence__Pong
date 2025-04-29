@@ -1,11 +1,11 @@
 /* Dashboard Styles */
 .dashboard-container {
-  padding: 20px;
+  padding: 40px;
 }
 
 .dashboard-header {
+  margin-left: 20px;
   margin-bottom: 20px;
-  text-align: center;
 }
 
 /* .dashboard-header h2 {
@@ -48,7 +48,14 @@
 }
 
 .card-content {
-  padding: 15px;
+    padding: 20px;
+    min-width: 60%;
+}
+.dash-card {
+    display: flex;
+    flex-direction: row;
+  /* justify-content: space-between; */
+  align-items: center;
 }
 
 /* Stats styling */
