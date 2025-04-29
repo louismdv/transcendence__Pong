@@ -1,0 +1,262 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-04-30 01:34+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=n == 1 ? 0 : n != 0 && n % 1000000 == 0 ? "
+"1 : 2;\n"
+
+#: ft_transcendence/static/js/chatpage.js:56
+msgid "No friends "
+msgstr ""
+
+#: ft_transcendence/static/js/chatpage.js:56
+#: ft_transcendence/static/js/chatpage.js:115
+#: ft_transcendence/static/js/friendspage.js:109
+#: ft_transcendence/static/js/friendspage.js:113
+#: ft_transcendence/static/js/friendspage.js:788
+msgid "offline"
+msgstr ""
+
+#: ft_transcendence/static/js/chatpage.js:56
+#: ft_transcendence/static/js/chatpage.js:115
+#: ft_transcendence/static/js/friendspage.js:109
+#: ft_transcendence/static/js/friendspage.js:113
+#: ft_transcendence/static/js/friendspage.js:784
+#: ft_transcendence/static/js/livechat.js:162
+msgid "online"
+msgstr ""
+
+#: ft_transcendence/static/js/chatpage.js:56
+msgid " at the moment."
+msgstr ""
+
+#: ft_transcendence/static/js/chatpage.js:57
+msgid "Please come back later."
+msgstr ""
+
+#: ft_transcendence/static/js/chatpage.js:100
+msgid "An error occurred while loading friends. Please try again later."
+msgstr ""
+
+#: ft_transcendence/static/js/dashboard.js:23
+#: ft_transcendence/static/js/dashboard.js:62
+msgid "No data"
+msgstr ""
+
+#: ft_transcendence/static/js/dashboard.js:25
+msgid "Player statistics"
+msgstr ""
+
+#: ft_transcendence/static/js/dashboard.js:55
+msgid "Online wins"
+msgstr ""
+
+#: ft_transcendence/static/js/dashboard.js:55
+msgid "Online losses"
+msgstr ""
+
+#: ft_transcendence/static/js/dashboard.js:78
+msgid "No games played yet"
+msgstr ""
+
+#: ft_transcendence/static/js/friendspage.js:76
+msgid "No friends at the moment"
+msgstr ""
+
+#: ft_transcendence/static/js/friendspage.js:77
+msgid "Search for users to add them to your friends list."
+msgstr ""
+
+#: ft_transcendence/static/js/friendspage.js:97
+msgid "Error while loading friends. Please try again."
+msgstr ""
+
+#: ft_transcendence/static/js/friendspage.js:119
+msgid "Actions"
+msgstr ""
+
+#: ft_transcendence/static/js/friendspage.js:124
+msgid "Private Message"
+msgstr ""
+
+#: ft_transcendence/static/js/friendspage.js:128
+msgid "Invite to Play"
+msgstr ""
+
+#: ft_transcendence/static/js/friendspage.js:132
+msgid "Show profile"
+msgstr ""
+
+#: ft_transcendence/static/js/friendspage.js:137
+msgid "Remove"
+msgstr ""
+
+#: ft_transcendence/static/js/friendspage.js:141
+msgid "Block"
+msgstr ""
+
+#: ft_transcendence/static/js/friendspage.js:213
+msgid "No result for "
+msgstr ""
+
+#: ft_transcendence/static/js/friendspage.js:238
+msgid "Invite sent successfully!"
+msgstr ""
+
+#: ft_transcendence/static/js/friendspage.js:240
+msgid "Error while sending invite."
+msgstr ""
+
+#: ft_transcendence/static/js/friendspage.js:245
+#: ft_transcendence/static/js/friendspage.js:281
+#: ft_transcendence/static/js/friendspage.js:320
+#: ft_transcendence/static/js/friendspage.js:450
+#: ft_transcendence/static/js/friendspage.js:692
+#: ft_transcendence/static/js/friendspage.js:733
+msgid "An error has occurred."
+msgstr ""
+
+#: ft_transcendence/static/js/friendspage.js:357
+#: ft_transcendence/static/js/friendspage.js:471
+msgid "No blocked users."
+msgstr ""
+
+#: ft_transcendence/static/js/friendspage.js:528
+msgid "Friends"
+msgstr ""
+
+#: ft_transcendence/static/js/friendspage.js:530
+#: ft_transcendence/static/js/friendspage.js:584
+msgid "Request sent"
+msgstr ""
+
+#: ft_transcendence/static/js/friendspage.js:533
+msgid "Accept"
+msgstr ""
+
+#: ft_transcendence/static/js/friendspage.js:534
+msgid "Refuse"
+msgstr ""
+
+#: ft_transcendence/static/js/friendspage.js:537
+msgid "Blocked"
+msgstr ""
+
+#: ft_transcendence/static/js/friendspage.js:539
+msgid "Add"
+msgstr ""
+
+#: ft_transcendence/static/js/friendspage.js:561
+msgid "Error while searching"
+msgstr ""
+
+#: ft_transcendence/static/js/friendspage.js:580
+msgid "Friend request sent successfully!"
+msgstr ""
+
+#: ft_transcendence/static/js/friendspage.js:590
+msgid "Error while sending request."
+msgstr ""
+
+#: ft_transcendence/static/js/friendspage.js:595
+msgid "An error has occured."
+msgstr ""
+
+#: ft_transcendence/static/js/friendspage.js:618
+msgid "No invitations for the moment."
+msgstr ""
+
+#: ft_transcendence/static/js/friendspage.js:649
+msgid "Error while loading invitations."
+msgstr ""
+
+#: ft_transcendence/static/js/friendspage.js:656
+#: ft_transcendence/static/js/friendspage.js:699
+msgid "Request ID invalide"
+msgstr ""
+
+#: ft_transcendence/static/js/friendspage.js:683
+msgid "Friend request accepted!"
+msgstr ""
+
+#: ft_transcendence/static/js/friendspage.js:687
+msgid "Error while accepting friend request."
+msgstr ""
+
+#: ft_transcendence/static/js/friendspage.js:726
+msgid "Friend request refused."
+msgstr ""
+
+#: ft_transcendence/static/js/friendspage.js:728
+msgid "Error while rejecting the request."
+msgstr ""
+
+#: ft_transcendence/static/js/friendspage.js:747
+msgid "No requests at the moment."
+msgstr ""
+
+#: ft_transcendence/static/js/friendspage.js:816
+msgid "No friends at the moment."
+msgstr ""
+
+#: ft_transcendence/static/js/friendspage.js:817
+msgid "Search for users to add to your friends list."
+msgstr ""
+
+#: ft_transcendence/static/js/friendspage.js:832
+msgid "Today"
+msgstr ""
+
+#: ft_transcendence/static/js/friendspage.js:834
+msgid "Yesterday"
+msgstr ""
+
+#: ft_transcendence/static/js/friendspage.js:836
+msgid "days ago"
+msgstr ""
+
+#: ft_transcendence/static/js/livechat.js:307
+msgid "Hey are you available for a game? Here's a code just in case: "
+msgstr ""
+
+#: ft_transcendence/static/js/livechat.js:313
+msgid "Game invite sent!"
+msgstr ""
+
+#: ft_transcendence/static/js/tournament.js:56
+msgid "New Tournament"
+msgstr ""
+
+#: ft_transcendence/static/js/tournament.js:67
+msgid "Tournament Bracket"
+msgstr ""
+
+#: ft_transcendence/static/js/tournament.js:146
+msgid "Local Tournament Setup"
+msgstr ""
+
+#: ft_transcendence/static/js/tournament.js:165
+msgid "Start Local Tournament"
+msgstr ""
+
+#: ft_transcendence/static/js/tournament.js:342
+msgid "All player names must be unique"
+msgstr ""
+
+#: ft_transcendence/static/js/tournament.js:369
+msgid "Tournament starting..."
+msgstr ""

@@ -4,8 +4,11 @@ from . import views
 from django.conf import settings
 from django.urls import path, re_path
 from django.conf.urls.static import static
+from django.views.i18n import JavaScriptCatalog
+
 
 urlpatterns = [
+    path('jsi18n/', JavaScriptCatalog.as_view(), name='javascript-catalog'),
     path('', views.home, name='home'),
     path('online-game/', include('online_game.urls')),
     path('login/', views.login_view, name='login'),

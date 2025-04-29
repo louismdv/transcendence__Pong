@@ -53,7 +53,7 @@ function initTournament(restoredState = null, player1Score = 0, player2Score = 0
                 </div>
             </div>
             <button id="new-tournament-btn" class="glow-on-hover">
-                New Tournament
+                ${gettext("New Tournament")}
                 <span class="material-symbols-outlined">refresh</span>
             </button>
         `;
@@ -64,7 +64,7 @@ function initTournament(restoredState = null, player1Score = 0, player2Score = 0
     const bracketContent = document.querySelector('.bracket-content');
     if (bracketContent) {
         bracketContent.innerHTML = `
-            <h4>Tournament Bracket</h4>
+            <h4>${gettext("Tournament Bracket")}</h4>
             <div class="bracket-container">
                 <div class="bracket-row semifinals">
                     <div id="match-a" class="match-container">
@@ -143,7 +143,7 @@ function initTournament(restoredState = null, player1Score = 0, player2Score = 0
     const localSetupDiv = document.createElement('div');
     localSetupDiv.className = 'tournament-local-setup card';
     localSetupDiv.innerHTML = `
-        <h4>Local Tournament Setup</h4>
+        <h4>${gettext("Local Tournament Setup")}</h4>
         <div class="local-players-form">
             <div class="player-input">
                 <label>Player 1:</label>
@@ -162,7 +162,7 @@ function initTournament(restoredState = null, player1Score = 0, player2Score = 0
                 <input type="text" class="local-player-name" placeholder="Player 4" maxlength="12">
             </div>
             <button id="start-local-tournament" class="glow-on-hover">
-                Start Local Tournament
+                ${gettext("Start Local Tournament")}
                 <span class="material-symbols-outlined">sports_esports</span>
             </button>
         </div>
@@ -339,7 +339,7 @@ function initTournament(restoredState = null, player1Score = 0, player2Score = 0
         
         // Validate player names
         if (new Set(playerNames).size !== 4) {
-            alert('All player names must be unique');
+            alert(gettext('All player names must be unique'));
             return;
         }
         
@@ -366,7 +366,7 @@ function initTournament(restoredState = null, player1Score = 0, player2Score = 0
         
         // Update status
         if (tournamentStatusText) {
-            tournamentStatusText.textContent = 'Tournament starting...';
+            tournamentStatusText.textContent = gettext('Tournament starting...');
         }
         
         // Update UI

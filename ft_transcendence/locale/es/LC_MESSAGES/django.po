@@ -21,13 +21,11 @@ msgstr ""
 #: ft_transcendence/views.py:20
 msgid "home"
 msgstr ""
-
-
 # Página de inicio
 msgid "Home"
 msgstr "Inicio"
 
-msgid "Choose a game mode :"
+msgid "Choose a game mode:"
 msgstr "Elige un modo de juego:"
 
 msgid "Main menu"
@@ -67,7 +65,6 @@ msgstr "Modo Torneo"
 msgid "Tournament Status"
 msgstr "Estado del torneo"
 
-
 # Página de mensajería
 msgid "Messaging"
 msgstr "Mensajería"
@@ -80,9 +77,6 @@ msgstr "En línea"
 
 msgid "Offline"
 msgstr "Desconectado"
-
-
-
 
 msgid "Friends Management"
 msgstr "Gestión de amigos"
@@ -153,8 +147,6 @@ msgstr "Bloqueado el"
 msgid "Unblock"
 msgstr "Desbloquear"
 
-
-
 msgid "Room Code :"
 msgstr "Código de la sala:"
 
@@ -173,7 +165,6 @@ msgstr "Usa"
 msgid "arrow keys to move your paddle"
 msgstr "las teclas de flecha para mover tu paleta"
 
-
 msgid "En ligne"
 msgstr "En línea"
 
@@ -182,9 +173,6 @@ msgstr "Escribe tu mensaje..."
 
 msgid "Send"
 msgstr "Enviar"
-
-
-
 
 msgid "Create a new game:"
 msgstr "Crear un nuevo juego:"
@@ -197,7 +185,6 @@ msgstr "Ingresa el nombre de la sala ..."
 
 msgid "Enter"
 msgstr "Entrar"
-
 
 msgid "Login"
 msgstr "Iniciar sesión"
@@ -220,18 +207,11 @@ msgstr "O"
 msgid "Login with 42"
 msgstr "Iniciar sesión con 42"
 
-
 msgid "Sign Up"
 msgstr "Registrarse"
 
-msgid "Username"
-msgstr "Nombre de usuario"
-
 msgid "Email"
 msgstr "Correo electrónico"
-
-msgid "Password"
-msgstr "Contraseña"
 
 msgid "Confirm Password"
 msgstr "Confirmar contraseña"
@@ -245,8 +225,6 @@ msgstr "¿Ya tienes una cuenta?"
 msgid "LOGIN"
 msgstr "INICIAR SESIÓN"
 
-
-
 msgid "Profile Settings"
 msgstr "Configuración del perfil"
 
@@ -255,9 +233,6 @@ msgstr "Edita tu información personal y preferencias"
 
 msgid "Profile"
 msgstr "Perfil"
-
-msgid "Account"
-msgstr "Cuenta"
 
 msgid "Preferences"
 msgstr "Preferencias"
@@ -270,9 +245,6 @@ msgstr "Edita tu información personal"
 
 msgid "Profile Picture"
 msgstr "Foto de perfil"
-
-msgid "Username"
-msgstr "Nombre de usuario"
 
 msgid "Account Information"
 msgstr "Información de la cuenta"
@@ -288,9 +260,6 @@ msgstr "Contraseña actual"
 
 msgid "New Password"
 msgstr "Nueva contraseña"
-
-msgid "Confirm Password"
-msgstr "Confirmar contraseña"
 
 msgid "Danger Zone"
 msgstr "Zona de peligro"
@@ -328,5 +297,3 @@ msgstr "Esta acción es irreversible. Eliminará permanentemente tu cuenta y tod
 msgid "Cancel"
 msgstr "Cancelar"
 
-msgid "Delete Account"
-msgstr "Eliminar cuenta"

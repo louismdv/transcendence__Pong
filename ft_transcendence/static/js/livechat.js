@@ -159,7 +159,7 @@
             if (statusIndicator) {
                 chatUserStatus.className = statusIndicator.className;
                 chatUserStatusText.textContent =
-                    statusIndicator.classList.contains('online') ? 'En ligne' :
+                    statusIndicator.classList.contains('online') ? gettext('online') :
                     statusIndicator.classList.contains('away') ? 'Absent' : 'Hors ligne';
             }
         } else {
@@ -304,11 +304,13 @@ function inviteFriendToGame(userId, username) {
             }
 
             const roomName = generateRoomCode();
-            chatInput.value = `Salut t'es dispo pour une partie? Voici un code: ${roomName}`;
+            chatInput.value = `${gettext('Hey are you available for a game? Here\'s a code just in case: ')} ${roomName}`;
             setTimeout(() => sendMessageBtn.click(), 0); // Ensure the text is actually in input before clicking send
             if (validateRoomName(roomName)) {
                 window.location.hash = `#game/${roomName}`;
             }
+
+            alert(gettext('Game invite sent!'));
         }
     }, 100); // Check every 100ms
 }

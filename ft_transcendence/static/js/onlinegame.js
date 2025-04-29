@@ -135,7 +135,7 @@ function setupNewSocket(roomName, clientName, userId) {
                 break;
             case 'room_full':
             case 'connection_rejected':
-                window.location.pathname = '/online-game/lobby/';
+                window.location.href = '/#onlinegame';
                 break;
             case 'no_game_to_restore':
                 console.log("No game to restore.");
