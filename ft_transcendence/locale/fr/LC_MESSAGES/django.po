@@ -55,9 +55,6 @@ msgstr "Jouer en local"
 msgid "DashBoard"
 msgstr "Tableau de bord"
 
-msgid "Tournament Mode"
-msgstr "Mode Tournoi"
-
 msgid "Tournament Status"
 msgstr "Statut du tournoi"
 
@@ -372,3 +369,53 @@ msgstr "Anglais"
 
 msgid "Spanish"
 msgstr "Espagnol"
+
+msgid "Waiting..."
+msgstr "en attente..."
+
+msgid "Tournament Mode"
+msgstr "Mode Tournoi"
+
+msgid "Waiting for players..."
+msgstr "En attente des joueurs"
+
+msgid "Join Tournament"
+msgstr "Rejoindre le tournoi"
+
+msgid "Ready"
+msgstr "Prêt"
+
+msgid "Losers Match"
+msgstr "Match perdant"
+
+msgid "Loser"
+msgstr "Perdant"
+
+msgid "Leave Tournament"
+msgstr "Quitter le tournoi"
+
+msgid "Final"
+msgstr "Finale"
+
+msgid "Championship"
+msgstr "Championnat"
+
+msgid "Winner"
+msgstr "Gagnant"
+
+msgid "results"
+msgstr "resultats"
+
+msgid "Tournament Results"
+msgstr "Resultats du tournoi"
+
+msgid "New Tournament"
+msgstr "Nouveau tournoi"
+
+msgid "Player"
+msgstr "Joueur"
+
+
+msgid "Back to Tournament"
+msgstr "Retour aU tournoi"
+

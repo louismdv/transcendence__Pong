@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-04-30 00:44+0200\n"
+"POT-Creation-Date: 2025-04-30 01:34+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -241,6 +241,30 @@ msgstr "Salut t'es dispo pour une partie? Voici un code: "
 msgid "Game invite sent!"
 msgstr "Invitation à jouer envoyée!"
 
+#: ft_transcendence/static/js/tournament.js:56
+msgid "New Tournament"
+msgstr "Nouveau tournoi"
+
+#: ft_transcendence/static/js/tournament.js:67
+msgid "Tournament Bracket"
+msgstr "Brackets du tournoi"
+
+#: ft_transcendence/static/js/tournament.js:146
+msgid "Local Tournament Setup"
+msgstr "Organisation du tournoi local"
+
+#: ft_transcendence/static/js/tournament.js:165
+msgid "Start Local Tournament"
+msgstr "Commencer le tournoi"
+
+#: ft_transcendence/static/js/tournament.js:342
+msgid "All player names must be unique"
+msgstr "Tous les joueurs doivent avoir un pseudo unique"
+
+#: ft_transcendence/static/js/tournament.js:369
+msgid "Tournament starting..."
+msgstr "Début du tournoi..."
+
 #~ msgid "Erreur lors de l'envoi de la demande."
 #~ msgstr "Erreur lors de l'envoi de la demande."
 
@@ -285,9 +309,6 @@ msgstr "Invitation à jouer envoyée!"
 
 #~ msgid "DashBoard"
 #~ msgstr "Tableau de bord"
-
-#~ msgid "Tournament Mode"
-#~ msgstr "Mode Tournoi"
 
 #~ msgid "Tournament Status"
 #~ msgstr "Statut du tournoi"
@@ -490,3 +511,45 @@ msgstr "Invitation à jouer envoyée!"
 
 #~ msgid "Cancel"
 #~ msgstr "Annuler"
+
+#~ msgid "Tournament Mode"
+#~ msgstr "Mode Tournoi"
+
+#~ msgid "Waiting for players..."
+#~ msgstr "En attente des joueurs"
+
+#~ msgid "Join Tournament"
+#~ msgstr "Rejoindre le tournoi"
+
+#~ msgid "Ready"
+#~ msgstr "Prêt"
+
+#~ msgid "Losers Match"
+#~ msgstr "Match perdant"
+
+#~ msgid "Loser"
+#~ msgstr "Perdant"
+
+#~ msgid "Leave Tournament"
+#~ msgstr "Quitter le tournoi"
+
+#~ msgid "Final"
+#~ msgstr "Finale"
+
+#~ msgid "Championship"
+#~ msgstr "Championnat"
+
+#~ msgid "Winner"
+#~ msgstr "Gagnant"
+
+#~ msgid "results"
+#~ msgstr "resultats"
+
+#~ msgid "Tournament Results"
+#~ msgstr "Resultats du tournoi"
+
+#~ msgid "Player"
+#~ msgstr "Joueur"
+
+#~ msgid "Back to Tournament"
+#~ msgstr "Retour au tournoi"
