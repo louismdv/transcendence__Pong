@@ -420,19 +420,14 @@
     }
     
     function resetGame() {
-        // S'assurer que le canvas est initialisé
-        initCanvas();
+        initCanvas(); // Réinitialiser le canvas
         
-        // Reset the game state
-        gameRunning = false;
-    
         playerL = new Player(50, WIN_H / 2 - 175 / 2, 'orange', 'KeyA', 'KeyD');
         playerR = new Player(WIN_W - 50 - 30, WIN_H / 2 - 175 / 2, 'red', 'ArrowLeft', 'ArrowRight');
-        ball    = new Ball(WIN_W / 2, WIN_H / 2, 'blue');
+        ball = new Ball(WIN_W / 2, WIN_H / 2, 'blue');
         
-        // Redisplay player names if in tournament mode
         if (isTournamentMode) {
-            displayTournamentPlayerNames();
+            displayTournamentPlayerNames(); // Réafficher les noms des joueurs
         }
     }
     
@@ -501,9 +496,6 @@
             // Check end game conditions
             if (playerL.score >= WINNING_SCORE || playerR.score >= WINNING_SCORE) {
                 if (isTournamentMode) {
-                    console.log("Match de tournoi terminé:", playerL.score, "-", playerR.score);
-                    
-                    // Report scores back to tournament system - envoyer à window ET document
                     const gameCompletedEvent = new CustomEvent('game-completed', {
                         detail: {
                             player1Score: playerL.score,
@@ -511,19 +503,9 @@
                         }
                     });
                     window.dispatchEvent(gameCompletedEvent);
-                    document.dispatchEvent(gameCompletedEvent);
-                    
                     console.log("[Game] Événement game-completed envoyé avec les scores:", playerL.score, "-", playerR.score);
-                    
-                    // Reset tournament mode
-                    isTournamentMode = false;
-                    tournamentPlayer1 = null;
-                    tournamentPlayer2 = null;
-                    
-                    // Clean up player name displays
-                    document.querySelectorAll('.tournament-player-name').forEach(el => el.remove());
                 }
-                
+            
                 resetGame();
                 return;
             }

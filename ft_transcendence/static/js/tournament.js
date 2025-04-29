@@ -5,7 +5,15 @@ document.addEventListener('DOMContentLoaded', function() {
 
 function initTournament(restoredState = null, player1Score = 0, player2Score = 0) {
     console.log("[Tournament] Initialisation du tournoi");
-    
+    const savedState = localStorage.getItem('tournamentState');
+    if (savedState && !restoredState) {
+        try {
+            restoredState = JSON.parse(savedState);
+            console.log("[Tournament] État restauré depuis le stockage local");
+        } catch (e) {
+            console.error("[Tournament] Erreur lors de la restauration de l'état:", e);
+        }
+    }
     // DOM Elements
     const tournamentStatusText = document.getElementById('tournament-status-text');
     const playerCount = document.getElementById('player-count');
@@ -386,33 +394,43 @@ function initTournament(restoredState = null, player1Score = 0, player2Score = 0
                 // Add click event
                 button.addEventListener('click', function() {
                     const matchId = container.id;
-                    let player1, player2;
+                    let match;
                     
                     switch (matchId) {
                         case 'match-a':
                             tournamentState.currentMatch = 'matchA';
-                            player1 = tournamentState.matchA.player1?.name || "Player 1";
-                            player2 = tournamentState.matchA.player2?.name || "Player 2";
+                            match = tournamentState.matchA;
                             break;
                         case 'match-b':
                             tournamentState.currentMatch = 'matchB';
-                            player1 = tournamentState.matchB.player1?.name || "Player 3";
-                            player2 = tournamentState.matchB.player2?.name || "Player 4";
+                            match = tournamentState.matchB;
                             break;
                         case 'match-losers':
+                            // Vérifier si les perdants sont définis
+                            if (!tournamentState.matchLosers.player1 || !tournamentState.matchLosers.player2) {
+                                tournamentState.matchLosers.player1 = tournamentState.matchA.loser || {name: "Loser 1"};
+                                tournamentState.matchLosers.player2 = tournamentState.matchB.loser || {name: "Loser 2"};
+                            }
                             tournamentState.currentMatch = 'matchLosers';
-                            player1 = tournamentState.matchLosers.player1?.name || "Loser 1";
-                            player2 = tournamentState.matchLosers.player2?.name || "Loser 2";
+                            match = tournamentState.matchLosers;
                             break;
                         case 'match-final':
+                            // Vérifier si les gagnants sont définis
+                            if (!tournamentState.matchFinal.player1 || !tournamentState.matchFinal.player2) {
+                                tournamentState.matchFinal.player1 = tournamentState.matchA.winner || {name: "Winner 1"};
+                                tournamentState.matchFinal.player2 = tournamentState.matchB.winner || {name: "Winner 2"};
+                            }
                             tournamentState.currentMatch = 'matchFinal';
-                            player1 = tournamentState.matchFinal.player1?.name || "Winner 1";
-                            player2 = tournamentState.matchFinal.player2?.name || "Winner 2";
+                            match = tournamentState.matchFinal;
                             break;
                     }
                     
-                    // Launch the game directly
-                    launchLocalGame(player1, player2);
+                    // Lancer le jeu avec les joueurs définitifs
+                    if (match && match.player1 && match.player2) {
+                        launchLocalGame(match.player1.name, match.player2.name);
+                    } else {
+                        console.error("[Tournament] Match ou joueurs non définis");
+                    }
                 });
                 
                 container.appendChild(button);
@@ -627,6 +645,30 @@ function initTournament(restoredState = null, player1Score = 0, player2Score = 0
         
         
     }
+    window.addEventListener('message', function(event) {
+        if (event.data && event.data.type === 'tournament_match_completed') {
+            console.log("[Tournament] Match terminé, scores:", event.data);
+            
+            // Hide game container
+            if (gameContainer) gameContainer.style.display = 'none';
+            
+            // Process match results
+            processMatchResults(event.data.player1Score, event.data.player2Score);
+            
+            // Reset iframe
+            if (gameFrame) gameFrame.src = 'about:blank';
+        }
+        // Ajoutez cette condition pour gérer le retour sans terminer le match
+        else if (event.data && event.data.type === 'tournament_return_only') {
+            console.log("[Tournament] Retour au tournoi sans terminer le match");
+            
+            // Hide game container without processing results
+            if (gameContainer) gameContainer.style.display = 'none';
+            
+            // Optionally reset iframe
+            if (gameFrame) gameFrame.src = 'about:blank';
+        }
+    });
     
     // Process match results
     function processMatchResults(player1Score, player2Score) {
@@ -652,6 +694,12 @@ function initTournament(restoredState = null, player1Score = 0, player2Score = 0
                 return;
         }
         
+        // Vérifier que les joueurs sont définis
+        if (!match.player1 || !match.player2) {
+            console.error("[Tournament] Joueurs non définis pour ce match");
+            return;
+        }
+        
         // Update scores
         match.score = [player1Score, player2Score];
         
@@ -664,11 +712,18 @@ function initTournament(restoredState = null, player1Score = 0, player2Score = 0
             match.loser = match.player1;
         }
         
+        console.log(`[Tournament] Vainqueur: ${match.winner.name}, Perdant: ${match.loser.name}`);
+        
+        // Sauvegarder l'état du tournoi dans le stockage local pour persistance
+        localStorage.setItem('tournamentState', JSON.stringify(tournamentState));
+        
         // Update bracket display
         updateBracket();
         
-        // Continue to next match
-        continueTournament();
+        // Continue to next match if appropriate
+        if (tournamentState.status !== 'completed') {
+            continueTournament();
+        }
     }
     
     // Continue tournament after match completion
@@ -715,21 +770,21 @@ function initTournament(restoredState = null, player1Score = 0, player2Score = 0
         const thirdPlace = document.getElementById('third-place');
         const fourthPlace = document.getElementById('fourth-place');
         
-        if (firstPlace && tournamentState.matchFinal.winner) {
-            firstPlace.textContent = tournamentState.matchFinal.winner.name;
-        }
+        // Vérifier que les gagnants et perdants sont définis
+        const winner1 = tournamentState.matchFinal.winner ? tournamentState.matchFinal.winner.name : "À déterminer";
+        const loser1 = tournamentState.matchFinal.loser ? tournamentState.matchFinal.loser.name : "À déterminer";
+        const winner3 = tournamentState.matchLosers.winner ? tournamentState.matchLosers.winner.name : "À déterminer";
+        const loser3 = tournamentState.matchLosers.loser ? tournamentState.matchLosers.loser.name : "À déterminer";
         
-        if (secondPlace && tournamentState.matchFinal.loser) {
-            secondPlace.textContent = tournamentState.matchFinal.loser.name;
-        }
+        console.log("1er :", winner1);
+        console.log("2e :", loser1);
+        console.log("3e :", winner3);
+        console.log("4e :", loser3);
         
-        if (thirdPlace && tournamentState.matchLosers.winner) {
-            thirdPlace.textContent = tournamentState.matchLosers.winner.name;
-        }
-        
-        if (fourthPlace && tournamentState.matchLosers.loser) {
-            fourthPlace.textContent = tournamentState.matchLosers.loser.name;
-        }
+        if (firstPlace) firstPlace.textContent = winner1;
+        if (secondPlace) secondPlace.textContent = loser1;
+        if (thirdPlace) thirdPlace.textContent = winner3;
+        if (fourthPlace) fourthPlace.textContent = loser3;
         
         // Show results section
         if (tournamentResults) {
@@ -740,6 +795,8 @@ function initTournament(restoredState = null, player1Score = 0, player2Score = 0
         if (tournamentStatusText) {
             tournamentStatusText.textContent = 'Tournament Completed';
         }
+        
+        tournamentState.status = 'completed';
     }
     
     // Reset tournament
