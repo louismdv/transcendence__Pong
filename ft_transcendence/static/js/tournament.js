@@ -587,6 +587,20 @@ function initTournament(restoredState = null, player1Score = 0, player2Score = 0
             }
         });
     }
+
+    function resetGameContainer() {
+        console.log("[Tournament] Réinitialisation du conteneur de jeu");
+    
+        if (gameContainer) {
+            gameContainer.innerHTML = ''; // Supprime tout le contenu précédent
+            gameContainer.style.display = 'none'; // Masque le conteneur
+            gameContainer.classList.remove('active'); // Supprime la classe active
+        }
+    
+        if (gameFrame) {
+            gameFrame.src = 'about:blank'; // Réinitialise l'iframe
+        }
+    }
     
     // Launch the local game in iframe
     function launchLocalGame(player1Name, player2Name) {
@@ -610,6 +624,8 @@ function initTournament(restoredState = null, player1Score = 0, player2Score = 0
         if (gameContainer) {
             gameContainer.style.display = 'block';
         }
+        
+        
     }
     
     // Process match results
@@ -687,6 +703,7 @@ function initTournament(restoredState = null, player1Score = 0, player2Score = 0
                 break;
         }
     }
+    
     
     // Show tournament results
     function showTournamentResults() {
