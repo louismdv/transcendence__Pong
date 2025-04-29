@@ -105,7 +105,7 @@ function createFriendCardHTML(friend) {
         <div class="friend-card" data-friend-id="${friend.id}">
             <div class="friend-avatar">
                 <img src="${friend.avatar || '/media/avatars/default.png'}" alt="${friend.username}">
-                <span class="status-indicator ${friend.online ? 'online' : 'offline'}"></span>
+                <span class="status-indicators ${friend.online ? 'online' : 'offline'}"></span>
             </div>
             <div class="friend-info">
                 <h6 class="friend-name">${friend.username}</h6>
@@ -773,7 +773,7 @@ function updateFriendStatuses() {
         .then(response => response.json())
         .then(data => {
             data.friends.forEach(friend => {
-                const statusIndicator = document.querySelector(`.friend-card[data-friend-id="${friend.id}"] .status-indicator`);
+                const statusIndicator = document.querySelector(`.friend-card[data-friend-id="${friend.id}"] .status-indicators`);
                 const statusText = document.querySelector(`.friend-card[data-friend-id="${friend.id}"] .friend-status`);
                 
                 if (statusIndicator && statusText) {

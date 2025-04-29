@@ -212,12 +212,9 @@ document.addEventListener('DOMContentLoaded', function() {
                 if (tournamentState.players.length === 4 && tournamentState.players.every(p => p.ready)) {
                     startTournament();
                 }
-            } else {
-                alert(data.message || 'Error joining tournament');
-            }
+            } 
         } catch (error) {
             console.error('Error:', error);
-            alert('An error occurred while trying to join the tournament');
         }
     }
     
@@ -240,12 +237,9 @@ document.addEventListener('DOMContentLoaded', function() {
                 tournamentState.isPlayerReady = false;
                 
                 updateUI();
-            } else {
-                alert(data.message || 'Error leaving tournament');
-            }
+            } 
         } catch (error) {
             console.error('Error:', error);
-            alert('An error occurred while trying to leave the tournament');
         }
     }
     
@@ -281,12 +275,9 @@ document.addEventListener('DOMContentLoaded', function() {
                 if (tournamentState.players.length === 4 && tournamentState.players.every(p => p.ready)) {
                     startTournament();
                 }
-            } else {
-                alert(data.message || 'Error updating ready status');
             }
         } catch (error) {
             console.error('Error:', error);
-            alert('An error occurred while updating ready status');
         }
     }
     

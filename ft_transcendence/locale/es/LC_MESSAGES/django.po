@@ -43,7 +43,7 @@ msgid "Chat"
 msgstr "Chat"
 
 msgid "Board"
-msgstr "Clasificación"
+msgstr "Tablero"
 
 msgid "Settings"
 msgstr "Configuración"
@@ -60,9 +60,273 @@ msgstr "Jugar localmente"
 msgid "DashBoard"
 msgstr "Panel de control"
 
-# Página del torneo
+# Página de Torneo
 msgid "Tournament Mode"
-msgstr "Modo torneo"
+msgstr "Modo Torneo"
 
 msgid "Tournament Status"
 msgstr "Estado del torneo"
+
+
+# Página de mensajería
+msgid "Messaging"
+msgstr "Mensajería"
+
+msgid "Contacts"
+msgstr "Contactos"
+
+msgid "Online"
+msgstr "En línea"
+
+msgid "Offline"
+msgstr "Desconectado"
+
+
+
+
+msgid "Friends Management"
+msgstr "Gestión de amigos"
+
+msgid "My Friends"
+msgstr "Mis amigos"
+
+msgid "Requests"
+msgstr "Solicitudes"
+
+msgid "Search"
+msgstr "Buscar"
+
+msgid "Blocked"
+msgstr "Bloqueados"
+
+msgid "Friends List"
+msgstr "Lista de amigos"
+
+msgid "Search a friend..."
+msgstr "Buscar un amigo..."
+
+msgid "Loading..."
+msgstr "Cargando..."
+
+msgid "Received Requests"
+msgstr "Solicitudes recibidas"
+
+msgid "Pending friend requests"
+msgstr "Solicitudes de amistad pendientes"
+
+msgid "Search Users"
+msgstr "Buscar usuarios"
+
+msgid "Search by username..."
+msgstr "Buscar por nombre de usuario..."
+
+msgid "Enter at least 3 characters to search"
+msgstr "Introduce al menos 3 caracteres para buscar"
+
+msgid "Blocked Users"
+msgstr "Usuarios bloqueados"
+
+msgid "These users cannot contact you"
+msgstr "Estos usuarios no pueden contactarte"
+
+msgid "Actions"
+msgstr "Acciones"
+
+msgid "Private Message"
+msgstr "Mensaje privado"
+
+msgid "Invite to Play"
+msgstr "Invitar a jugar"
+
+msgid "View Profile"
+msgstr "Ver perfil"
+
+msgid "Remove"
+msgstr "Eliminar"
+
+msgid "Block"
+msgstr "Bloquear"
+
+msgid "Blocked on"
+msgstr "Bloqueado el"
+
+msgid "Unblock"
+msgstr "Desbloquear"
+
+
+
+msgid "Room Code :"
+msgstr "Código de la sala:"
+
+msgid "Copy room code"
+msgstr "Copiar código de la sala"
+
+msgid "You:"
+msgstr "Tú:"
+
+msgid "loading"
+msgstr "cargando"
+
+msgid "Use"
+msgstr "Usa"
+
+msgid "arrow keys to move your paddle"
+msgstr "las teclas de flecha para mover tu paleta"
+
+
+msgid "En ligne"
+msgstr "En línea"
+
+msgid "Write your message..."
+msgstr "Escribe tu mensaje..."
+
+msgid "Send"
+msgstr "Enviar"
+
+
+
+
+msgid "Create a new game:"
+msgstr "Crear un nuevo juego:"
+
+msgid "What game room would you like to join/create?"
+msgstr "¿Qué sala de juego te gustaría unirte/crear?"
+
+msgid "Enter room name ..."
+msgstr "Ingresa el nombre de la sala ..."
+
+msgid "Enter"
+msgstr "Entrar"
+
+
+msgid "Login"
+msgstr "Iniciar sesión"
+
+msgid "Username"
+msgstr "Nombre de usuario"
+
+msgid "Password"
+msgstr "Contraseña"
+
+msgid "Need an account?"
+msgstr "¿Necesitas una cuenta?"
+
+msgid "SIGN UP"
+msgstr "REGÍSTRATE"
+
+msgid "OR"
+msgstr "O"
+
+msgid "Login with 42"
+msgstr "Iniciar sesión con 42"
+
+
+msgid "Sign Up"
+msgstr "Registrarse"
+
+msgid "Username"
+msgstr "Nombre de usuario"
+
+msgid "Email"
+msgstr "Correo electrónico"
+
+msgid "Password"
+msgstr "Contraseña"
+
+msgid "Confirm Password"
+msgstr "Confirmar contraseña"
+
+msgid "Create Account"
+msgstr "Crear cuenta"
+
+msgid "Already have an account?"
+msgstr "¿Ya tienes una cuenta?"
+
+msgid "LOGIN"
+msgstr "INICIAR SESIÓN"
+
+
+
+msgid "Profile Settings"
+msgstr "Configuración del perfil"
+
+msgid "Edit your personal information and preferences"
+msgstr "Edita tu información personal y preferencias"
+
+msgid "Profile"
+msgstr "Perfil"
+
+msgid "Account"
+msgstr "Cuenta"
+
+msgid "Preferences"
+msgstr "Preferencias"
+
+msgid "Profile Information"
+msgstr "Información del perfil"
+
+msgid "Edit your personal information"
+msgstr "Edita tu información personal"
+
+msgid "Profile Picture"
+msgstr "Foto de perfil"
+
+msgid "Username"
+msgstr "Nombre de usuario"
+
+msgid "Account Information"
+msgstr "Información de la cuenta"
+
+msgid "Edit your email and password"
+msgstr "Edita tu correo electrónico y contraseña"
+
+msgid "Email Address"
+msgstr "Dirección de correo electrónico"
+
+msgid "Current Password"
+msgstr "Contraseña actual"
+
+msgid "New Password"
+msgstr "Nueva contraseña"
+
+msgid "Confirm Password"
+msgstr "Confirmar contraseña"
+
+msgid "Danger Zone"
+msgstr "Zona de peligro"
+
+msgid "Irreversible actions for your account"
+msgstr "Acciones irreversibles para tu cuenta"
+
+msgid "Delete Account"
+msgstr "Eliminar cuenta"
+
+msgid "Display Preferences"
+msgstr "Preferencias de visualización"
+
+msgid "Customize your display preferences"
+msgstr "Personaliza tus preferencias de visualización"
+
+msgid "Time Format"
+msgstr "Formato de hora"
+
+msgid "Timezone"
+msgstr "Zona horaria"
+
+msgid "Language"
+msgstr "Idioma"
+
+msgid "Save"
+msgstr "Guardar"
+
+msgid "Are you absolutely sure?"
+msgstr "¿Estás absolutamente seguro?"
+
+msgid "This action is irreversible. It will permanently delete your account and all associated data from our servers."
+msgstr "Esta acción es irreversible. Eliminará permanentemente tu cuenta y todos los datos asociados de nuestros servidores."
+
+msgid "Cancel"
+msgstr "Cancelar"
+
+msgid "Delete Account"
+msgstr "Eliminar cuenta"

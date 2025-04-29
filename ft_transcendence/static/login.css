@@ -6,6 +6,26 @@
     height: 100vh;
     background-color: var(--background-color);
 }
+/* Style pour les messages de succès */
+/* Style pour les messages contenant la classe success */
+/* Style pour la div contenant le message de succès */
+.messages.success {
+    background-color: rgba(0, 128, 0, 0.3); /* Vert transparent sur la div entière */
+    color: white; /* Texte en blanc */
+    padding: 10px 20px; /* Espacement autour du texte */
+    border-radius: 5px; /* Coins arrondis */
+    margin: 10px 0; /* Espacement entre les messages */
+}
+
+/* Style pour la div contenant un message d'erreur */
+.messages.error {
+    background-color: rgba(255, 0, 0, 0.3); /* Rouge transparent sur la div entière */
+    color: white; /* Texte en blanc */
+    padding: 10px 20px; /* Espacement autour du texte */
+    border-radius: 5px; /* Coins arrondis */
+    margin: 10px 0; /* Espacement entre les messages */
+}
+
 
 
 .login-content form {

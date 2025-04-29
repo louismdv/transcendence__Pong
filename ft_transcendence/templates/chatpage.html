@@ -1,37 +1,30 @@
-{% load static %}
+{% load static i18n %}
 
 <section id="chat-section">
     <div class="gameMode">
-        <h3 style="text-align: left;">Messagerie</h3>
+        <h3 style="text-align: left;">{% trans "Messaging" %}</h3>
     </div>
 
     <div class="chat-content">
-        <!-- En-tête avec titre et recherche -->
         <div class="contacts-header">
             <div class="contacts-title">
                 <i class="bi bi-people-fill me-2"></i>
-                <h5>Contacts</h5>
+                <h5>{% trans "Contacts" %}</h5>
             </div>
         </div>
-
-        <!-- Liste des contacts (toujours visible) -->
         <div class="contacts-list">
-            <!-- Groupe: En ligne -->
             <div class="contacts-group">
                 <div class="contacts-group-header">
-                    <h6>En ligne <span class="badge bg-success rounded-pill"></span></h6>
+                    <h6>{% trans "Online" %} <span class="badge bg-success rounded-pill"></span></h6>
                 </div>
-                <div class="contacts-group-items" id = "online-chats-grid">
-                    <!-- Les chats seront chargés ici dynamiquement -->
+                <div class="contacts-group-items" id="online-chats-grid">
                 </div>
             </div>
-            <!-- Groupe: Hors ligne -->
             <div class="contacts-group">
                 <div class="contacts-group-header">
-                    <h6>Hors ligne <span class="badge bg-secondary rounded-pill"></span></h6>
+                    <h6>{% trans "Offline" %} <span class="badge bg-secondary rounded-pill"></span></h6>
                 </div>
-                <div class="contacts-group-items" id = "offline-chats-grid">
-                    <!-- Les chats seront chargés ici dynamiquement -->
+                <div class="contacts-group-items" id="offline-chats-grid">
                 </div>
             </div>
         </div>

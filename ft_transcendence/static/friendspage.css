@@ -1,8 +1,7 @@
-/* Styles pour la page des amis */
-#friendspage {
+/* ========== Global ========== */
+#friends-section {
     padding: 20px;
     max-width: 1200px;
-    margin: 0 auto;
 }
 
 .friends-content {
@@ -12,7 +11,7 @@
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 }
 
-/* Personnalisation des onglets */
+/* ========== Nav Tabs ========== */
 #friendspage .nav-tabs .nav-link {
     color: #333;
     font-weight: 500;
@@ -35,30 +34,25 @@
     background-color: transparent;
 }
 
-/* Badge de notification */
-#friendspage .badge {
-    font-size: 0.7rem;
-    font-weight: 500;
-}
-
-/* Conteneur principal de la grille d'amis */
+/* ========== Friends Grid ========== */
 .friends-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
     gap: 16px;
 }
 
-/* Style moderne pour les cartes d'amis */
+/* ========== Friend Card ========== */
 .friend-card {
+    position: relative;
     border: none;
     border-radius: 16px;
     background-color: var(--text-color);
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
     transition: all 0.3s ease;
-    margin-bottom: 20px;
-    position: relative !important;
-    overflow: visible !important;
-    z-index: 1; /* Niveau de base */
+    overflow: visible;
+}
+.friend-card:hover .status-indicator {
+    transform: none; /* Annule l'effet de translate sur le bouton */
 }
 
 .friend-card:hover {
@@ -68,38 +62,29 @@
 
 .friend-card .card-body {
     padding: 20px;
-    background-color: var(--text-color);
 }
 
 .card-custom {
-    background-color: var(--text-color);
     height: 180px;
     width: 360px;
 }
 
-/* Avatar et statut */
+/* ========== Avatar & Status ========== */
 .friend-avatar-wrapper {
     position: relative;
+    width: 100%; 
+    height: 100%; 
 }
 
 .friend-avatar {
     width: 60px;
     height: 60px;
+    margin: 20px;
     border-radius: 50%;
     overflow: hidden;
     background-color: #f0f0f0;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
     border: 3px solid var(--text-color);
-    transition: all 0.3s ease;
-}
-
-.friend-card:hover .friend-avatar {
-    transform: scale(1.05);
-}
-
-.status-text {
-    display: flex;
-    margin-left: 20px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 }
 
 .friend-avatar img {
@@ -108,32 +93,26 @@
     object-fit: cover;
 }
 
-.status-indicator {
+
+
+
+.status-indicators {
     position: absolute;
     width: 16px;
     height: 16px;
+    top: 65px; /* Ajuste la position verticale */
+    right: auto; /* Ajuste la position horizontale */
     border-radius: 50%;
     border: 2px solid var(--text-color);
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
+/* Status Colors */
+.status-indicators.online { background-color: #4CAF50; animation: pulse 2s infinite; }
+.status-indicators.offline { background-color: #9e9e9e; }
+.status-indicators.in-game { background-color: #F75A6A; animation: pulse 1.5s infinite; }
+.status-indicators.away { background-color: #FFC107; }
 
-.status-indicator.online {
-    background-color: #4CAF50;
-}
-
-.status-indicator.offline {
-    background-color: #9e9e9e;
-}
-
-.status-indicator.in-game {
-    background-color: #F75A6A;
-}
-
-.status-indicator.away {
-    background-color: #FFC107;
-}
-
-/* Informations de l'ami */
+/* ========== Friend Info ========== */
 .friend-info {
     flex: 1;
 }
@@ -142,18 +121,23 @@
     font-size: 1.1rem;
     font-weight: 600;
     margin-bottom: 4px;
+    margin-left: 20px;
     color: #333;
 }
 
 .friend-status {
-    align-items: center;
+    margin-left: 20px;
     font-size: 0.85rem;
     color: #666;
 }
 
-/* Menu d'options */
-.friend-menu {
-    position: relative;
+/* ========== Friend Actions ========== */
+.friend-actions {
+    display: flex;
+    justify-content: flex-start; /* Alignement horizontal à gauche */
+    align-items: center; /* Alignement vertical au centre */
+    position: relative; /* Pour garantir que les éléments positionnés à l'intérieur de ce conteneur suivent son contexte */
+    z-index: 10;
 }
 
 .menu-button {
@@ -166,8 +150,8 @@
     align-items: center;
     justify-content: center;
     color: #666;
-    transition: all 0.2s ease;
     cursor: pointer;
+    transition: all 0.2s ease;
 }
 
 .menu-button:hover {
@@ -175,221 +159,30 @@
     color: #333;
 }
 
-/* ===== DROPDOWN MENU - VERSION PERSONNALISÉE ===== */
-
-/* Menu d'actions personnalisé */
-.custom-action-menu {
-    display: none;
-    position: absolute;
-    z-index: 9999;
-    right: 0;
-    top: 100%;
+/* ========== Dropdown (Bootstrap Compatible) ========== */
+.dropdown-menu {
     min-width: 200px;
-    background-color: var(--text-color);
     border-radius: 8px;
     box-shadow: 0 4px 12px rgba(0,0,0,0.15);
     border: 1px solid rgba(0,0,0,0.1);
     padding: 8px 0;
-    margin-top: 5px;
-}
-
-.custom-action-menu.show {
-    display: block;
-}
-
-.action-option {
-    padding: 8px 16px;
-    display: flex;
-    align-items: center;
-    cursor: pointer;
-    transition: background-color 0.2s;
-}
-
-.action-option:hover {
-    background-color: rgba(0,0,0,0.04);
-}
-
-.action-option.text-warning {
-    color: #FFA500;
-}
-
-.action-option.text-danger {
-    color: #F75A6A;
-}
-
-.action-divider {
-    margin: 5px 0;
-    border-top: 1px solid #eee;
-}
-
-/* DROPDOWN MENU - VERSION BOOTSTRAP */
-
-/* Correction pour les dropdowns */
-.friend-actions {
-    display: flex;
-    gap: 10px;
-    margin-top: 20px;
-    position: relative !important;
-    z-index: 10; /* Plus élevé que les cartes */
-}
-
-.dropdown-toggle {
-    position: relative;
-    z-index: 20; /* Plus élevé que le menu */
-}
-
-.dropdown-menu {
-    position: absolute !important;
-    z-index: 9999 !important; /* Très élevé pour être au-dessus de tout */
-    min-width: 200px !important;
-    max-height: none !important;
-    overflow: visible !important;
-    transform: none !important;
-    border-radius: 8px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-    border: 1px solid rgba(0,0,0,0.1);
-}
-
-.dropdown-menu.show {
-    display: block !important;
-    visibility: visible !important;
-}
-
-.friend-actions .dropdown-menu {
-    right: 0 !important;
-    left: auto !important;
-    top: 100% !important;
-    transform: none !important;
 }
 
 .dropdown-item {
     padding: 8px 16px;
-    clear: both;
-    white-space: nowrap;
     display: flex;
     align-items: center;
-}
-
-.dropdown-item .material-symbols-outlined {
-    margin-right: 10px;
-    font-size: 20px;
 }
 
 .dropdown-item:hover {
     background-color: rgba(0, 0, 0, 0.04);
 }
 
-.dropdown-item.text-danger {
-    color: #F75A6A !important;
-}
+.dropdown-item.text-danger { color: #F75A6A; }
+.dropdown-item.text-danger:hover { background-color: rgba(247, 90, 106, 0.08); }
+.dropdown-item.text-warning { color: #FFA500; }
 
-.dropdown-item.text-danger:hover {
-    background-color: rgba(247, 90, 106, 0.08);
-}
-
-.dropdown-item.text-warning {
-    color: #FFA500 !important;
-}
-
-/* Force l'affichage des dropdowns */
-.dropdown {
-    position: static !important; /* Supprime le positionnement relatif par défaut */
-}
-
-.dropdown-menu {
-    position: absolute !important; /* Force le positionnement absolu */
-    display: block !important; /* Garantit l'affichage */
-    clip: rect(0, 0, 0, 0) !important; /* Masque visuellement sans affecter l'accessibilité */
-    pointer-events: none !important; /* Désactive les interactions quand masqué */
-    transition: clip 0s linear 0.2s !important; /* Transition pour l'affichage */
-}
-
-.dropdown-menu.show {
-    clip: auto !important; /* Restaure l'affichage normal */
-    pointer-events: auto !important; /* Restaure les interactions */
-    transition: none !important; /* Pas de transition à l'ouverture */
-}
-
-/* Boutons d'action */
-.action-button {
-    flex: 1;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 10px;
-    border-radius: 12px;
-    border: none;
-    font-size: 0.9rem;
-    font-weight: 500;
-    transition: all 0.2s ease;
-    cursor: pointer;
-    gap: 8px;
-}
-
-.action-button .material-symbols-outlined {
-    font-size: 18px;
-}
-
-.message-button {
-    background-color: #f0f0f0;
-    color: #333;
-}
-
-.message-button:hover {
-    background-color: #e0e0e0;
-}
-
-.invite-button {
-    background-color: #62E573;
-    color: white;
-}
-
-.invite-button:hover:not(:disabled) {
-    background-color: #50c961;
-}
-
-.invite-button:disabled {
-    background-color: #e0e0e0;
-    color: #999;
-    cursor: not-allowed;
-    opacity: 0.8;
-}
-
-/* Animation pour les statuts */
-@keyframes pulse {
-    0% { transform: scale(1); }
-    50% { transform: scale(1.1); }
-    100% { transform: scale(1); }
-}
-
-.status-indicator.online {
-    animation: pulse 2s infinite;
-}
-
-.status-indicator.in-game {
-    animation: pulse 1.5s infinite;
-}
-
-/* Personnalisation des en-têtes de carte par onglet */
-.requests-header {
-    background-color: #628BE5; /* Bleu comme dans votre sidebar */
-    color: white;
-    border-bottom: none;
-}
-
-.requests-sent-header {
-    background-color: #E5C462; /* Jaune comme dans votre sidebar */
-    color: white;
-    border-bottom: none;
-}
-
-.blocked-header {
-    background-color: #CF0E0F; /* Rouge foncé */
-    color: white;
-    border-bottom: none;
-}
-
-/* Personnalisation des boutons */
+/* ========== Buttons ========== */
 #friendspage .btn-primary {
     background-color: #F75A6A;
     border-color: #F75A6A;
@@ -397,50 +190,25 @@
 
 #friendspage .btn-primary:hover {
     background-color: #e04050;
-    border-color: #e04050;
 }
 
 #friendspage .btn-success {
     background-color: #62E573;
-    border-color: #62E573;
 }
 
 #friendspage .btn-success:hover {
     background-color: #50c460;
-    border-color: #50c460;
 }
 
 #friendspage .btn-danger {
     background-color: #CF0E0F;
-    border-color: #CF0E0F;
 }
 
 #friendspage .btn-danger:hover {
     background-color: #b30d0e;
-    border-color: #b30d0e;
 }
 
-#friendspage .btn-outline-primary {
-    color: #F75A6A;
-    border-color: #F75A6A;
-}
-
-#friendspage .btn-outline-primary:hover {
-    background-color: #F75A6A;
-    color: white;
-}
-
-#friendspage .btn-outline-success {
-    color: #62E573;
-    border-color: #62E573;
-}
-
-#friendspage .btn-outline-success:hover {
-    background-color: #62E573;
-    color: white;
-}
-
-/* Barre de recherche */
+/* ========== Search Bar ========== */
 .search-container {
     margin-bottom: 1.5rem;
 }
@@ -456,93 +224,44 @@
     border-color: #F75A6A;
 }
 
-/* Liste des demandes et utilisateurs bloqués */
+/* ========== List Items ========== */
 .list-group-item {
-    border-left: none;
-    border-right: none;
+    border: none;
     padding: 0.75rem 1rem;
-    transition: background-color 0.2s ease;
-}
-
-.list-group-item:first-child {
-    border-top: none;
-}
-
-.list-group-item:last-child {
-    border-bottom: none;
+    transition: background-color 0.2s;
 }
 
 .list-group-item:hover {
     background-color: rgba(0, 0, 0, 0.02);
 }
 
-/* Icônes */
-.bi {
-    font-size: 1rem;
-}
-
-/* Modal */
-.modal-header {
+/* ========== Modals ========== */
+.modal-header, .modal-footer {
     background-color: var(--background-color);
-    border-bottom: 1px solid #e9ecef;
+    border: none;
 }
 
-.modal-footer {
-    background-color: var(--background-color);
-    border-top: 1px solid #e9ecef;
-}
-
-/* Classe pour résoudre les problèmes de dropdown */
-.fixed-dropdown {
-    display: block;
-    position: absolute;
-    background-color: white;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    top: 100%;
-    right: 0;
-    width: 200px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-    z-index: 9999;
-    margin-top: 5px;
-}
-
-/* Adaptation pour les écrans mobiles */
+/* ========== Responsive Mobile ========== */
 @media (max-width: 576px) {
     .friend-actions {
         flex-direction: column;
     }
-    
-    .friend-name {
-        font-size: 1rem;
-    }
-    
+
     .friend-avatar {
         width: 50px;
         height: 50px;
     }
-    
-    .list-group-item {
-        flex-direction: column;
-        align-items: flex-start;
-    }
-    
-    .list-group-item .ms-auto {
-        margin-top: 10px;
-        margin-left: 0 !important;
-        display: flex;
-        width: 100%;
-        justify-content: space-between;
-    }
-    
-    .friend-actions .dropdown-menu {
-        width: 180px !important; 
-        right: 0 !important;
-        left: auto !important;
+
+    .friend-name {
+        font-size: 1rem;
     }
 }
 
-/* Nettoyer les styles existants qui pourraient interférer */
+/* ========== Animations ========== */
+@keyframes pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+}
 .dropdown-menu,
 .dropdown-toggle,
 .dropdown {
@@ -602,10 +321,7 @@
 }
 
 /* Assurer que la carte ami est en position relative pour le menu */
-.friend-card {
-    position: relative !important;
-    z-index: 1;
-}
+
 
 /* Le bouton d'actions */
 .action-toggle {

@@ -83,8 +83,8 @@
                 <li><a href="#home" id="homeLink"><span class="material-symbols-outlined" style="color: #F75A6A;">home</span>{% trans "Home" %}</a></li>
                 <li><a id="openTournamentLink" href="#tournament"><span class="material-symbols-outlined" style="color: #E5C462">trophy</span>{% trans "Tournament" %}</a></li>
                 <li><a href="#friends" id="friendsLink"><span class="material-symbols-outlined" style="color: #62E573">group</span>{% trans "Friends" %}</a></li>
-                <li><a id="chatLink" href="#chat"><span class="material-symbols-outlined" style="color: #628BE5;">chat</span> {% trans "Chat" %}<span class="badge bg-danger rounded-pill ms-2 unread-count">0</span></a></li>
-                <li><a href="#dashboard" id="dashboardLink"><span class="material-symbols-outlined" style="color: #96725F;">leaderboard</span>{% trans "Tableau de bord" %}</a></li>
+                <li><a id="chatLink" href="#chat"><span class="material-symbols-outlined" style="color: #628BE5;">chat</span>{% trans "Chat" %}<span class="badge bg-danger rounded-pill ms-2 unread-count">0</span></a></li>
+                <li><a href="#dashboard" id="dashboardLink"><span class="material-symbols-outlined" style="color: #96725F;">leaderboard</span>{% trans "Dashboard" %}</a></li>
                 <h4>{% trans "Account" %}</h4>
                 <li><a id="settings-btn" href="#settings"><span class="material-symbols-outlined">Settings</span>{% trans "Settings" %}</a></li>
                 <li><a href="{% url 'login' %}"><span class="material-symbols-outlined" style="color: #CF0E0F">Logout</span>{% trans "Log out" %}</a></li>
@@ -93,36 +93,34 @@
 
         <!-- Main Content -->
         <div id="main-content">
-            <!-- Home Section - Explicitement défini avec un ID -->
-            {% comment %} <section id="home-section"> {% endcomment %}
-                <div class="main-grid">
-                    <div class="gameMode">
-                        <h3>{% trans "Choose a game mode :" %}</h3>
+            <div class="main-grid">
+                <div class="gameMode">
+                    <h3>{% trans "Choose a game mode:" %}</h3>
+                </div>
+                <div class="flex-container">
+                    <div class="card">
+                        <div class="centeredTextonImage">{% trans "Solo" %}</div>
+                        <button id="localGameBtn" class="glow-on-hover" type="button">
+                            {% trans "Play local" %}
+                            <span class="material-symbols-outlined">arrow_forward</span>
+                        </button>
                     </div>
-                    <div class="flex-container">
-                        <div class="card">
-                            <div class="centeredTextonImage">solo</div>
-                            <button id="localGameBtn" class="glow-on-hover" type="button">
-                                {% trans "Play local" %}
-                                <span class="material-symbols-outlined">arrow_forward</span>
-                            </button>
-                        </div>
-                        <div class="card">
-                            <div class="centeredTextonImage">duo</div>
-                            <button id="onlineGameBtn" class="glow-on-hover" type="button">
-                                {% trans "Play online" %}
-                                <span class="material-symbols-outlined">language</span>
-                            </button>
-                        </div>
-                    </div>
-                    <div class="gameMode">
-                        <h3>{% trans "DashBoard :" %}</h3>
-                    </div>
-                    <div class="dash">{% trans "Checkout your stats" %}
-                        <span class="material-symbols-outlined">Open_in_new</span>
+                    <div class="card">
+                        <div class="centeredTextonImage">{% trans "Duo" %}</div>
+                        <button id="onlineGameBtn" class="glow-on-hover" type="button">
+                            {% trans "Play online" %}
+                            <span class="material-symbols-outlined">language</span>
+                        </button>
                     </div>
                 </div>
-            {% comment %} </section> {% endcomment %}
+                <div class="gameMode">
+                    <h3>{% trans "Dashboard:" %}</h3>
+                </div>
+                <div class="dash">
+                    {% trans "Check your stats" %}
+                    <span class="material-symbols-outlined">Open_in_new</span>
+                </div>
+            </div>
 
             <!-- Autres sections -->
             <section id="localgame-section" style="display: none;">{% include 'localgame.html' %}</section>
@@ -136,19 +134,28 @@
 
         </div>
 
-        <!-- Bouton de chat flottant -->
+        <!-- Floating chat button -->
         <div class="chat-float-button" id="chatFloatButton">
             <span class="material-symbols-outlined">chat</span>
             <span class="chat-notification-badge" id="chatNotificationBadge" style="display: none;">0</span>
         </div>
+
         <!-- Footer -->
         <footer>
             42Transcendence
         </footer>
     </div>
 
-    <!-- Live Chat -->
     {% include 'livechat.html' %}
+
+    <script src="{% static 'js/home.js' %}"></script>
+    <script src="{% static 'js/chatpage.js' %}"></script>
+    <script src="{% static 'js/livechat.js' %}"></script>
+    <script src="{% static 'js/tournament.js' %}"></script>
+    <script src="{% static 'js/navigation.js' %}"></script>
+    <script src="{% static 'js/dashboard.js' %}"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
 
     <script>
         window.currentUserAvatar = "{{ user.userprofile.avatar.url|default:'../media/avatars/default.png' }}";
@@ -188,14 +195,7 @@
     </script>
 
     <!-- JS Scripts -->
-    <script src="{% static 'js/home.js' %}"></script>
-    <script src="{% static 'js/chatpage.js' %}"></script>
-    <script src="{% static 'js/livechat.js' %}"></script>
-    <script src="{% static 'js/tournament.js' %}"></script>
-    <script src="{% static 'js/navigation.js' %}"></script>
-    <script src="{% static 'js/dashboard.js' %}"></script>
-
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+   
 </body>
 
 </html>

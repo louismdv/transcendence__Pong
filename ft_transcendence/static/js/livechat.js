@@ -306,9 +306,6 @@ function inviteFriendToGame(userId, username) {
             const roomName = generateRoomCode();
             chatInput.value = `Salut t'es dispo pour une partie? Voici un code: ${roomName}`;
             setTimeout(() => sendMessageBtn.click(), 0); // Ensure the text is actually in input before clicking send
-
-            alert(`L'invitation pour jouer avec ${chatState.currentChat.username} est envoyée!`);
-
             if (validateRoomName(roomName)) {
                 window.location.hash = `#game/${roomName}`;
             }

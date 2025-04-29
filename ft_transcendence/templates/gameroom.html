@@ -1,13 +1,16 @@
+{% load i18n %}
+{% load static %}
+
 <section id="game-room-section">
     <div id="gameWrapper">
 
         <div id="room-info">
-            Room Code :
+            {% trans "Room Code :" %}
             <div id="roomCode-container" onclick="copyRoomCode()">
                 <input id="roomCode">
-                <div id="tooltip-container"  >
+                <div id="tooltip-container">
                     <span class="material-symbols-outlined">content_copy</span>
-                    <span id="tooltip-text">Copy room code</span>
+                    <span id="tooltip-text">{% trans "Copy room code" %}</span>
                 </div>
             </div>
         </div>
@@ -15,7 +18,7 @@
         <div id="game-header">
             <div id="playerL">
                 <img id="playerL_picture" src="{{ user.userprofile.avatar.url|default:'../media/avatars/default.png' }}" data-avatar="{{ user.userprofile.avatar.url|default:'../media/avatars/default.png' }}" alt="profilepic_player1" class="user-avatar">
-                <span id="username-playerL">You:</span> 
+                <span id="username-playerL">{% trans "You:" %}</span> 
             </div>
             vs.
             <div id="playerR">
@@ -23,20 +26,22 @@
                     <img id="playerR_picture" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAQABAACAUwAOw" alt="profilepic_player2" class="user-avatar">
                     <span class="loader"></span>
                 </div>
-                <span id="username-playerR">loading</span> 
+                <span id="username-playerR">{% trans "loading" %}</span> 
             </div>
         </div>
         <canvas id="onlinegameCanvas" class="gamebox" width="1080" height="720"></canvas>
         
         
         <div id="instructions">
-            Use 
+            {% trans "Use" %}
             <span id="arrowBox">
                 <span class="material-symbols-outlined">arrow_drop_up</span>
             </span>
-            and <span id="arrowBox">
+            {% trans "and" %}
+            <span id="arrowBox">
                 <span class="material-symbols-outlined">arrow_drop_down</span>
-            </span> arrow keys to move your paddle
+            </span> 
+            {% trans "arrow keys to move your paddle" %}
         </div>
 
     </div>
