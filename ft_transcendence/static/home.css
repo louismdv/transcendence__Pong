@@ -127,11 +127,6 @@ aside:hover .sidebar-links h4 {
     padding: 20px;
 }
 
-/* .main-grid > div {
-    text-align: center;
-    font-size: 30px;
-} */
-
 #main-content,
 #settings-section {
     display: grid;
@@ -186,6 +181,7 @@ aside:hover .sidebar-links h4 {
     border-radius: 10px;
     flex: 1 1 300px;
     max-height: 500px;
+    overflow: hidden;
     position: relative;
 }
 
