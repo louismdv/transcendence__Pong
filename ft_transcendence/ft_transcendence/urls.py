@@ -2,6 +2,7 @@ from django.contrib import admin
 from django.urls import path, include
 from . import views
 from django.conf import settings
+from django.urls import path, re_path
 from django.conf.urls.static import static
 from django.views.i18n import JavaScriptCatalog
 
@@ -44,6 +45,9 @@ urlpatterns = [
     path('api/game/invite/<int:user_id>/', views.invite_to_game, name='invite_to_game'),
     path('profile/<int:user_id>/', views.user_profile, name='user_profile'),
     path('chat/<int:user_id>/', views.chat_with_user, name='chat_with_user'),
+    path('tournament/', views.tournament, name='tournament'),
+    path('tournament_game/', views.tournament_game, name='tournament_game'),
+    re_path(r'^tournament/?$', views.tournament, name='tournament'),
     path('livechat/', include('livechat.urls')),
     
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
