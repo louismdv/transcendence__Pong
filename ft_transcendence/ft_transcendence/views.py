@@ -817,7 +817,7 @@ def dashboard_data(request):
 
         # Determine result
         if game.winner == user:
-            result = "Victory"
+            result = "Win"
         else:
             result = "Defeat"
 
@@ -827,7 +827,8 @@ def dashboard_data(request):
             'opponent': opponent_name,
             'result': result,
             'score': game.score,
-            'duration': str(game.duration) if game.duration else "Unknown"
+            'duration': str(game.duration) if game.duration else "Unknown",
+            'room_name': str(game.room_name)
         })
 
     user_stats = {

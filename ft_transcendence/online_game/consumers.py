@@ -308,36 +308,41 @@ class GameConsumer(AsyncWebsocketConsumer):
         print("Game over message received.")
 
         game_status = redis_client.hget(self.room_name, "game_status")
-        was_set = redis_client.set(self.room_name + ":game_over_lock", "1", nx=True)
+        was_set = redis_client.set(self.room_name + ":game_over_lock", "1", nx=True, ex=5)
 
         if not was_set:
             if game_status != "game_over":
                 redis_client.hset(self.room_name, "game_status", "game_over")
             print("End game already handled, ignoring...")
-            await self.close()
+            self.close()
             return
         
-        #save game info in table : ft_transcendence_gameroom
-        print(f"[SAVING]: data.get('winner')={data.get('winner')}, data.get('me_id')={data.get('me_id')}, data.get('opponent_id')={data.get('opponent_id')}, data.get('score')={data.get('score')}")
-        await self.save_game_info(data.get("winner"), data.get("me_id"), data.get("opponent_id"), data.get("score"))
+        winner = data.get('winner')
+        me_id = data.get('me_id')
+        opponent_id = data.get('opponent_id')
+        score = data.get('score')
         
-        winner = data.get("winner")
+        # save game info in table : ft_transcendence_gameroom
+        print(f"[SAVING]: winner={data.get('winner')}, me_id={me_id}, opponent_id={opponent_id}, score={score}")
+        await self.save_game_info(winner, me_id, opponent_id, score)
+        
         if game_status != "game_over":
             redis_client.hset(self.room_name, "game_status", "game_over")
-        await sync_to_async(redis_client.hset)(self.room_name, "winner", winner)
 
-        playerL_id = await self.get_value_from_player("playerL", "id")
-        playerR_id = await self.get_value_from_player("playerR", "id")
+        print(f"[handle_gameover] PlayerL ID: {me_id}, PlayerR ID: {opponent_id}, winner: {winner}")
 
         # update the userprofile table : ft_transcendence_userprofile
-        if winner and playerL_id and playerR_id:
-            await self.update_wins_and_losses(playerL_id, playerR_id, winner)
+        if winner and me_id and opponent_id:
+            await self.update_wins_and_losses(me_id, opponent_id, winner)
 
         await self.close()
 
     @sync_to_async
     def update_wins_and_losses(self, playerL_id, playerR_id, winner):
         """This runs in sync mode, safe for DB operations."""
+        
+        print(f"[UPDATE_WL] saving winner={winner}")
+        
         with connection.cursor() as cursor:
             if winner == playerL_id:
                 # Increment wins for playerL and losses for playerR
@@ -358,7 +363,7 @@ class GameConsumer(AsyncWebsocketConsumer):
         from ft_transcendence.models import GameRoom  # import inside the function to avoid circular imports
         from django.contrib.auth import get_user_model
 
-        print(f"[SAVE] saving game info: winner={winner_id}, me_id={me_id}, opponent_id={opponent_id}, score={score}")
+        print(f"[SAVE_GAME_INFO] saving game info: winner={winner_id}, me_id={me_id}, opponent_id={opponent_id}, score={score}")
 
         User = get_user_model()  # Get the user model
 

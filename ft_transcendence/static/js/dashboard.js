@@ -88,6 +88,7 @@ function updateGameHistory(games) {
 
         row.innerHTML = `
             <td>${game.date}</td>
+            <td>${game.room_name}</td>
             <td>${game.opponent}</td>
             <td>${game.result}</td>
             <td>${game.score}</td>
@@ -115,7 +116,7 @@ function updateDashboardData() {
             document.getElementById("user-wins").textContent = (data.online_wins ?? 0);
             document.getElementById("user-losses").textContent = (data.online_losses ?? 0);
             document.getElementById("total-games").textContent = (data.online_total_games ?? 0);
-            document.getElementById("win-rate").textContent = (((data.online_wins + data.local_wins) / (data.local_total_games + data.online_total_games) || 0) * 100).toFixed(1) + "%";
+            document.getElementById("win-rate").textContent = (((data.online_wins ?? 0 + data.local_wins ?? 0) / (data.local_total_games ?? 0 + data.online_total_games ?? 0) || 0) * 100).toFixed(0) + "%";
 
             // Update pie chart
             updatePieChart(
