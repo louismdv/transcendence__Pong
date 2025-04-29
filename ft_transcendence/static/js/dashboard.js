@@ -47,7 +47,6 @@ function initializePieChart() {
         }
     });
 }
-
 // Met à jour les données du camembert
 function updatePieChart( winsOnline, lossesOnline) {
     const total =  winsOnline + lossesOnline;
@@ -67,8 +66,6 @@ function updatePieChart( winsOnline, lossesOnline) {
 
     statsPieChart.update();
 }
-
-
 // Met à jour l'historique des parties
 function updateGameHistory(games) {
     const gameHistoryBody = document.getElementById("game-history-body");
@@ -101,50 +98,8 @@ function updateGameHistory(games) {
     });
 }
 
-// Met à jour l'historique des tournois
-function updateTournamentHistory(tournaments) {
-    const tournamentHistoryBody = document.getElementById("tournament-history-body");
-    tournamentHistoryBody.innerHTML = "";
-
-    if (tournaments.length === 0) {
-        const row = document.createElement("tr");
-        const cell = document.createElement("td");
-        cell.colSpan = 4;
-        cell.textContent = "Aucun tournoi récent.";
-        cell.style.textAlign = "center";
-        row.appendChild(cell);
-        tournamentHistoryBody.appendChild(row);
-        return;
-    }
-
-    tournaments.forEach((tournament) => {
-        const row = document.createElement("tr");
-
-        row.innerHTML = `
-            <td>${tournament.date}</td>
-            <td>${tournament.name}</td>
-            <td>${tournament.placement}</td>
-            <td>${tournament.players}</td>
-        `;
-
-        tournamentHistoryBody.appendChild(row);
-    });
-}
-
-
 function updateDashboardData() {
     console.log("Fetching dashboard data");
-
-    const fakeData = {
-            recentGames: [
-                { date: "2025-04-26", opponent: "Alice", result: "Win", score: "10-8", duration: "5:00" },
-                { date: "2025-04-25", opponent: "Bob", result: "Loss", score: "7-10", duration: "4:20" }
-            ],
-            tournaments: [
-                { date: "2025-04-20", name: "Spring Cup", placement: "1ère Place", players: 16 },
-                { date: "2025-04-10", name: "Weekend Clash", placement: "Demi-finale", players: 8 }
-            ]
-        };
 
     fetch("/api/dashboard-data/")
         .then((response) => {
@@ -162,55 +117,16 @@ function updateDashboardData() {
             document.getElementById("total-games").textContent = (data.online_total_games ?? 0);
             document.getElementById("win-rate").textContent = (((data.online_wins + data.local_wins) / (data.local_total_games + data.online_total_games) || 0) * 100).toFixed(1) + "%";
 
-
+            // Update pie chart
             updatePieChart(
                 data.online_wins,
                 data.online_losses
             );
 
-            // Met à jour l'historique des jeux
-            const gameHistoryBody = document.getElementById("game-history-body");
-            gameHistoryBody.innerHTML = "";
-
-            data.recentGames.forEach((game) => {
-                const row = document.createElement("tr");
-                row.className = game.result === "Win" ? "game-win" : "game-loss";
-
-                row.innerHTML = `
-                    <td>${game.date}</td>
-                    <td>${game.opponent}</td>
-                    <td>${game.result}</td>
-                    <td>${game.score}</td>
-                    <td>${game.duration}</td>
-                `;
-
-                gameHistoryBody.appendChild(row);
-            });
-
-            // Met à jour l'historique des tournois
-            const tournamentHistoryBody = document.getElementById("tournament-history-body");
-            tournamentHistoryBody.innerHTML = "";
-
-            data.tournaments.forEach((tournament) => {
-                const row = document.createElement("tr");
-
-                row.innerHTML = `
-                    <td>${tournament.date}</td>
-                    <td>${tournament.name}</td>
-                    <td>${tournament.placement}</td>
-                    <td>${tournament.players}</td>
-                `;
-
-                tournamentHistoryBody.appendChild(row);
-            });
+            // Update game history
+            updateGameHistory(data.recentGames);
         })
         .catch((error) => {
             console.error("Error fetching dashboard data:", error);
         });
-
-    // Historique des parties
-    updateGameHistory(fakeData.recentGames);
-
-    // Historique des tournois
-    updateTournamentHistory(fakeData.tournaments);
 }
