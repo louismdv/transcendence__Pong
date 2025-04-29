@@ -75,7 +75,7 @@ MIDDLEWARE = [
     'ft_transcendence.middleware.UserActivityMiddleware',
 ]
 
-
+X_FRAME_OPTIONS = 'SAMEORIGIN'
 ROOT_URLCONF = 'ft_transcendence.urls'
 
 TEMPLATES = [
