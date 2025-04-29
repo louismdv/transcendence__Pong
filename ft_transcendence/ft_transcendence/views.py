@@ -867,3 +867,21 @@ def dashboard_data(request):
     }
     
     return JsonResponse(user_stats)
+
+
+@ensure_csrf_cookie
+@login_required(login_url='/login')
+def tournament_game(request):
+    """Vue pour afficher la page du jeu en tournoi."""
+    # Récupérer les paramètres de l'URL
+    player1 = request.GET.get('player1', 'Player 1')
+    player2 = request.GET.get('player2', 'Player 2')
+    match_type = request.GET.get('match', 'Match')
+    
+    context = {
+        'player1': player1,
+        'player2': player2,
+        'match_type': match_type
+    }
+    
+    return render(request, 'tournament_game.html', context)

@@ -1,4 +1,39 @@
 document.addEventListener('DOMContentLoaded', function() {
+    // Vérifier si nous venons de retourner du jeu avec des résultats
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.has('match') && urlParams.has('score1') && urlParams.has('score2')) {
+        // Récupérer l'état du tournoi sauvegardé
+        const savedState = sessionStorage.getItem('tournamentState');
+        const currentMatch = sessionStorage.getItem('currentMatch');
+        
+        if (savedState && currentMatch) {
+            // Restaurer l'état du tournoi
+            const restoredState = JSON.parse(savedState);
+            restoredState.currentMatch = currentMatch;
+            
+            // Récupérer les scores
+            const player1Score = parseInt(urlParams.get('score1'), 10);
+            const player2Score = parseInt(urlParams.get('score2'), 10);
+            
+            console.log("[Tournament] Retour du jeu avec scores:", player1Score, "-", player2Score);
+            
+            // Traiter les résultats lors de l'initialisation
+            initTournament(restoredState, player1Score, player2Score);
+            
+            // Nettoyer le sessionStorage et l'URL
+            sessionStorage.removeItem('tournamentState');
+            sessionStorage.removeItem('currentMatch');
+            window.history.replaceState({}, document.title, window.location.pathname);
+            
+            return; // Arrêter l'initialisation normale
+        }
+    }
+    
+    // Initialisation normale (sans résultats de match)
+    initTournament();
+});
+
+function initTournament(restoredState = null, player1Score = 0, player2Score = 0) {
     // DOM Elements
     const tournamentStatusText = document.getElementById('tournament-status-text');
     const playerCount = document.getElementById('player-count');
@@ -110,7 +145,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const newTournamentBtn = document.getElementById('new-tournament-btn');
     
     // Tournament state
-    let tournamentState = {
+    let tournamentState = restoredState || {
         localMode: true,
         players: [],
         matchA: { player1: null, player2: null, winner: null, loser: null, score: [0, 0] },
@@ -306,6 +341,11 @@ document.addEventListener('DOMContentLoaded', function() {
     // Tournament Functions
     // ----------------------------------------------------
     
+    // Traiter les résultats de match éventuels
+    if (restoredState && player1Score && player2Score) {
+        processMatchResults(player1Score, player2Score);
+    }
+    
     // Start local tournament
     function startLocalTournament() {
         const playerInputs = document.querySelectorAll('.local-player-name');
@@ -372,18 +412,22 @@ document.addEventListener('DOMContentLoaded', function() {
                     
                     switch (matchId) {
                         case 'match-a':
+                            tournamentState.currentMatch = 'matchA';
                             player1 = tournamentState.matchA.player1?.name || "Player 1";
                             player2 = tournamentState.matchA.player2?.name || "Player 2";
                             break;
                         case 'match-b':
+                            tournamentState.currentMatch = 'matchB';
                             player1 = tournamentState.matchB.player1?.name || "Player 3";
                             player2 = tournamentState.matchB.player2?.name || "Player 4";
                             break;
                         case 'match-losers':
+                            tournamentState.currentMatch = 'matchLosers';
                             player1 = tournamentState.matchLosers.player1?.name || "Loser 1";
                             player2 = tournamentState.matchLosers.player2?.name || "Loser 2";
                             break;
                         case 'match-final':
+                            tournamentState.currentMatch = 'matchFinal';
                             player1 = tournamentState.matchFinal.player1?.name || "Winner 1";
                             player2 = tournamentState.matchFinal.player2?.name || "Winner 2";
                             break;
@@ -523,55 +567,17 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
     
-    // Launch the local game
+    // Launch the local game using page navigation
     function launchLocalGame(player1Name, player2Name) {
-        console.log("[Tournament] Lancement du jeu:", player1Name, "vs", player2Name);
-    
-        // Cacher la page tournoi
-        const tournamentPage = document.getElementById('tournamentpage');
-        if (tournamentPage) {
-            tournamentPage.style.display = 'none';
-        }
-    
-        // Récupérer et préparer le conteneur de jeu
-        const gameContainer = document.getElementById('game-container');
-        const canvas = document.getElementById('localgameCanvas');
+        console.log("[Tournament] Redirection vers le jeu:", player1Name, "vs", player2Name);
         
-        if (!gameContainer || !canvas) {
-            console.error("[Tournament] Éléments de jeu introuvables!");
-            return;
-        }
+        // Enregistrer l'état actuel du tournoi dans sessionStorage
+        sessionStorage.setItem('tournamentState', JSON.stringify(tournamentState));
+        sessionStorage.setItem('currentMatch', tournamentState.currentMatch);
         
-        // Utiliser une classe plutôt que d'affecter directement le style display
-        gameContainer.classList.add('active');
-        
-        // Dimensionner correctement le canvas en forçant des valeurs
-        canvas.style.width = '1080px';
-        canvas.style.height = '720px';
-        canvas.style.maxWidth = '95vw';
-        canvas.style.maxHeight = '95vh';
-        canvas.style.display = 'block';
-        
-        console.log("[Tournament] Game container affiché:", getComputedStyle(gameContainer).display);
-        
-        // Lancer le jeu après un court délai pour permettre au rendu de s'actualiser
-        setTimeout(() => {
-            if (window.startTournamentGame && typeof window.startTournamentGame === 'function') {
-                console.log("[Tournament] Démarrage direct du jeu via startTournamentGame");
-                window.startTournamentGame(player1Name, player2Name);
-            } else {
-                console.warn("[Tournament] Fonction startTournamentGame non disponible");
-            }
-            
-            // Vérifier si le canvas est visible
-            console.log("Canvas visible:", {
-                display: getComputedStyle(canvas).display,
-                width: canvas.clientWidth,
-                height: canvas.clientHeight,
-                offsetWidth: canvas.offsetWidth,
-                offsetHeight: canvas.offsetHeight
-            });
-        }, 200); // Délai plus long pour s'assurer que le DOM soit mis à jour
+        // Redirection vers la page de jeu dédiée
+        const matchType = tournamentState.currentMatch.replace('match', 'Match');
+        window.location.href = `/tournament_game/?player1=${encodeURIComponent(player1Name)}&player2=${encodeURIComponent(player2Name)}&match=${encodeURIComponent(matchType)}`;
     }
     
     // Process match results
@@ -730,73 +736,8 @@ document.addEventListener('DOMContentLoaded', function() {
         if (playerCount) {
             playerCount.textContent = '0';
         }
-        
-        // Show tournament page, hide game
-        const tournamentPage = document.getElementById('tournamentpage');
-        if (tournamentPage) {
-            tournamentPage.style.display = 'block';
-        }
-        
-        const gameContainer = document.getElementById('game-container');
-        if (gameContainer) {
-            gameContainer.classList.remove('active');
-        }
     }
     
-    // Close game function
-    function closeGame() {
-        const gameContainer = document.getElementById('game-container');
-        if (gameContainer) {
-            gameContainer.classList.remove('active');
-        }
-        
-        const tournamentPage = document.getElementById('tournamentpage');
-        if (tournamentPage) {
-            tournamentPage.style.display = 'block';
-        }
-    }
-    
-    // Set up close button event
-    const closeButton = document.getElementById('closeGameButton');
-    if (closeButton) {
-        closeButton.addEventListener('click', closeGame);
-    }
-    
-    // Add escape key to close game
-    document.addEventListener('keydown', function(e) {
-        if (e.key === 'Escape') {
-            closeGame();
-        }
-    });
-    
-    // ----------------------------------------------------
-    // Event Listeners
-    // ----------------------------------------------------
-    
-    // Listen for game completion event from localgame.js
-
-    window.addEventListener('game-completed', function(event) {
-        const { player1Score, player2Score } = event.detail;
-        
-        // Show tournament page again
-        const tournamentPage = document.getElementById('tournamentpage');
-        if (tournamentPage) {
-            tournamentPage.style.display = 'block';
-        }
-        
-        // Hide game container - utiliser classList au lieu de style.display
-        const gameContainer = document.getElementById('game-container');
-        if (gameContainer) {
-            gameContainer.classList.remove('active');  // <-- CORRECTION
-            
-            // Pour s'assurer que le jeu est bien caché
-            console.log("[Tournament] Fin du match, conteneur de jeu caché");
-        }
-        
-        // Process match results
-        processMatchResults(player1Score, player2Score);
-    });
-
     // Start local tournament button
     if (startLocalTournamentBtn) {
         startLocalTournamentBtn.addEventListener('click', startLocalTournament);
@@ -806,4 +747,4 @@ document.addEventListener('DOMContentLoaded', function() {
     if (newTournamentBtn) {
         newTournamentBtn.addEventListener('click', resetTournament);
     }
-});
+}

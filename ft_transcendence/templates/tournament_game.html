@@ -1,0 +1,112 @@
+
+{% load static %}
+{% load i18n %}
+{% block content %}
+<div class="game-header">
+    <div class="match-info">
+        <span id="match-type">{{ match_type }}</span>: 
+        <span id="player1-name">{{ player1 }}</span> vs <span id="player2-name">{{ player2 }}</span>
+    </div>
+    <button id="back-button" class="back-button glow-on-hover">{% trans "Back to Tournament" %}</button>
+</div>
+
+<div id="game-container">
+    <canvas id="localgameCanvas" width="1080" height="720"></canvas>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{% static 'js/localgame.js' %}"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Get parameters from URL or from Django context
+        const player1 = "{{ player1|escapejs }}";
+        const player2 = "{{ player2|escapejs }}";
+        const matchType = "{{ match_type|escapejs }}";
+        
+        // Back button
+        document.getElementById('back-button').addEventListener('click', function() {
+            returnToTournament();
+        });
+        
+        // Fonction pour retourner au tournoi avec les scores
+        function returnToTournament() {
+            // Get scores from the game
+            let player1Score = 0;
+            let player2Score = 0;
+            
+            // Try to get scores from global API
+            if (window.getGameScores) {
+                const scores = window.getGameScores();
+                player1Score = scores.player1Score;
+                player2Score = scores.player2Score;
+            }
+            
+            // Return to tournament with scores
+            window.location.href = `/tournament/?match=${matchType}&score1=${player1Score}&score2=${player2Score}`;
+        }
+        
+        // Écouteur pour détecter la fin du match automatiquement
+        window.addEventListener('game-completed', function(event) {
+            console.log("Match terminé, retour au tournoi dans 3 secondes...");
+            
+            // Ajouter un message de fin de match
+            const gameContainer = document.getElementById('game-container');
+            const endMessage = document.createElement('div');
+            endMessage.className = 'end-message';
+            endMessage.innerHTML = `
+                <div class="end-message-content">
+                    <h2>Match Terminé!</h2>
+                    <p>Score final: ${player1} ${event.detail.player1Score} - ${event.detail.player2Score} ${player2}</p>
+                    <p>Retour au tournoi dans <span id="countdown">3</span> secondes...</p>
+                </div>
+            `;
+            endMessage.style.position = 'absolute';
+            endMessage.style.top = '50%';
+            endMessage.style.left = '50%';
+            endMessage.style.transform = 'translate(-50%, -50%)';
+            endMessage.style.background = 'color: rgba(0, 0, 255, 0.5)';
+            endMessage.style.color = 'white';
+            endMessage.style.padding = '20px';
+            endMessage.style.borderRadius = '10px';
+            endMessage.style.textAlign = 'center';
+            endMessage.style.zIndex = '1000';
+            gameContainer.appendChild(endMessage);
+            
+            // Compte à rebours
+            let countdown = 3;
+            const countdownElem = document.getElementById('countdown');
+            
+            const timer = setInterval(() => {
+                countdown--;
+                if (countdownElem) countdownElem.textContent = countdown;
+                
+                if (countdown <= 0) {
+                    clearInterval(timer);
+                    returnToTournament();
+                }
+            }, 1000);
+        });
+        
+        // Écouteur de secours sur document aussi
+        document.addEventListener('game-completed', function(event) {
+            if (!window.gameCompletedHandled) {
+                window.gameCompletedHandled = true;
+                const customEvent = new CustomEvent('game-completed', {
+                    detail: event.detail
+                });
+                window.dispatchEvent(customEvent);
+            }
+        });
+        
+        // Start the game when page loads
+        setTimeout(() => {
+            if (window.startTournamentGame) {
+                window.startTournamentGame(player1, player2);
+            } else {
+                console.error("Game initialization function not found");
+            }
+        }, 500);
+    });
+</script>
+{% endblock %}
