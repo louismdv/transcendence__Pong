@@ -307,7 +307,7 @@ class GameConsumer(AsyncWebsocketConsumer):
             if game_status != "game_over":
                 redis_client.hset(self.room_name, "game_status", "game_over")
             print("End game already handled, ignoring...")
-            self.close()
+            await self.close()
             return
         
         winner = data.get('winner')
@@ -326,16 +326,17 @@ class GameConsumer(AsyncWebsocketConsumer):
             start_time = datetime.fromisoformat(start_time_str)
             non_formatted_duration = datetime.now(timezone.utc) - start_time  # timedelta object
 
-            # Format duration to MM:SS
+            # Format duration to MM:SS:MS
             total_seconds = int(non_formatted_duration.total_seconds())
             minutes, seconds = divmod(total_seconds, 60)
-            duration = f"{minutes}:{seconds}"
+            milliseconds = int(non_formatted_duration.microseconds / 10000)
+            duration = f"{minutes}:{seconds:02}:{milliseconds:02}"
             print(duration)
         else:
             duration = None
             
         # save game info in table : ft_transcendence_gameroom
-        print(f"[SAVING]: winner={data.get('winner')}, me_id={me_id}, opponent_id={opponent_id}, score={score}")
+        print(f"[SAVING]: winner={data.get('winner')}, me_id={me_id}, opponent_id={opponent_id}, score={score}, duration={duration}")
         await self.save_game_info(winner, me_id, opponent_id, score, duration)
         
         if game_status != "game_over":
