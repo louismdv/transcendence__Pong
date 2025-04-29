@@ -3,6 +3,7 @@ import redis
 import random
 import asyncio
 import time
+from datetime import datetime, timezone
 
 import base64
 from io import BytesIO
@@ -13,6 +14,8 @@ from django.conf import settings
 from asgiref.sync import sync_to_async
 from django.contrib.auth import get_user_model
 import os
+from datetime import datetime
+
 
 from channels.generic.websocket import AsyncWebsocketConsumer
 from .game import Ball, WIN_W, WIN_H, PLAYER_W, PLAYER_H, MARGIN
@@ -195,15 +198,6 @@ class GameConsumer(AsyncWebsocketConsumer):
             'game_state': game_state
         }))
 
-    async def start_game(self, event):
-        game_state = event['game_state']
-        print(f"Game started! Initial game state: {game_state}")
-
-        await self.send(text_data=json.dumps({
-            'type': 'start_game',
-            'game_state': game_state
-        }))
-
     async def update_player(self, event):
         player_side = event['player_side']
         new_y = event['new_y']
@@ -302,7 +296,6 @@ class GameConsumer(AsyncWebsocketConsumer):
         else:
             await self.create_redis_players()
 
-
     async def handle_gameover(self, data):
         """Handles game over state."""
         print("Game over message received.")
@@ -322,9 +315,28 @@ class GameConsumer(AsyncWebsocketConsumer):
         opponent_id = data.get('opponent_id')
         score = data.get('score')
         
+        start_time_bytes = await sync_to_async(redis_client.get)(f"{self.room_name}:start_time")
+        if start_time_bytes:
+            # decode only if it's bytes
+            if isinstance(start_time_bytes, bytes):
+                start_time_str = start_time_bytes.decode()
+            else:
+                start_time_str = start_time_bytes
+
+            start_time = datetime.fromisoformat(start_time_str)
+            non_formatted_duration = datetime.now(timezone.utc) - start_time  # timedelta object
+
+            # Format duration to MM:SS
+            total_seconds = int(non_formatted_duration.total_seconds())
+            minutes, seconds = divmod(total_seconds, 60)
+            duration = f"{minutes}:{seconds}"
+            print(duration)
+        else:
+            duration = None
+            
         # save game info in table : ft_transcendence_gameroom
         print(f"[SAVING]: winner={data.get('winner')}, me_id={me_id}, opponent_id={opponent_id}, score={score}")
-        await self.save_game_info(winner, me_id, opponent_id, score)
+        await self.save_game_info(winner, me_id, opponent_id, score, duration)
         
         if game_status != "game_over":
             redis_client.hset(self.room_name, "game_status", "game_over")
@@ -358,7 +370,7 @@ class GameConsumer(AsyncWebsocketConsumer):
                 cursor.execute("UPDATE ft_transcendence_userprofile SET total_online_games = total_online_games + 1 WHERE user_id = %s", [playerL_id])
 
     @sync_to_async
-    def save_game_info(self, winner_id, me_id, opponent_id, score):
+    def save_game_info(self, winner_id, me_id, opponent_id, score, duration=None):
         """Save finished game into the GameRoom table."""
         from ft_transcendence.models import GameRoom  # import inside the function to avoid circular imports
         from django.contrib.auth import get_user_model
@@ -379,7 +391,7 @@ class GameConsumer(AsyncWebsocketConsumer):
             room_name=self.room_name,       # reuse existing room name
             winner=winner_user,             # winner id
             score=score,
-            duration=None,                  # can add later
+            duration=duration,                  # can add later
         )
 
         print(f"GameRoom created: {game_room.id} with score {score}")
@@ -545,6 +557,10 @@ class GameConsumer(AsyncWebsocketConsumer):
                 }
             )
             # Start the game loop
+
+            start_time = datetime.now(timezone.utc)
+            redis_client.set(f"{self.room_name}:start_time", start_time.isoformat())
+            
             asyncio.create_task(self.game_loop())  # Run the ball movement loop
 
     async def restore_game_state(self):
