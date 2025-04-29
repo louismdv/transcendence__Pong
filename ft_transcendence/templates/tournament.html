@@ -189,4 +189,17 @@
             </div>
         </div>
     </div>
+    <div id="tournament-game-container" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: black; z-index: 1000;">
+        <div class="game-header" style="background-color: #222; color: white; padding: 10px 20px; display: flex; justify-content: space-between; align-items: center;">
+            <div class="match-info">
+                <span id="iframe-match-type">Match</span>: 
+                <span id="iframe-player1-name">Player 1</span> vs <span id="iframe-player2-name">Player 2</span>
+            </div>
+            <button id="close-game-btn" class="glow-on-hover" style="padding: 8px 16px; border: none; border-radius: 4px; cursor: pointer;">
+                Back to Tournament
+            </button>
+        </div>
+        <iframe id="tournament-game-frame" style="width: 100%; height: calc(100% - 60px); border: none;" src="about:blank"></iframe>
+    </div>
+</div>
 </div>

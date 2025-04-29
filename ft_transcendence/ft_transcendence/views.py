@@ -885,3 +885,11 @@ def tournament_game(request):
     }
     
     return render(request, 'tournament_game.html', context)
+
+@login_required(login_url='/login')
+def tournament(request):
+    """Vue pour la page du tournoi"""
+    context = {
+        'page': 'tournament',  # Indiquer la page active pour le menu
+    }
+    return render(request, 'tournament.html', context)

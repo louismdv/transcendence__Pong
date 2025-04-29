@@ -1,39 +1,11 @@
 document.addEventListener('DOMContentLoaded', function() {
-    // Vérifier si nous venons de retourner du jeu avec des résultats
-    const urlParams = new URLSearchParams(window.location.search);
-    if (urlParams.has('match') && urlParams.has('score1') && urlParams.has('score2')) {
-        // Récupérer l'état du tournoi sauvegardé
-        const savedState = sessionStorage.getItem('tournamentState');
-        const currentMatch = sessionStorage.getItem('currentMatch');
-        
-        if (savedState && currentMatch) {
-            // Restaurer l'état du tournoi
-            const restoredState = JSON.parse(savedState);
-            restoredState.currentMatch = currentMatch;
-            
-            // Récupérer les scores
-            const player1Score = parseInt(urlParams.get('score1'), 10);
-            const player2Score = parseInt(urlParams.get('score2'), 10);
-            
-            console.log("[Tournament] Retour du jeu avec scores:", player1Score, "-", player2Score);
-            
-            // Traiter les résultats lors de l'initialisation
-            initTournament(restoredState, player1Score, player2Score);
-            
-            // Nettoyer le sessionStorage et l'URL
-            sessionStorage.removeItem('tournamentState');
-            sessionStorage.removeItem('currentMatch');
-            window.history.replaceState({}, document.title, window.location.pathname);
-            
-            return; // Arrêter l'initialisation normale
-        }
-    }
-    
-    // Initialisation normale (sans résultats de match)
+    // Initialisation normale
     initTournament();
 });
 
 function initTournament(restoredState = null, player1Score = 0, player2Score = 0) {
+    console.log("[Tournament] Initialisation du tournoi");
+    
     // DOM Elements
     const tournamentStatusText = document.getElementById('tournament-status-text');
     const playerCount = document.getElementById('player-count');
@@ -42,6 +14,9 @@ function initTournament(restoredState = null, player1Score = 0, player2Score = 0
     const leaveTournamentBtn = document.getElementById('leave-tournament-btn');
     const readyBtn = document.getElementById('ready-btn');
     const tournamentContainer = document.querySelector('.tournament-container');
+    const gameContainer = document.getElementById('tournament-game-container');
+    const gameFrame = document.getElementById('tournament-game-frame');
+    const closeGameBtn = document.getElementById('close-game-btn');
     
     // Create tournament results section if it doesn't exist
     let tournamentResults = document.querySelector('.tournament-results');
@@ -346,6 +321,9 @@ function initTournament(restoredState = null, player1Score = 0, player2Score = 0
         processMatchResults(player1Score, player2Score);
     }
     
+    // Configurer les écouteurs d'événements pour l'iframe
+    configureGameListeners();
+    
     // Start local tournament
     function startLocalTournament() {
         const playerInputs = document.querySelectorAll('.local-player-name');
@@ -567,21 +545,77 @@ function initTournament(restoredState = null, player1Score = 0, player2Score = 0
         });
     }
     
-    // Launch the local game using page navigation
+    // Configure game event listeners for iframe communication
+    function configureGameListeners() {
+        // Close game button handler
+        if (closeGameBtn) {
+            closeGameBtn.addEventListener('click', function() {
+                // Hide the game container
+                if (gameContainer) gameContainer.style.display = 'none';
+                
+                // Try to get scores from iframe
+                try {
+                    if (gameFrame && gameFrame.contentWindow && gameFrame.contentWindow.getGameScores) {
+                        const scores = gameFrame.contentWindow.getGameScores();
+                        if (scores) {
+                            console.log("[Tournament] Scores récupérés du jeu:", scores.player1Score, scores.player2Score);
+                            processMatchResults(scores.player1Score, scores.player2Score);
+                        }
+                    }
+                } catch (e) {
+                    console.error("[Tournament] Erreur lors de la récupération des scores:", e);
+                }
+                
+                // Reset iframe source
+                if (gameFrame) gameFrame.src = 'about:blank';
+            });
+        }
+        
+        // Listen for iframe messages
+        window.addEventListener('message', function(event) {
+            if (event.data && event.data.type === 'tournament_match_completed') {
+                console.log("[Tournament] Message reçu du jeu:", event.data);
+                
+                // Hide game container
+                if (gameContainer) gameContainer.style.display = 'none';
+                
+                // Process match results
+                processMatchResults(event.data.player1Score, event.data.player2Score);
+                
+                // Reset iframe
+                if (gameFrame) gameFrame.src = 'about:blank';
+            }
+        });
+    }
+    
+    // Launch the local game in iframe
     function launchLocalGame(player1Name, player2Name) {
-        console.log("[Tournament] Redirection vers le jeu:", player1Name, "vs", player2Name);
+        console.log("[Tournament] Lancement du jeu:", player1Name, "vs", player2Name);
         
-        // Enregistrer l'état actuel du tournoi dans sessionStorage
-        sessionStorage.setItem('tournamentState', JSON.stringify(tournamentState));
-        sessionStorage.setItem('currentMatch', tournamentState.currentMatch);
+        // Update iframe header information
+        document.getElementById('iframe-match-type').textContent = 
+            tournamentState.currentMatch.replace('match', 'Match');
+        document.getElementById('iframe-player1-name').textContent = player1Name;
+        document.getElementById('iframe-player2-name').textContent = player2Name;
         
-        // Redirection vers la page de jeu dédiée
-        const matchType = tournamentState.currentMatch.replace('match', 'Match');
-        window.location.href = `/tournament_game/?player1=${encodeURIComponent(player1Name)}&player2=${encodeURIComponent(player2Name)}&match=${encodeURIComponent(matchType)}`;
+        // Prepare iframe URL
+        const gameUrl = `/tournament_game/?player1=${encodeURIComponent(player1Name)}&player2=${encodeURIComponent(player2Name)}&match=${encodeURIComponent(tournamentState.currentMatch)}`;
+        
+        // Load iframe
+        if (gameFrame) {
+            gameFrame.src = gameUrl;
+        }
+        
+        // Show game container
+        if (gameContainer) {
+            gameContainer.style.display = 'block';
+        }
     }
     
     // Process match results
     function processMatchResults(player1Score, player2Score) {
+        console.log("[Tournament] Traitement des résultats:", player1Score, "-", player2Score);
+        
         let match;
         
         switch (tournamentState.currentMatch) {
@@ -597,6 +631,9 @@ function initTournament(restoredState = null, player1Score = 0, player2Score = 0
             case 'matchFinal':
                 match = tournamentState.matchFinal;
                 break;
+            default:
+                console.error("[Tournament] Match inconnu:", tournamentState.currentMatch);
+                return;
         }
         
         // Update scores
@@ -620,6 +657,8 @@ function initTournament(restoredState = null, player1Score = 0, player2Score = 0
     
     // Continue tournament after match completion
     function continueTournament() {
+        console.log("[Tournament] Progression du tournoi, match actuel:", tournamentState.currentMatch);
+        
         switch (tournamentState.currentMatch) {
             case 'matchA':
                 tournamentState.status = 'matchB';
@@ -651,6 +690,8 @@ function initTournament(restoredState = null, player1Score = 0, player2Score = 0
     
     // Show tournament results
     function showTournamentResults() {
+        console.log("[Tournament] Affichage des résultats finaux");
+        
         // Make sure elements exist
         const firstPlace = document.getElementById('first-place');
         const secondPlace = document.getElementById('second-place');
@@ -686,6 +727,8 @@ function initTournament(restoredState = null, player1Score = 0, player2Score = 0
     
     // Reset tournament
     function resetTournament() {
+        console.log("[Tournament] Réinitialisation du tournoi");
+        
         // Reset tournament state
         tournamentState = {
             localMode: true,

@@ -559,4 +559,13 @@
     if (!isTournamentMode) {
         pregameLoop();
     }
+    window.getGameScores = function() {
+        console.log("[Game] getGameScores appelé, scores:", 
+            playerL ? playerL.score : 0, 
+            playerR ? playerR.score : 0);
+        return {
+            player1Score: playerL ? playerL.score : 0,
+            player2Score: playerR ? playerR.score : 0
+        };
+    };
 })(); // Notez le changement ici: utilisez une fonction anonyme standard au lieu d'une fonction fléchée

@@ -95,22 +95,37 @@
         
         // Fonction pour retourner au tournoi avec les scores
         function returnToTournament() {
-            // Get scores from the game
-            let player1Score = 0;
-            let player2Score = 0;
-            
-            // Try to get scores from global API
-            if (window.getGameScores) {
-                const scores = window.getGameScores();
-                player1Score = scores.player1Score;
-                player2Score = scores.player2Score;
-            }
-            
-            // Return to tournament with scores
-            window.location.href = `/tournament/?match=${matchType}&score1=${player1Score}&score2=${player2Score}`;
+        // Get scores from the game
+        let player1Score = 0;
+        let player2Score = 0;
+        
+        // Try to get scores from global API
+        if (window.getGameScores) {
+            const scores = window.getGameScores();
+            player1Score = scores.player1Score;
+            player2Score = scores.player2Score;
         }
         
-        // Écouteur pour détecter la fin du match automatiquement
+        // Au lieu de rediriger, envoyez un message via postMessage à la fenêtre parente
+        window.parent.postMessage({
+            type: 'tournament_match_completed',
+            matchType: matchType,
+            player1Score: player1Score,
+            player2Score: player2Score
+        }, '*');
+        
+        // Ou cachez simplement la fenêtre si c'est un iframe
+        const iframe = window.frameElement;
+        if (iframe) {
+            iframe.style.display = 'none';
+        } else {
+            // Si ce n'est pas un iframe, simplement cacher le contenu du jeu
+            document.getElementById('game-container').style.display = 'none';
+            window.close(); // Tentez de fermer la fenêtre si c'est une popup
+        }
+    }
+        
+        // Écouteur pour détecter la fin du match
         window.addEventListener('game-completed', function(event) {
             console.log("Match terminé, retour au tournoi dans 3 secondes...");
             
@@ -118,6 +133,16 @@
             const gameContainer = document.getElementById('game-container');
             const endMessage = document.createElement('div');
             endMessage.className = 'end-message';
+            endMessage.style.position = 'absolute';
+            endMessage.style.top = '50%';
+            endMessage.style.left = '50%';
+            endMessage.style.transform = 'translate(-50%, -50%)';
+            endMessage.style.background = 'rgba(0,0,0,0.8)';
+            endMessage.style.color = 'white';
+            endMessage.style.padding = '20px';
+            endMessage.style.borderRadius = '10px';
+            endMessage.style.textAlign = 'center';
+            endMessage.style.zIndex = '1000';
             endMessage.innerHTML = `
                 <div class="end-message-content">
                     <h2>Match Terminé!</h2>
@@ -125,16 +150,6 @@
                     <p>Retour au tournoi dans <span id="countdown">3</span> secondes...</p>
                 </div>
             `;
-            endMessage.style.position = 'absolute';
-            endMessage.style.top = '50%';
-            endMessage.style.left = '50%';
-            endMessage.style.transform = 'translate(-50%, -50%)';
-            endMessage.style.background = 'color: rgba(0, 0, 255, 0.5)';
-            endMessage.style.color = 'white';
-            endMessage.style.padding = '20px';
-            endMessage.style.borderRadius = '10px';
-            endMessage.style.textAlign = 'center';
-            endMessage.style.zIndex = '1000';
             gameContainer.appendChild(endMessage);
             
             // Compte à rebours
@@ -150,17 +165,6 @@
                     returnToTournament();
                 }
             }, 1000);
-        });
-        
-        // Écouteur de secours sur document aussi
-        document.addEventListener('game-completed', function(event) {
-            if (!window.gameCompletedHandled) {
-                window.gameCompletedHandled = true;
-                const customEvent = new CustomEvent('game-completed', {
-                    detail: event.detail
-                });
-                window.dispatchEvent(customEvent);
-            }
         });
         
         // Start the game when page loads
