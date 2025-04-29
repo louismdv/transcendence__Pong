@@ -385,7 +385,7 @@
     
     function pregameLoop() {
         // S'assurer que le canvas est initialisé
-        if (!initCanvas()) return;
+        // if (!initCanvas()) return;
         
         // Show the pre-game screen
         ctx.fillStyle = GREY;
