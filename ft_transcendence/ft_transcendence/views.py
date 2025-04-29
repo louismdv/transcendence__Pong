@@ -14,6 +14,7 @@ from .models import Friendship
 from django.utils import timezone
 from datetime import timedelta
 from django.db import models
+from django.db.models import Q
 from .models import Friendship, UserProfile
 import os
 import json
@@ -21,6 +22,8 @@ from django.utils import translation
 from django.http import HttpResponseForbidden
 import requests
 from django.contrib.auth.models import User
+from ft_transcendence.models import GameRoom  # adjust import to where your GameRoom model is
+
 
 # Step 1: Redirect to 42
 @ensure_csrf_cookie
@@ -790,80 +793,53 @@ def chatpage(request):
         return render(request, 'chatpage.html')
     return redirect('home')
 
-@ensure_csrf_cookie
+
+
+from django.views.decorators.csrf import ensure_csrf_cookie
+from django.http import JsonResponse
+
 def dashboard_data(request):
-    # Get the current user
-    user = request.user.userprofile
-    
-    # Example data - replace with your actual data retrieval logic
+    user_profile = request.user.userprofile
+    user = request.user
+
+    # Get the last 5 games where user was involved
+    recent_games = GameRoom.objects.filter(
+        Q(user=user) | Q(opponent=user)
+    ).order_by('-created_at')[:5]
+
+    recentGames_data = []
+    for game in recent_games:
+        # Decide who is the opponent
+        if game.user == user:
+            opponent_name = game.opponent.username if game.opponent else "Unknown"
+        else:
+            opponent_name = game.user.username if game.user else "Unknown"
+
+        # Determine result
+        if game.winner == user:
+            result = "Win"
+        else:
+            result = "Defeat"
+
+        # Append game info
+        recentGames_data.append({
+            'date': game.created_at.strftime('%Y-%m-%d'),
+            'opponent': opponent_name,
+            'result': result,
+            'score': game.score,
+            'duration': str(game.duration) if game.duration else "Unknown",
+            'room_name': str(game.room_name)
+        })
+
     user_stats = {
-        'local_wins': user.local_wins,
-        'local_losses': user.local_losses,
-        'local_total_games': user.total_local_games,
-        
-        'online_wins': user.online_wins,
-        'online_losses': user.online_losses,
-        'online_total_games': user.total_online_games,
-        
-        'totalGames': user.total_online_games,
-        'tournamentsWon': 3,
-        'recentGames': [
-            {
-                'date': '2023-05-15',
-                'opponent': 'Joueur2',
-                'result': 'Victoire',
-                'score': '10-7',
-                'duration': '3:24'
-            },
-            {
-                'date': '2023-05-14',
-                'opponent': 'Joueur3',
-                'result': 'Défaite',
-                'score': '5-10',
-                'duration': '4:12'
-            },
-            {
-                'date': '2023-05-12',
-                'opponent': 'Joueur1',
-                'result': 'Victoire',
-                'score': '10-3',
-                'duration': '2:45'
-            },
-            {
-                'date': '2023-05-10',
-                'opponent': 'Joueur4',
-                'result': 'Victoire',
-                'score': '10-8',
-                'duration': '5:30'
-            },
-            {
-                'date': '2023-05-08',
-                'opponent': 'Joueur5',
-                'result': 'Défaite',
-                'score': '8-10',
-                'duration': '4:50'
-            }
-        ],
-        'tournaments': [
-            {
-                'date': '2023-05-20',
-                'name': 'Tournoi du weekend',
-                'placement': '1ère Place',
-                'players': 4
-            },
-            {
-                'date': '2023-05-13',
-                'name': 'Tournoi du vendredi',
-                'placement': '2ème Place',
-                'players': 4
-            },
-            {
-                'date': '2023-05-06',
-                'name': 'Défi hebdomadaire',
-                'placement': '1ère Place',
-                'players': 4
-            }
-        ]
+
+        'online_wins': user_profile.online_wins,
+        'online_losses': user_profile.online_losses,
+        'online_total_games': user_profile.total_online_games,
+
+        'totalGames': user_profile.total_online_games + user_profile.total_local_games,
+        'tournamentsWon': 3,  # hardcoded for now
+        'recentGames': recentGames_data,
     }
-    
+
     return JsonResponse(user_stats)

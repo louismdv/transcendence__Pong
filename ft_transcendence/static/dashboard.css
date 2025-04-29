@@ -48,7 +48,14 @@
 }
 
 .card-content {
-  padding: 15px;
+    padding: 20px;
+    min-width: 60%;
+}
+.dash-card {
+    display: flex;
+    flex-direction: row;
+  /* justify-content: space-between; */
+  align-items: center;
 }
 
 /* Stats styling */
