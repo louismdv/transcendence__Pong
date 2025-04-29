@@ -3,6 +3,7 @@
  * Gère toutes les interactions avec la page d'amis
  */
 
+
 document.addEventListener('DOMContentLoaded', function() {
     // Initialiser la page
     loadFriends();
@@ -72,8 +73,8 @@ function loadFriends() {
                         <div class="empty-icon">
                             <i class="bi bi-people"></i>
                         </div>
-                        <h6>Aucun ami pour le moment</h6>
-                        <p class="text-muted">Recherchez des utilisateurs pour les ajouter à votre liste d'amis.</p>
+                        <h6>${gettext("No friends at the moment")}</h6>
+                        <p class="text-muted">${gettext("Search for users to add them to your friends list.")}</p>
                     </div>
                 `;
                 updateFriendCounter();
@@ -93,7 +94,7 @@ function loadFriends() {
             friendsContainer.innerHTML = `
                 <div class="alert alert-danger" role="alert">
                     <i class="bi bi-exclamation-triangle-fill me-2"></i>
-                    Erreur lors du chargement des amis. Veuillez réessayer.
+                    ${gettext("Error while loading friends. Please try again.")}
                 </div>
             `;
         });
@@ -105,39 +106,39 @@ function createFriendCardHTML(friend) {
         <div class="friend-card" data-friend-id="${friend.id}">
             <div class="friend-avatar">
                 <img src="${friend.avatar || '/media/avatars/default.png'}" alt="${friend.username}">
-                <span class="status-indicators ${friend.online ? 'online' : 'offline'}"></span>
+                <span class="status-indicators ${friend.online ? gettext('online') : gettext('offline')}"></span>
             </div>
             <div class="friend-info">
                 <h6 class="friend-name">${friend.username}</h6>
-                <div class="friend-status">${friend.online ? 'En ligne' : 'Hors ligne'}</div>
+                <div class="friend-status">${friend.online ? gettext('online') : gettext('offline')}</div>
             </div>
             <div class="friend-actions">
                 <button class="btn btn-sm btn-outline-secondary action-toggle" 
                         type="button" 
                         onclick="toggleActionMenu('${friend.id}')">
-                    Actions
+                    ${gettext('Actions')}
                 </button>
                 <div id="action-menu-${friend.id}" class="custom-action-menu">
                     <div class="action-option" onclick="openChat('${friend.id}', '${friend.username}')">
                         <i class="bi bi-chat-dots me-2"></i>
-                        <span>Message privé</span>
+                        <span>${gettext('Private Message')}</span>
                     </div>
                     <div class="action-option" onclick="window.inviteFriendToGame('${friend.id}', '${friend.username}')">
                         <i class="bi bi-controller me-2"></i>
-                        <span>Inviter à jouer</span>
+                        <span>${gettext('Invite to Play')}</span>
                     </div>
                     <div class="action-option" onclick="window.location.href='/profile/${friend.id}'">
                         <i class="bi bi-person me-2"></i>
-                        <span>Voir le profil</span>
+                        <span>${gettext('Show profile')}</span>
                     </div>
                     <div class="action-divider"></div>
                     <div class="action-option text-warning" onclick="removeFriend('${friend.id}')">
                         <i class="bi bi-person-dash me-2"></i>
-                        <span>Supprimer</span>
+                        <span>${gettext('Remove')}</span>
                     </div>
                     <div class="action-option text-danger" onclick="blockFriend('${friend.id}')">
                         <i class="bi bi-slash-circle me-2"></i>
-                        <span>Bloquer</span>
+                        <span>${gettext('Block')}</span>
                     </div>
                 </div>
             </div>
@@ -209,7 +210,7 @@ function filterFriends(searchTerm) {
             const message = document.createElement('div');
             message.className = 'no-results text-center py-3';
             message.innerHTML = `
-                <p class="text-muted">Aucun résultat pour "${searchTerm}"</p>
+                <p class="text-muted">${gettext('No result for ')}"${searchTerm}"</p>
             `;
             friendsContainer.appendChild(message);
         }
@@ -234,14 +235,14 @@ function inviteToGame(friendId) {
     .then(response => response.json())
     .then(data => {
         if (data.success) {
-            showToast('Invitation envoyée avec succès!', 'success');
+            showToast(gettext('Invite sent successfully!'), 'success');
         } else {
-            showToast(data.message || 'Erreur lors de l\'envoi de l\'invitation.', 'error');
+            showToast(data.message || gettext('Error while sending invite.'), 'error');
         }
     })
     .catch(error => {
         console.error('Error:', error);
-        showToast('Une erreur est survenue.', 'error');
+        showToast(gettext('An error has occurred.'), 'error');
     });
 }
 
@@ -277,7 +278,7 @@ function removeFriend(friendId) {
         })
         .catch(error => {
             console.error('Error:', error);
-            showToast('Une erreur est survenue.', 'error');
+            showToast(gettext('An error has occurred.'), 'error');
         });
     }
 }
@@ -316,7 +317,7 @@ function blockFriend(friendId) {
         })
         .catch(error => {
             console.error('Error:', error);
-            showToast('Une erreur est survenue.', 'error');
+            showToast(gettext('An error has occurred.'), 'error');
         });
     }
 }
@@ -353,7 +354,7 @@ function loadBlockedUsers() {
                         <div class="empty-icon">
                             <i class="bi bi-shield-check"></i>
                         </div>
-                        <h6>Aucun utilisateur bloqué</h6>
+                        <h6>${gettext('No blocked users.')}</h6>
                         <p class="text-muted">Vous n'avez bloqué personne pour le moment.</p>
                     </div>
                 `;
@@ -446,7 +447,7 @@ function unblockUser(userId) {
         })
         .catch(error => {
             console.error('Error:', error);
-            showToast('Une erreur est survenue.', 'error');
+            showToast(gettext('An error has occurred.'), 'error');
         });
     }
 }
@@ -467,7 +468,7 @@ function updateBlockedCounter() {
                     <div class="empty-icon">
                         <i class="bi bi-shield-check"></i>
                     </div>
-                    <h6>Aucun utilisateur bloqué</h6>
+                    <h6>${gettext('No blocked users.')}</h6>
                     <p class="text-muted">Vous n'avez bloqué personne pour le moment.</p>
                 </div>
             `;
@@ -524,18 +525,18 @@ function setupUserSearch() {
                             let actionButton = '';
                             
                             if (user.status === 'accepted') {
-                                actionButton = `<button class="btn btn-sm btn-success" disabled>Amis</button>`;
+                                actionButton = `<button class="btn btn-sm btn-success" disabled>${gettext('Friends')}</button>`;
                             } else if (user.status === 'pending' && user.is_sender) {
-                                actionButton = `<button class="btn btn-sm btn-secondary" disabled>Demande envoyée</button>`;
+                                actionButton = `<button class="btn btn-sm btn-secondary" disabled>${gettext('Request sent')}</button>`;
                             } else if (user.status === 'pending' && !user.is_sender) {
                                 actionButton = `
-                                    <button class="btn btn-sm btn-success me-1" onclick="acceptFriendRequest('${user.request_id}')">Accepter</button>
-                                    <button class="btn btn-sm btn-danger" onclick="rejectFriendRequest('${user.request_id}')">Refuser</button>
+                                    <button class="btn btn-sm btn-success me-1" onclick="acceptFriendRequest('${user.request_id}')">${gettext('Accept')}</button>
+                                    <button class="btn btn-sm btn-danger" onclick="rejectFriendRequest('${user.request_id}')">${gettext('Refuse')}</button>
                                 `;
                             } else if (user.status === 'blocked') {
-                                actionButton = `<button class="btn btn-sm btn-danger" disabled>Bloqué</button>`;
+                                actionButton = `<button class="btn btn-sm btn-danger" disabled>${gettext('Blocked')}</button>`;
                             } else {
-                                actionButton = `<button class="btn btn-sm btn-primary" onclick="sendFriendRequest('${user.id}')">Ajouter</button>`;
+                                actionButton = `<button class="btn btn-sm btn-primary" onclick="sendFriendRequest('${user.id}')">${gettext('Add')}</button>`;
                             }
                             
                             usersHTML += `
@@ -557,7 +558,7 @@ function setupUserSearch() {
                     })
                     .catch(error => {
                         console.error('Error searching users:', error);
-                        searchResults.innerHTML = '<p class="text-danger">Erreur lors de la recherche</p>';
+                        searchResults.innerHTML = `<p class="text-danger">${gettext('Error while searching')}</p>`;
                     });
             }, 300);
         });
@@ -576,22 +577,22 @@ function sendFriendRequest(userId) {
     .then(response => response.json())
     .then(data => {
         if (data.success) {
-            showToast('Demande d\'ami envoyée avec succès!', 'success');
+            showToast(gettext('Friend request sent successfully!'), 'success');
             // Mettre à jour le bouton
             const button = document.querySelector(`.user-item[data-user-id="${userId}"] .user-actions button`);
             if (button) {
-                button.textContent = 'Demande envoyée';
+                button.textContent = gettext('Request sent');
                 button.classList.replace('btn-primary', 'btn-secondary');
                 button.disabled = true;
                 button.onclick = null;
             }
         } else {
-            showToast(data.message || 'Erreur lors de l\'envoi de la demande.', 'error');
+            showToast(data.message || gettext('Error while sending request.'), 'error');
         }
     })
     .catch(error => {
         console.error('Error:', error);
-        showToast('Une erreur est survenue.', 'error');
+        showToast(gettext('An error has occured.'), 'error');
     });
 }
 
@@ -614,7 +615,7 @@ function loadFriendRequests() {
             }
             
             if (data.requests.length === 0) {
-                requestsContainer.innerHTML = '<p class="text-muted">Aucune demande pour le moment</p>';
+                requestsContainer.innerHTML = '<p class="text-muted">' + gettext('No invitations for the moment.') + '</p>';
                 return;
             }
             
@@ -645,14 +646,14 @@ function loadFriendRequests() {
         })
         .catch(error => {
             console.error('Error loading friend requests:', error);
-            requestsContainer.innerHTML = '<p class="text-danger">Erreur lors du chargement des demandes</p>';
+            requestsContainer.innerHTML = '<p class="text-danger">' + gettext('Error while loading invitations.') + '</p>';
         });
 }
 
 // Accepter une demande d'ami
 function acceptFriendRequest(requestId) {
     if (!requestId) {
-        showToast('ID de demande invalide', 'error');
+        showToast(gettext('Request ID invalide'), 'error');
         return;
     }
     
@@ -679,23 +680,23 @@ function acceptFriendRequest(requestId) {
                 }, 300);
             }
             
-            showToast('Demande d\'ami acceptée!', 'success');
+            showToast(gettext('Friend request accepted!'), 'success');
             // Recharger la liste d'amis
             loadFriends();
         } else {
-            showToast(data.message || 'Erreur lors de l\'acceptation de la demande.', 'error');
+            showToast(data.message || gettext('Error while accepting friend request.'), 'error');
         }
     })
     .catch(error => {
         console.error('Error:', error);
-        showToast('Une erreur est survenue.', 'error');
+        showToast(gettext('An error has occurred.'), 'error');
     });
 }
 
 // Refuser une demande d'ami
 function rejectFriendRequest(requestId) {
     if (!requestId) {
-        showToast('ID de demande invalide', 'error');
+        showToast(gettext('Request ID invalide'), 'error');
         return;
     }
     
@@ -722,14 +723,14 @@ function rejectFriendRequest(requestId) {
                 }, 300);
             }
             
-            showToast('Demande d\'ami refusée.', 'warning');
+            showToast(gettext('Friend request refused.'), 'warning');
         } else {
-            showToast(data.message || 'Erreur lors du refus de la demande.', 'error');
+            showToast(data.message || gettext('Error while rejecting the request.'), 'error');
         }
     })
     .catch(error => {
         console.error('Error:', error);
-        showToast('Une erreur est survenue.', 'error');
+        showToast(gettext('An error has occurred.'), 'error');
     });
 }
 
@@ -743,7 +744,7 @@ function updateRequestCounter() {
         badge.textContent = requestCount;
         
         if (requestCount === 0) {
-            requestsContainer.innerHTML = '<p class="text-muted">Aucune demande pour le moment</p>';
+            requestsContainer.innerHTML = '<p class="text-muted">' + gettext('No requests at the moment.') + '</p>';
         }
     }
 }
@@ -780,11 +781,11 @@ function updateFriendStatuses() {
                     if (friend.online) {
                         statusIndicator.classList.remove('offline');
                         statusIndicator.classList.add('online');
-                        statusText.textContent = 'En ligne';
+                        statusText.textContent = gettext('online');
                     } else {
                         statusIndicator.classList.remove('online');
                         statusIndicator.classList.add('offline');
-                        statusText.textContent = 'Hors ligne';
+                        statusText.textContent = gettext('offline');
                     }
                 }
             });
@@ -812,8 +813,8 @@ function updateFriendCounter() {
                     <div class="empty-icon">
                         <i class="bi bi-people"></i>
                     </div>
-                    <h6>Aucun ami pour le moment</h6>
-                    <p class="text-muted">Recherchez des utilisateurs pour les ajouter à votre liste d'amis.</p>
+                    <h6>${gettext('No friends at the moment.')}</h6>
+                    <p class="text-muted">${gettext('Search for users to add to your friends list.')}</p>
                 </div>
             `;
         }
@@ -828,11 +829,11 @@ function formatDate(dateString) {
     const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
     
     if (diffDays === 0) {
-        return "Aujourd'hui";
+        return gettext('Today');
     } else if (diffDays === 1) {
-        return "Hier";
+        return gettext('Yesterday');
     } else if (diffDays < 7) {
-        return `Il y a ${diffDays} jours`;
+        return `${diffDays} ${gettext('days ago')}`;
     } else {
         return date.toLocaleDateString();
     }

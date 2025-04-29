@@ -1,12 +1,12 @@
-{% load i18n %}
-{% load static %}
+{% load i18n static %}
+<script src="{% url 'javascript-catalog' %}"></script>
 
 <!-- Chart.js CDN -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <div class="dashboard-container">
     <div class="dashboard-header">
-        <h2>Tableau de bord du joueur</h2>
+        <h2>{% trans "Player Dashboard" %}</h2>
     </div>
     
     <div class="dashboard-grid">
@@ -18,19 +18,19 @@
             <div class="dash-card">
                 <div class="card-content">
                     <div class="stat-item">
-                        <span class="stat-label">Wins:</span>
+                        <span class="stat-label">{% trans "Wins:" %}</span>
                         <span class="stat-value" id="user-wins"></span>
                     </div>
                     <div class="stat-item">
-                        <span class="stat-label">Losses:</span>
+                        <span class="stat-label">{% trans "Losses:" %}</span>
                         <span class="stat-value" id="user-losses"></span>
                     </div>
                     <div class="stat-item">
-                        <span class="stat-label">Win rate:</span>
+                        <span class="stat-label">{% trans "Win rate:" %}</span>
                         <span class="stat-value" id="win-rate"></span>
                     </div>
                     <div class="stat-item">
-                        <span class="stat-label">Total games:</span>
+                        <span class="stat-label">{% trans "Total games:" %}</span>
                         <span class="stat-value" id="total-games"></span>
                     </div>
                 </div>
@@ -44,18 +44,18 @@
         <!-- Game History -->
         <div class="dashboard-card full-width">
             <div class="card-header">
-                <h3>Parties récentes</h3>
+                <h3>{% trans "Recent Games" %}</h3>
             </div>
             <div class="card-content">
                 <table class="game-history-table">
                     <thead>
                         <tr>
-                            <th>Date</th>
-                            <th>Room name</th>
-                            <th>Adversaire</th>
-                            <th>Résultat</th>
-                            <th>Score</th>
-                            <th>Durée</th>
+                            <th>{% trans "Date" %}</th>
+                            <th>{% trans "Room name" %}</th>
+                            <th>{% trans "Opponent" %}</th>
+                            <th>{% trans "Result" %}</th>
+                            <th>{% trans "Score" %}</th>
+                            <th>{% trans "Duration" %}</th>
                         </tr>
                     </thead>
                     <tbody id="game-history-body">

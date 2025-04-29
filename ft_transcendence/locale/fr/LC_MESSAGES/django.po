@@ -19,11 +19,10 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 #: ft_transcendence/views.py:20
 
-# Page d'accueil
 msgid "Home"
 msgstr "Accueil"
 
-msgid "Choose a game mode :"
+msgid "Choose a game mode:"
 msgstr "Choisissez un mode de jeu :"
 
 msgid "Main menu"
@@ -56,14 +55,12 @@ msgstr "Jouer en local"
 msgid "DashBoard"
 msgstr "Tableau de bord"
 
-# Page Tournoi
 msgid "Tournament Mode"
 msgstr "Mode Tournoi"
 
 msgid "Tournament Status"
 msgstr "Statut du tournoi"
 
-# Page de messagerie
 msgid "Messaging"
 msgstr "Messagerie"
 
@@ -75,8 +72,6 @@ msgstr "En ligne"
 
 msgid "Offline"
 msgstr "Hors ligne"
-
-
 
 msgid "Friends Management"
 msgstr "Gestion des amis"
@@ -135,6 +130,9 @@ msgstr "Inviter à jouer"
 msgid "View Profile"
 msgstr "Voir le profil"
 
+msgid "Show profile"
+msgstr "Afficher le profil"
+
 msgid "Remove"
 msgstr "Supprimer"
 
@@ -146,7 +144,6 @@ msgstr "Bloqué le"
 
 msgid "Unblock"
 msgstr "Débloquer"
-
 
 msgid "Room Code :"
 msgstr "Code de la salle :"
@@ -166,16 +163,11 @@ msgstr "Utilisez"
 msgid "arrow keys to move your paddle"
 msgstr "les touches fléchées pour déplacer votre raquette"
 
-
-msgid "En ligne"
-msgstr "Online"
-
 msgid "Write your message..."
 msgstr "Écrivez votre message..."
 
 msgid "Send"
 msgstr "Envoyer"
-
 
 msgid "Create a new game:"
 msgstr "Créer une nouvelle partie :"
@@ -188,9 +180,6 @@ msgstr "Entrez le nom de la salle ..."
 
 msgid "Enter"
 msgstr "Entrer"
-
-
-
 
 msgid "Login"
 msgstr "Connexion"
@@ -213,18 +202,11 @@ msgstr "OU"
 msgid "Login with 42"
 msgstr "Se connecter avec 42"
 
-
 msgid "Sign Up"
 msgstr "S'inscrire"
 
-msgid "Username"
-msgstr "Nom d'utilisateur"
-
 msgid "Email"
 msgstr "Email"
-
-msgid "Password"
-msgstr "Mot de passe"
 
 msgid "Confirm Password"
 msgstr "Confirmer le mot de passe"
@@ -238,18 +220,17 @@ msgstr "Vous avez déjà un compte ?"
 msgid "LOGIN"
 msgstr "CONNEXION"
 
-
 msgid "Profile Settings"
 msgstr "Paramètres du profil"
+
+msgid "Manage your personal information and preferences"
+msgstr "Gérez vos informations personnelles et vos préférences"
 
 msgid "Edit your personal information and preferences"
 msgstr "Modifiez vos informations personnelles et vos préférences"
 
 msgid "Profile"
 msgstr "Profil"
-
-msgid "Account"
-msgstr "Compte"
 
 msgid "Preferences"
 msgstr "Préférences"
@@ -263,14 +244,11 @@ msgstr "Modifiez vos informations personnelles"
 msgid "Profile Picture"
 msgstr "Photo de profil"
 
-msgid "Username"
-msgstr "Nom d'utilisateur"
-
 msgid "Account Information"
 msgstr "Informations du compte"
 
 msgid "Edit your email and password"
-msgstr "Modifiez votre email et mot de passe"
+msgstr "Modifiez votre email et votre mot de passe"
 
 msgid "Email Address"
 msgstr "Adresse email"
@@ -280,9 +258,6 @@ msgstr "Mot de passe actuel"
 
 msgid "New Password"
 msgstr "Nouveau mot de passe"
-
-msgid "Confirm Password"
-msgstr "Confirmer le mot de passe"
 
 msgid "Danger Zone"
 msgstr "Zone de danger"
@@ -312,7 +287,7 @@ msgid "Save"
 msgstr "Sauvegarder"
 
 msgid "Are you absolutely sure?"
-msgstr "Êtes-vous absolument sûr?"
+msgstr "Êtes-vous absolument sûr ?"
 
 msgid "This action is irreversible. It will permanently delete your account and all associated data from our servers."
 msgstr "Cette action est irréversible. Elle supprimera définitivement votre compte et toutes les données associées de nos serveurs."
@@ -320,5 +295,80 @@ msgstr "Cette action est irréversible. Elle supprimera définitivement votre co
 msgid "Cancel"
 msgstr "Annuler"
 
-msgid "Delete Account"
-msgstr "Supprimer le compte"
+msgid "No friends at the moment"
+msgstr "Aucun ami pour le moment"
+
+msgid "Search for users to add them to your friends list."
+msgstr "Recherchez des utilisateurs pour les ajouter à votre liste d'amis."
+
+msgid "Error while loading friends. Please try again."
+msgstr "Erreur lors du chargement des amis. Veuillez réessayer."
+
+msgid "No result for "
+msgstr "Aucun résultat pour "
+
+msgid "Friend request sent successfully!"
+msgstr "Demande d'ami envoyée avec succès !"
+
+msgid "Request sent"
+msgstr "Demande envoyée"
+
+msgid "Error during sending friend invite."
+msgstr "Erreur lors de l'envoi de la demande."
+
+msgid "An error has occured."
+msgstr "Une erreur est survenue"
+
+msgid "No invitations for the moment."
+msgstr "Aucune invitation pour le moment."
+
+msgid "Error while loading invitations."
+msgstr "Erreur lors du chargement des invitations."
+
+msgid "No blocked users."
+msgstr "Aucun utilisateur bloqué."
+
+msgid "Wins:"
+msgstr "Victoires :"
+
+msgid "Losses:"
+msgstr "Défaites :"
+
+msgid "Total games:"
+msgstr "Total de parties :"
+
+msgid "Win rate:"
+msgstr "Taux de victoire :"
+
+msgid "Recent Games"
+msgstr "Parties récentes"
+
+msgid "Date"
+msgstr "Date"
+
+msgid "Room name"
+msgstr "Nom de la partie"
+
+msgid "Opponent"
+msgstr "Adversaire"
+
+msgid "Duration"
+msgstr "Durée"
+
+msgid "Score"
+msgstr "Score"
+
+msgid "Result"
+msgstr "Résultat"
+
+msgid "Player Dashboard"
+msgstr "Tableau de bord du joueur"
+
+msgid "French"
+msgstr "Français"
+
+msgid "English"
+msgstr "Anglais"
+
+msgid "Spanish"
+msgstr "Espagnol"

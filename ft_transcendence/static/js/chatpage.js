@@ -53,8 +53,8 @@ function loadChatCards(status) {
             if (chats.length === 0) {
                 chatContainer.innerHTML = `
                     <div class="empty-state">
-                        <h6>Aucun ami ${status === "online" ? 'en ligne' : 'hors ligne'} pour le moment.</h6>
-                        <p class="text-muted">Veuillez revenir plus tard.</p>
+                        <h6>${gettext('No friends ')} ${status === "offline" ? gettext('offline') : gettext('online')} ${gettext(' at the moment.')}</h6>
+                        <p class="text-muted">${gettext('Please come back later.')}</p>
                     </div>
                 `;
                 return 0;  // Return 0 if no friends are found
@@ -97,7 +97,7 @@ function loadChatCards(status) {
             chatContainer.innerHTML = `
                 <div class="alert alert-danger" role="alert">
                     <i class="bi bi-exclamation-triangle-fill me-2"></i>
-                    Erreur lors du chargement des amis. Veuillez réessayer.
+                    ${gettext('An error occurred while loading friends. Please try again later.')}
                 </div>
             `;
         });
@@ -112,7 +112,7 @@ function createFriendChatCardHTML(friend) {
             </div>
             <div class="contact-info">
                 <h6 class="contact-name">${friend.username}</h6>
-                <p class="contact-status">${friend.online ? 'online' : 'offline'}</p>
+                <p class="contact-status">${friend.online ? gettext('online') : gettext('offline')}</p>
             </div>
             <div class="contact-actions">
                 <button class="action-button message-button">

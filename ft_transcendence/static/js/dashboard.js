@@ -20,9 +20,9 @@ function initializePieChart() {
     statsPieChart = new Chart(ctx, {
         type: 'pie',
         data: {
-            labels: ['Aucune donnée'],
+            labels: [gettext('No data')],
             datasets: [{
-                label: 'Statistiques du joueur',
+                label: gettext('Player statistics'),
                 data: [1],
                 backgroundColor: ['#e0e0e0'],
                 borderWidth: 1
@@ -52,14 +52,14 @@ function updatePieChart( winsOnline, lossesOnline) {
     const total =  winsOnline + lossesOnline;
 
     if (total > 0) {
-        statsPieChart.data.labels = ['Victoires Online', 'Défaites Online'];
+        statsPieChart.data.labels = [gettext('Online wins'), gettext('Online losses')];
         statsPieChart.data.datasets[0].data = [ winsOnline, lossesOnline];
         statsPieChart.data.datasets[0].backgroundColor = [
             '#4CAF50', // Vert
             '#F44336', // Rouge
         ];
     } else {
-        statsPieChart.data.labels = ['Aucune donnée'];
+        statsPieChart.data.labels = [gettext('No data')];
         statsPieChart.data.datasets[0].data = [1];
         statsPieChart.data.datasets[0].backgroundColor = ['#e0e0e0'];
     }
@@ -75,7 +75,7 @@ function updateGameHistory(games) {
         const row = document.createElement("tr");
         const cell = document.createElement("td");
         cell.colSpan = 5;
-        cell.textContent = "Aucune partie récente.";
+        cell.textContent = gettext('No games played yet');
         cell.style.textAlign = "center";
         row.appendChild(cell);
         gameHistoryBody.appendChild(row);
