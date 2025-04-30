@@ -49,7 +49,7 @@ urlpatterns = [
     path('tournament_game/', views.tournament_game, name='tournament_game'),
     re_path(r'^tournament/?$', views.tournament, name='tournament'),
     path('livechat/', include('livechat.urls')),
-    
+    path('api/friends/<int:friend_id>/stats/', views.get_friend_stats, name='friend-stats'),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 if settings.DEBUG:

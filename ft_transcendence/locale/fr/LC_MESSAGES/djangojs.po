@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-04-30 01:34+0200\n"
+"POT-Creation-Date: 2025-04-30 02:20+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -24,17 +24,17 @@ msgstr "Aucun ami "
 
 #: ft_transcendence/static/js/chatpage.js:56
 #: ft_transcendence/static/js/chatpage.js:115
-#: ft_transcendence/static/js/friendspage.js:109
-#: ft_transcendence/static/js/friendspage.js:113
-#: ft_transcendence/static/js/friendspage.js:788
+#: ft_transcendence/static/js/friendspage.js:119
+#: ft_transcendence/static/js/friendspage.js:125
+#: ft_transcendence/static/js/friendspage.js:800
 msgid "offline"
 msgstr "Hors ligne"
 
 #: ft_transcendence/static/js/chatpage.js:56
 #: ft_transcendence/static/js/chatpage.js:115
-#: ft_transcendence/static/js/friendspage.js:109
-#: ft_transcendence/static/js/friendspage.js:113
-#: ft_transcendence/static/js/friendspage.js:784
+#: ft_transcendence/static/js/friendspage.js:119
+#: ft_transcendence/static/js/friendspage.js:125
+#: ft_transcendence/static/js/friendspage.js:796
 #: ft_transcendence/static/js/livechat.js:162
 msgid "online"
 msgstr "En ligne"
@@ -81,155 +81,155 @@ msgstr "Aucun ami pour le moment"
 msgid "Search for users to add them to your friends list."
 msgstr "Recherchez des utilisateurs pour les ajouter à votre liste d'amis."
 
-#: ft_transcendence/static/js/friendspage.js:97
+#: ft_transcendence/static/js/friendspage.js:98
 msgid "Error while loading friends. Please try again."
 msgstr "Erreur lors du chargement des amis. Veuillez réessayer."
 
-#: ft_transcendence/static/js/friendspage.js:119
+#: ft_transcendence/static/js/friendspage.js:131
 msgid "Actions"
 msgstr "Actions"
 
-#: ft_transcendence/static/js/friendspage.js:124
+#: ft_transcendence/static/js/friendspage.js:136
 msgid "Private Message"
 msgstr "Message privé"
 
-#: ft_transcendence/static/js/friendspage.js:128
+#: ft_transcendence/static/js/friendspage.js:140
 msgid "Invite to Play"
 msgstr "Inviter à jouer"
 
-#: ft_transcendence/static/js/friendspage.js:132
+#: ft_transcendence/static/js/friendspage.js:144
 msgid "Show profile"
 msgstr "Afficher le profil"
 
-#: ft_transcendence/static/js/friendspage.js:137
+#: ft_transcendence/static/js/friendspage.js:149
 msgid "Remove"
 msgstr "Supprimer"
 
-#: ft_transcendence/static/js/friendspage.js:141
+#: ft_transcendence/static/js/friendspage.js:153
 msgid "Block"
 msgstr "Bloquer"
 
-#: ft_transcendence/static/js/friendspage.js:213
+#: ft_transcendence/static/js/friendspage.js:225
 msgid "No result for "
 msgstr "Aucun résultat pour "
 
-#: ft_transcendence/static/js/friendspage.js:238
+#: ft_transcendence/static/js/friendspage.js:250
 msgid "Invite sent successfully!"
 msgstr "Invitation envoyée avec succès !"
 
-#: ft_transcendence/static/js/friendspage.js:240
+#: ft_transcendence/static/js/friendspage.js:252
 msgid "Error while sending invite."
 msgstr "Erreur lors de l'envoi de l'invitation."
 
-#: ft_transcendence/static/js/friendspage.js:245
-#: ft_transcendence/static/js/friendspage.js:281
-#: ft_transcendence/static/js/friendspage.js:320
-#: ft_transcendence/static/js/friendspage.js:450
-#: ft_transcendence/static/js/friendspage.js:692
-#: ft_transcendence/static/js/friendspage.js:733
+#: ft_transcendence/static/js/friendspage.js:257
+#: ft_transcendence/static/js/friendspage.js:293
+#: ft_transcendence/static/js/friendspage.js:332
+#: ft_transcendence/static/js/friendspage.js:462
+#: ft_transcendence/static/js/friendspage.js:704
+#: ft_transcendence/static/js/friendspage.js:745
 msgid "An error has occurred."
 msgstr "Une erreur est survenue."
 
-#: ft_transcendence/static/js/friendspage.js:357
-#: ft_transcendence/static/js/friendspage.js:471
+#: ft_transcendence/static/js/friendspage.js:369
+#: ft_transcendence/static/js/friendspage.js:483
 msgid "No blocked users."
 msgstr "Aucun utilisateur bloqué."
 
-#: ft_transcendence/static/js/friendspage.js:528
+#: ft_transcendence/static/js/friendspage.js:540
 msgid "Friends"
 msgstr "Amis"
 
-#: ft_transcendence/static/js/friendspage.js:530
-#: ft_transcendence/static/js/friendspage.js:584
+#: ft_transcendence/static/js/friendspage.js:542
+#: ft_transcendence/static/js/friendspage.js:596
 msgid "Request sent"
 msgstr "Demande envoyée"
 
-#: ft_transcendence/static/js/friendspage.js:533
+#: ft_transcendence/static/js/friendspage.js:545
 msgid "Accept"
 msgstr "Accepter"
 
-#: ft_transcendence/static/js/friendspage.js:534
+#: ft_transcendence/static/js/friendspage.js:546
 msgid "Refuse"
 msgstr "Refuser"
 
-#: ft_transcendence/static/js/friendspage.js:537
+#: ft_transcendence/static/js/friendspage.js:549
 msgid "Blocked"
 msgstr "Bloqués"
 
-#: ft_transcendence/static/js/friendspage.js:539
+#: ft_transcendence/static/js/friendspage.js:551
 msgid "Add"
 msgstr "Ajouter"
 
-#: ft_transcendence/static/js/friendspage.js:561
+#: ft_transcendence/static/js/friendspage.js:573
 msgid "Error while searching"
 msgstr "Erreur lors de la recherche"
 
-#: ft_transcendence/static/js/friendspage.js:580
+#: ft_transcendence/static/js/friendspage.js:592
 msgid "Friend request sent successfully!"
 msgstr "Demande d'ami envoyée avec succès !"
 
-#: ft_transcendence/static/js/friendspage.js:590
+#: ft_transcendence/static/js/friendspage.js:602
 msgid "Error while sending request."
 msgstr "Erreur pendant l'envoi de l'invitation."
 
-#: ft_transcendence/static/js/friendspage.js:595
+#: ft_transcendence/static/js/friendspage.js:607
 msgid "An error has occured."
 msgstr "Une erreur est survenue."
 
-#: ft_transcendence/static/js/friendspage.js:618
+#: ft_transcendence/static/js/friendspage.js:630
 msgid "No invitations for the moment."
 msgstr "Aucune invitation pour le moment."
 
-#: ft_transcendence/static/js/friendspage.js:649
+#: ft_transcendence/static/js/friendspage.js:661
 msgid "Error while loading invitations."
 msgstr "Erreur lors du chargement des invitations."
 
-#: ft_transcendence/static/js/friendspage.js:656
-#: ft_transcendence/static/js/friendspage.js:699
+#: ft_transcendence/static/js/friendspage.js:668
+#: ft_transcendence/static/js/friendspage.js:711
 msgid "Request ID invalide"
 msgstr "ID de demande invalide"
 
-#: ft_transcendence/static/js/friendspage.js:683
+#: ft_transcendence/static/js/friendspage.js:695
 msgid "Friend request accepted!"
 msgstr "Demande d'ami acceptée!"
 
-#: ft_transcendence/static/js/friendspage.js:687
+#: ft_transcendence/static/js/friendspage.js:699
 msgid "Error while accepting friend request."
 msgstr "Erreur lors de l'acceptation de la demande."
 
-#: ft_transcendence/static/js/friendspage.js:726
+#: ft_transcendence/static/js/friendspage.js:738
 msgid "Friend request refused."
 msgstr "Demande d'ami refusée."
 
-#: ft_transcendence/static/js/friendspage.js:728
+#: ft_transcendence/static/js/friendspage.js:740
 #, fuzzy
 #| msgid "Error while rejecting the request.'"
 msgid "Error while rejecting the request."
 msgstr "Erreur pendant le refus de demande"
 
-#: ft_transcendence/static/js/friendspage.js:747
+#: ft_transcendence/static/js/friendspage.js:759
 msgid "No requests at the moment."
 msgstr "Aucune demande pour le moment"
 
-#: ft_transcendence/static/js/friendspage.js:816
+#: ft_transcendence/static/js/friendspage.js:828
 #, fuzzy
 #| msgid "No friends at the moment"
 msgid "No friends at the moment."
 msgstr "Aucun ami pour le moment"
 
-#: ft_transcendence/static/js/friendspage.js:817
+#: ft_transcendence/static/js/friendspage.js:829
 msgid "Search for users to add to your friends list."
 msgstr "Recherchez des utilisateurs pour les ajouter à votre liste d'amis."
 
-#: ft_transcendence/static/js/friendspage.js:832
+#: ft_transcendence/static/js/friendspage.js:844
 msgid "Today"
 msgstr "Aujourd'hui"
 
-#: ft_transcendence/static/js/friendspage.js:834
+#: ft_transcendence/static/js/friendspage.js:846
 msgid "Yesterday"
 msgstr "Hier"
 
-#: ft_transcendence/static/js/friendspage.js:836
+#: ft_transcendence/static/js/friendspage.js:848
 msgid "days ago"
 msgstr "jours"
 

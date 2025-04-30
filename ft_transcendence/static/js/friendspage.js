@@ -66,7 +66,7 @@ function loadFriends() {
             }
             return response.json();
         })
-        .then(data => {
+        .then(async data => {
             if (data.friends.length === 0) {
                 friendsContainer.innerHTML = `
                     <div class="empty-state">
@@ -80,13 +80,13 @@ function loadFriends() {
                 updateFriendCounter();
                 return;
             }
-            
-            let friendsHTML = '';
-            data.friends.forEach(friend => {
-                friendsHTML += createFriendCardHTML(friend);
-            });
-            
-            friendsContainer.innerHTML = friendsHTML;
+
+            // Wait for all friend cards to be built
+            const friendCards = await Promise.all(
+                data.friends.map(friend => createFriendCardHTML(friend))
+            );
+
+            friendsContainer.innerHTML = friendCards.join('');
             updateFriendCounter();
         })
         .catch(error => {
@@ -100,8 +100,27 @@ function loadFriends() {
         });
 }
 
+
 // Créer le HTML pour une carte ami avec menu personnalisé
-function createFriendCardHTML(friend) {
+async function createFriendCardHTML(friend) {
+    let wins = 0;
+    let losses = 0;
+
+    try {
+        const response = await fetch(`/api/friends/${friend.id}/stats/`);
+        if (response.ok) {
+            const data = await response.json();
+            wins = data.wins || 0;
+            losses = data.losses || 0;
+        } else {
+            console.error(`Error fetching stats for friend ${friend.id}: ${response.status}`);
+        }
+    } catch (err) {
+        console.error("Error fetching stats:", err);
+        const data = await response.json();
+        console.log(data); // Dev check
+    }
+
     return `
         <div class="friend-card" data-friend-id="${friend.id}">
             <div class="friend-avatar">
@@ -110,6 +129,7 @@ function createFriendCardHTML(friend) {
             </div>
             <div class="friend-info">
                 <h6 class="friend-name">${friend.username}</h6>
+                <div class="friend-stats">${gettext('Wins')}: ${wins} | ${gettext('Losses')}: ${losses}</div>
                 <div class="friend-status">${friend.online ? gettext('online') : gettext('offline')}</div>
             </div>
             <div class="friend-actions">
@@ -126,10 +146,6 @@ function createFriendCardHTML(friend) {
                     <div class="action-option" onclick="window.inviteFriendToGame('${friend.id}', '${friend.username}')">
                         <i class="bi bi-controller me-2"></i>
                         <span>${gettext('Invite to Play')}</span>
-                    </div>
-                    <div class="action-option" onclick="window.location.href='/profile/${friend.id}'">
-                        <i class="bi bi-person me-2"></i>
-                        <span>${gettext('Show profile')}</span>
                     </div>
                     <div class="action-divider"></div>
                     <div class="action-option text-warning" onclick="removeFriend('${friend.id}')">
