@@ -4,9 +4,9 @@ build:
 
 up:
 	docker-compose up -d --remove-orphans
-	django-admin makemessages -d djangojs -l fr --ignore=staticfiles/**
-	django-admin makemessages -d djangojs -l es --ignore=staticfiles/**
-	django-admin compilemessages
+	docker-compose run web python ft_transcendence/manage.py makemessages -d djangojs -l fr --ignore=staticfiles/**
+	docker-compose run web python ft_transcendence/manage.py makemessages -d djangojs -l es --ignore=staticfiles/**
+	docker-compose run web python ft_transcendence/manage.py compilemessages
 	mkdir -p ft_transcendence/ft_transcendence/migrations
 	touch ft_transcendence/ft_transcendence/migrations/__init__.py
 	docker-compose run web python ft_transcendence/manage.py makemigrations ft_transcendence

@@ -7,6 +7,8 @@ WORKDIR /app
 # Copier les fichiers nécessaires pour le projet
 COPY . .
 
+RUN apt-get update && apt-get install -y gettext
+   
 # Installer les dépendances du projet
 RUN pip install --no-cache-dir -r requirements.txt
 

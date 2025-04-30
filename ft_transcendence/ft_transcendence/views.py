@@ -158,21 +158,19 @@ def settingspage(request):
                     if not any(avatar.name.lower().endswith(ext) for ext in settings.AVATAR_ALLOWED_FILE_EXTS):
                         return JsonResponse({'status': 'error', 'message': 'Format de fichier non supporté'})
                     
-                    # Supprimer l'ancien avatar s'il existe et n'est pas l'avatar par défaut
-                    if user.userprofile.avatar and user.userprofile.avatar.name != 'avatars/default.png':
-                        try:
-                            old_avatar_path = user.userprofile.avatar.path
-                            if os.path.exists(old_avatar_path):
-                                os.remove(old_avatar_path)
-                        except Exception as e:
-                            print(f"Error deleting old avatar: {str(e)}")
+                    # Assurer l'existence de l'avatar par défaut dans le dossier media
+                    ensure_default_avatar_exists()
                     
+                    # Mettre à jour l'avatar normalement
                     user.userprofile.avatar = avatar
                     user.userprofile.save()
                     avatar_url = user.userprofile.avatar.url
                 
                 user.username = username
                 user.save()
+                
+                # Si le fichier default.png a été supprimé, le restaurer
+                ensure_default_avatar_exists()
                 
                 return JsonResponse({
                     'status': 'success',
@@ -902,3 +900,27 @@ def tournament(request):
         'page': 'tournament',  # Indiquer la page active pour le menu
     }
     return render(request, 'tournament.html', context)
+
+import shutil
+def ensure_default_avatar_exists():
+    """Assurez-vous que l'avatar par défaut existe dans le dossier media"""
+    default_avatar_path = os.path.join(settings.MEDIA_ROOT, 'avatars', 'default.png')
+    protected_avatar_path = os.path.join(settings.STATIC_ROOT, 'img', 'protected', 'default.png')
+    
+    print(f"Vérifiant : {default_avatar_path}")
+    print(f"Source    : {protected_avatar_path}")
+    
+    if not os.path.exists(default_avatar_path):
+        print(f"Le fichier cible n'existe pas")
+        if os.path.exists(protected_avatar_path):
+            print(f"Le fichier source existe, tentative de copie...")
+            try:
+                # Créer le dossier s'il n'existe pas
+                os.makedirs(os.path.dirname(default_avatar_path), exist_ok=True)
+                # Copier l'image protégée vers media
+                shutil.copy(protected_avatar_path, default_avatar_path)
+                print(f"Avatar par défaut restauré: {default_avatar_path}")
+            except Exception as e:
+                print(f"ERREUR lors de la copie: {e}")
+        else:
+            print(f"ERREUR: Le fichier source n'existe pas!")

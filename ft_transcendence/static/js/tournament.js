@@ -336,12 +336,7 @@ function initTournament(restoredState = null, player1Score = 0, player2Score = 0
     function startLocalTournament() {
         const playerInputs = document.querySelectorAll('.local-player-name');
         const playerNames = Array.from(playerInputs).map(input => input.value.trim() || input.placeholder);
-        
-        // Validate player names
-        if (new Set(playerNames).size !== 4) {
-            alert(gettext('All player names must be unique'));
-            return;
-        }
+    
         
         // Set up tournament with local players
         tournamentState.players = playerNames.map((name, index) => ({
