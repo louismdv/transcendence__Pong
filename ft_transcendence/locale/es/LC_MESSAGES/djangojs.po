@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-04-30 11:52+0000\n"
+"POT-Creation-Date: 2025-04-30 14:30+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -239,4 +239,24 @@ msgstr ""
 
 #: ft_transcendence/static/js/livechat.js:313
 msgid "Game invite sent!"
+msgstr ""
+
+#: ft_transcendence/static/js/tournament.js:56
+msgid "New Tournament"
+msgstr ""
+
+#: ft_transcendence/static/js/tournament.js:67
+msgid "Tournament Bracket"
+msgstr ""
+
+#: ft_transcendence/static/js/tournament.js:146
+msgid "Local Tournament Setup"
+msgstr ""
+
+#: ft_transcendence/static/js/tournament.js:165
+msgid "Start Local Tournament"
+msgstr ""
+
+#: ft_transcendence/static/js/tournament.js:364
+msgid "Tournament starting..."
 msgstr ""

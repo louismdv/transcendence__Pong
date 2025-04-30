@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-04-30 11:52+0000\n"
+"POT-Creation-Date: 2025-04-30 14:30+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -245,20 +245,25 @@ msgstr "Salut t'es dispo pour une partie? Voici un code: "
 msgid "Game invite sent!"
 msgstr "Invitation à jouer envoyée!"
 
-#~ msgid "New Tournament"
-#~ msgstr "Nouveau tournoi"
+#: ft_transcendence/static/js/tournament.js:56
+msgid "New Tournament"
+msgstr "Nouveau tournoi"
 
-#~ msgid "Tournament Bracket"
-#~ msgstr "Brackets du tournoi"
+#: ft_transcendence/static/js/tournament.js:67
+msgid "Tournament Bracket"
+msgstr "Brackets du tournoi"
 
-#~ msgid "Local Tournament Setup"
-#~ msgstr "Organisation du tournoi local"
+#: ft_transcendence/static/js/tournament.js:146
+msgid "Local Tournament Setup"
+msgstr "Organisation du tournoi local"
 
-#~ msgid "Start Local Tournament"
-#~ msgstr "Commencer le tournoi"
+#: ft_transcendence/static/js/tournament.js:165
+msgid "Start Local Tournament"
+msgstr "Commencer le tournoi"
 
-#~ msgid "Tournament starting..."
-#~ msgstr "Début du tournoi..."
+#: ft_transcendence/static/js/tournament.js:364
+msgid "Tournament starting..."
+msgstr "Début du tournoi..."
 
 #~ msgid "Show profile"
 #~ msgstr "Afficher le profil"
