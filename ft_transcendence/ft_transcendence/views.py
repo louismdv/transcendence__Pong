@@ -381,6 +381,39 @@ def get_friends(request):
     
     return JsonResponse({'friends': friends_data})
 
+from django.contrib.auth.decorators import login_required
+from django.http import JsonResponse, HttpResponseForbidden, Http404
+from django.views.decorators.http import require_GET
+from .models import Friendship, UserProfile
+from django.contrib.auth.models import User
+
+@require_GET
+@login_required
+def get_friend_stats(request, friend_id):
+    try:
+        friend = User.objects.get(pk=friend_id)
+    except User.DoesNotExist:
+        raise Http404("User not found")
+
+    # Check if the requester is friends with this user
+    is_friend = Friendship.objects.filter(
+        (Q(sender=request.user, receiver=friend) | Q(sender=friend, receiver=request.user)),
+        status='accepted'
+    ).exists()
+
+    if not is_friend:
+        return HttpResponseForbidden("You are not allowed to view this user's stats.")
+
+    # Access stats from profile
+    profile = getattr(friend, 'userprofile', None)
+    if not profile:
+        return JsonResponse({'wins': 0, 'losses': 0})
+
+    return JsonResponse({
+        'wins': profile.online_wins or 0,
+        'losses': profile.online_losses or 0
+    })
+
 @ensure_csrf_cookie
 @login_required
 def get_friend_requests(request):

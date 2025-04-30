@@ -130,6 +130,12 @@
     font-size: 0.85rem;
     color: #666;
 }
+.friend-stats {
+    margin-left: 20px;
+    font-size: 0.85rem;
+    color: #666;
+}
+
 
 /* ========== Friend Actions ========== */
 .friend-actions {
