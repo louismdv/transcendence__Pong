@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-04-30 14:30+0000\n"
+"POT-Creation-Date: 2025-04-30 14:47+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -21,7 +21,7 @@ msgstr ""
 
 #: ft_transcendence/static/js/chatpage.js:56
 msgid "No friends "
-msgstr ""
+msgstr "Sin amigos "
 
 #: ft_transcendence/static/js/chatpage.js:56
 #: ft_transcendence/static/js/chatpage.js:115
@@ -29,7 +29,7 @@ msgstr ""
 #: ft_transcendence/static/js/friendspage.js:133
 #: ft_transcendence/static/js/friendspage.js:804
 msgid "offline"
-msgstr ""
+msgstr "desconectado"
 
 #: ft_transcendence/static/js/chatpage.js:56
 #: ft_transcendence/static/js/chatpage.js:115
@@ -38,92 +38,92 @@ msgstr ""
 #: ft_transcendence/static/js/friendspage.js:800
 #: ft_transcendence/static/js/livechat.js:162
 msgid "online"
-msgstr ""
+msgstr "conectado"
 
 #: ft_transcendence/static/js/chatpage.js:56
 msgid " at the moment."
-msgstr ""
+msgstr " por el momento."
 
 #: ft_transcendence/static/js/chatpage.js:57
 msgid "Please come back later."
-msgstr ""
+msgstr "Por favor, vuelve más tarde."
 
 #: ft_transcendence/static/js/chatpage.js:100
 msgid "An error occurred while loading friends. Please try again later."
-msgstr ""
+msgstr "Ocurrió un error al cargar los amigos. Inténtalo de nuevo más tarde."
 
 #: ft_transcendence/static/js/dashboard.js:23
 #: ft_transcendence/static/js/dashboard.js:62
 msgid "No data"
-msgstr ""
+msgstr "Sin datos"
 
 #: ft_transcendence/static/js/dashboard.js:25
 msgid "Player statistics"
-msgstr ""
+msgstr "Estadísticas del jugador"
 
 #: ft_transcendence/static/js/dashboard.js:55
 msgid "Online wins"
-msgstr ""
+msgstr "Victorias en línea"
 
 #: ft_transcendence/static/js/dashboard.js:55
 msgid "Online losses"
-msgstr ""
+msgstr "Derrotas en línea"
 
 #: ft_transcendence/static/js/dashboard.js:78
 msgid "No games played yet"
-msgstr ""
+msgstr "Aún no se han jugado partidas"
 
 #: ft_transcendence/static/js/friendspage.js:76
 msgid "No friends at the moment"
-msgstr ""
+msgstr "Sin amigos por el momento"
 
 #: ft_transcendence/static/js/friendspage.js:77
 msgid "Search for users to add them to your friends list."
-msgstr ""
+msgstr "Busca usuarios para agregarlos a tu lista de amigos."
 
 #: ft_transcendence/static/js/friendspage.js:97
 msgid "Error while loading friends. Please try again."
-msgstr ""
+msgstr "Error al cargar los amigos. Inténtalo de nuevo."
 
 #: ft_transcendence/static/js/friendspage.js:132
 msgid "Wins"
-msgstr ""
+msgstr "Victorias"
 
 #: ft_transcendence/static/js/friendspage.js:132
 msgid "Losses"
-msgstr ""
+msgstr "Derrotas"
 
 #: ft_transcendence/static/js/friendspage.js:139
 msgid "Actions"
-msgstr ""
+msgstr "Acciones"
 
 #: ft_transcendence/static/js/friendspage.js:144
 msgid "Private Message"
-msgstr ""
+msgstr "Mensaje privado"
 
 #: ft_transcendence/static/js/friendspage.js:148
 msgid "Invite to Play"
-msgstr ""
+msgstr "Invitar a jugar"
 
 #: ft_transcendence/static/js/friendspage.js:153
 msgid "Remove"
-msgstr ""
+msgstr "Eliminar"
 
 #: ft_transcendence/static/js/friendspage.js:157
 msgid "Block"
-msgstr ""
+msgstr "Bloquear"
 
 #: ft_transcendence/static/js/friendspage.js:229
 msgid "No result for "
-msgstr ""
+msgstr "Sin resultados para "
 
 #: ft_transcendence/static/js/friendspage.js:254
 msgid "Invite sent successfully!"
-msgstr ""
+msgstr "¡Invitación enviada con éxito!"
 
 #: ft_transcendence/static/js/friendspage.js:256
 msgid "Error while sending invite."
-msgstr ""
+msgstr "Error al enviar la invitación."
 
 #: ft_transcendence/static/js/friendspage.js:261
 #: ft_transcendence/static/js/friendspage.js:297
@@ -132,131 +132,428 @@ msgstr ""
 #: ft_transcendence/static/js/friendspage.js:708
 #: ft_transcendence/static/js/friendspage.js:749
 msgid "An error has occurred."
-msgstr ""
+msgstr "Ha ocurrido un error."
 
 #: ft_transcendence/static/js/friendspage.js:373
 #: ft_transcendence/static/js/friendspage.js:487
 msgid "No blocked users."
-msgstr ""
+msgstr "No hay usuarios bloqueados."
 
 #: ft_transcendence/static/js/friendspage.js:544
 msgid "Friends"
-msgstr ""
+msgstr "Amigos"
 
 #: ft_transcendence/static/js/friendspage.js:546
 #: ft_transcendence/static/js/friendspage.js:600
 msgid "Request sent"
-msgstr ""
+msgstr "Solicitud enviada"
 
 #: ft_transcendence/static/js/friendspage.js:549
 msgid "Accept"
-msgstr ""
+msgstr "Aceptar"
 
 #: ft_transcendence/static/js/friendspage.js:550
 msgid "Refuse"
-msgstr ""
+msgstr "Rechazar"
 
 #: ft_transcendence/static/js/friendspage.js:553
 msgid "Blocked"
-msgstr ""
+msgstr "Bloqueados"
 
 #: ft_transcendence/static/js/friendspage.js:555
 msgid "Add"
-msgstr ""
+msgstr "Agregar"
 
 #: ft_transcendence/static/js/friendspage.js:577
 msgid "Error while searching"
-msgstr ""
+msgstr "Error al buscar"
 
 #: ft_transcendence/static/js/friendspage.js:596
 msgid "Friend request sent successfully!"
-msgstr ""
+msgstr "¡Solicitud de amistad enviada con éxito!"
 
 #: ft_transcendence/static/js/friendspage.js:606
 msgid "Error while sending request."
-msgstr ""
+msgstr "Error al enviar la solicitud."
 
 #: ft_transcendence/static/js/friendspage.js:611
 msgid "An error has occured."
-msgstr ""
+msgstr "Ha ocurrido un error."
 
 #: ft_transcendence/static/js/friendspage.js:634
 msgid "No invitations for the moment."
-msgstr ""
+msgstr "No hay invitaciones por el momento."
 
 #: ft_transcendence/static/js/friendspage.js:665
 msgid "Error while loading invitations."
-msgstr ""
+msgstr "Error al cargar las invitaciones."
 
 #: ft_transcendence/static/js/friendspage.js:672
 #: ft_transcendence/static/js/friendspage.js:715
 msgid "Request ID invalide"
-msgstr ""
+msgstr "ID de solicitud inválido"
 
 #: ft_transcendence/static/js/friendspage.js:699
 msgid "Friend request accepted!"
-msgstr ""
+msgstr "¡Solicitud de amistad aceptada!"
 
 #: ft_transcendence/static/js/friendspage.js:703
 msgid "Error while accepting friend request."
-msgstr ""
+msgstr "Error al aceptar la solicitud de amistad."
 
 #: ft_transcendence/static/js/friendspage.js:742
 msgid "Friend request refused."
-msgstr ""
+msgstr "Solicitud de amistad rechazada."
 
 #: ft_transcendence/static/js/friendspage.js:744
 msgid "Error while rejecting the request."
-msgstr ""
+msgstr "Error al rechazar la solicitud."
 
 #: ft_transcendence/static/js/friendspage.js:763
 msgid "No requests at the moment."
-msgstr ""
+msgstr "No hay solicitudes por el momento."
 
 #: ft_transcendence/static/js/friendspage.js:832
 msgid "No friends at the moment."
-msgstr ""
+msgstr "Sin amigos por el momento."
 
 #: ft_transcendence/static/js/friendspage.js:833
 msgid "Search for users to add to your friends list."
-msgstr ""
+msgstr "Busca usuarios para agregarlos a tu lista de amigos."
 
 #: ft_transcendence/static/js/friendspage.js:848
 msgid "Today"
-msgstr ""
+msgstr "Hoy"
 
 #: ft_transcendence/static/js/friendspage.js:850
 msgid "Yesterday"
-msgstr ""
+msgstr "Ayer"
 
 #: ft_transcendence/static/js/friendspage.js:852
 msgid "days ago"
-msgstr ""
+msgstr "hace días"
 
 #: ft_transcendence/static/js/livechat.js:307
 msgid "Hey are you available for a game? Here's a code just in case: "
 msgstr ""
+"Hola, ¿estás disponible para una partida? Aquí tienes un código por si "
+"acaso: "
 
 #: ft_transcendence/static/js/livechat.js:313
 msgid "Game invite sent!"
-msgstr ""
+msgstr "¡Invitación para jugar enviada!"
 
 #: ft_transcendence/static/js/tournament.js:56
 msgid "New Tournament"
-msgstr ""
+msgstr "Nuevo torneo"
 
 #: ft_transcendence/static/js/tournament.js:67
 msgid "Tournament Bracket"
-msgstr ""
+msgstr "Llaves del torneo"
 
 #: ft_transcendence/static/js/tournament.js:146
 msgid "Local Tournament Setup"
-msgstr ""
+msgstr "Configuración del torneo local"
 
 #: ft_transcendence/static/js/tournament.js:165
 msgid "Start Local Tournament"
-msgstr ""
+msgstr "Iniciar torneo local"
 
 #: ft_transcendence/static/js/tournament.js:364
 msgid "Tournament starting..."
-msgstr ""
+msgstr "El torneo está comenzando..."
+
+#~ msgid "Show profile"
+#~ msgstr "Mostrar perfil"
+
+#~ msgid "All player names must be unique"
+#~ msgstr "Todos los nombres de jugador deben ser únicos"
+
+#~ msgid "Erreur lors de l'envoi de la demande."
+#~ msgstr "Error al enviar la solicitud."
+
+#~ msgid "View Profile"
+#~ msgstr "Ver perfil"
+
+#~ msgid "Blocked on"
+#~ msgstr "Bloqueado el"
+
+#~ msgid "Unblock"
+#~ msgstr "Desbloquear"
+
+#~ msgid "Home"
+#~ msgstr "Inicio"
+
+#~ msgid "Choose a game mode:"
+#~ msgstr "Elige un modo de juego:"
+
+#~ msgid "Main menu"
+#~ msgstr "Menú principal"
+
+#~ msgid "Tournament"
+#~ msgstr "Torneo"
+
+#~ msgid "Chat"
+#~ msgstr "Chat"
+
+#~ msgid "Board"
+#~ msgstr "Tablero"
+
+#~ msgid "Settings"
+#~ msgstr "Configuración"
+
+#~ msgid "Account"
+#~ msgstr "Cuenta"
+
+#~ msgid "Play online"
+#~ msgstr "Jugar en línea"
+
+#~ msgid "Play local"
+#~ msgstr "Jugar localmente"
+
+#~ msgid "DashBoard"
+#~ msgstr "Panel de control"
+
+#~ msgid "Tournament Status"
+#~ msgstr "Estado del torneo"
+
+#~ msgid "Messaging"
+#~ msgstr "Mensajería"
+
+#~ msgid "Contacts"
+#~ msgstr "Contactos"
+
+#~ msgid "Friends Management"
+#~ msgstr "Gestión de amigos"
+
+#~ msgid "My Friends"
+#~ msgstr "Mis amigos"
+
+#~ msgid "Requests"
+#~ msgstr "Solicitudes"
+
+#~ msgid "Search"
+#~ msgstr "Buscar"
+
+#~ msgid "Friends List"
+#~ msgstr "Lista de amigos"
+
+#~ msgid "Search a friend..."
+#~ msgstr "Buscar un amigo..."
+
+#~ msgid "Loading..."
+#~ msgstr "Cargando..."
+
+#~ msgid "Received Requests"
+#~ msgstr "Solicitudes recibidas"
+
+#~ msgid "Pending friend requests"
+#~ msgstr "Solicitudes de amistad pendientes"
+
+#~ msgid "Search Users"
+#~ msgstr "Buscar usuarios"
+
+#~ msgid "Search by username..."
+#~ msgstr "Buscar por nombre de usuario..."
+
+#~ msgid "Enter at least 3 characters to search"
+#~ msgstr "Introduce al menos 3 caracteres para buscar"
+
+#~ msgid "Blocked Users"
+#~ msgstr "Usuarios bloqueados"
+
+#~ msgid "These users cannot contact you"
+#~ msgstr "Estos usuarios no pueden contactarte"
+
+#~ msgid "Room Code :"
+#~ msgstr "Código de sala:"
+
+#~ msgid "Copy room code"
+#~ msgstr "Copiar código de sala"
+
+#~ msgid "You:"
+#~ msgstr "Tú:"
+
+#~ msgid "loading"
+#~ msgstr "cargando"
+
+#~ msgid "Use"
+#~ msgstr "Usa"
+
+#~ msgid "arrow keys to move your paddle"
+#~ msgstr "las flechas para mover tu paleta"
+
+#~ msgid "Write your message..."
+#~ msgstr "Escribe tu mensaje..."
+
+#~ msgid "Send"
+#~ msgstr "Enviar"
+
+#~ msgid "Create a new game:"
+#~ msgstr "Crear una nueva partida:"
+
+#~ msgid "What game room would you like to join/create?"
+#~ msgstr "¿A qué sala de juego te gustaría unirte/crear?"
+
+#~ msgid "Enter room name ..."
+#~ msgstr "Ingresa el nombre de la sala..."
+
+#~ msgid "Enter"
+#~ msgstr "Entrar"
+
+#~ msgid "Login"
+#~ msgstr "Iniciar sesión"
+
+#~ msgid "Username"
+#~ msgstr "Nombre de usuario"
+
+#~ msgid "Password"
+#~ msgstr "Contraseña"
+
+#~ msgid "Need an account?"
+#~ msgstr "¿Necesitas una cuenta?"
+
+#~ msgid "SIGN UP"
+#~ msgstr "REGÍSTRATE"
+
+#~ msgid "OR"
+#~ msgstr "O"
+
+#~ msgid "Login with 42"
+#~ msgstr "Iniciar sesión con 42"
+
+#~ msgid "Sign Up"
+#~ msgstr "Registrarse"
+
+#~ msgid "Email"
+#~ msgstr "Correo electrónico"
+
+#~ msgid "Confirm Password"
+#~ msgstr "Confirmar contraseña"
+
+#~ msgid "Create Account"
+#~ msgstr "Crear cuenta"
+
+#~ msgid "Already have an account?"
+#~ msgstr "¿Ya tienes una cuenta?"
+
+#~ msgid "LOGIN"
+#~ msgstr "INICIAR SESIÓN"
+
+#~ msgid "Profile Settings"
+#~ msgstr "Configuración del perfil"
+
+#~ msgid "Edit your personal information and preferences"
+#~ msgstr "Edita tu información personal y preferencias"
+
+#~ msgid "Profile"
+#~ msgstr "Perfil"
+
+#~ msgid "Preferences"
+#~ msgstr "Preferencias"
+
+#~ msgid "Profile Information"
+#~ msgstr "Información del perfil"
+
+#~ msgid "Edit your personal information"
+#~ msgstr "Edita tu información personal"
+
+#~ msgid "Profile Picture"
+#~ msgstr "Foto de perfil"
+
+#~ msgid "Account Information"
+#~ msgstr "Información de la cuenta"
+
+#~ msgid "Edit your email and password"
+#~ msgstr "Edita tu correo y contraseña"
+
+#~ msgid "Email Address"
+#~ msgstr "Dirección de correo"
+
+#~ msgid "Current Password"
+#~ msgstr "Contraseña actual"
+
+#~ msgid "New Password"
+#~ msgstr "Nueva contraseña"
+
+#~ msgid "Danger Zone"
+#~ msgstr "Zona de peligro"
+
+#~ msgid "Irreversible actions for your account"
+#~ msgstr "Acciones irreversibles para tu cuenta"
+
+#~ msgid "Delete Account"
+#~ msgstr "Eliminar cuenta"
+
+#~ msgid "Display Preferences"
+#~ msgstr "Preferencias de visualización"
+
+#~ msgid "Customize your display preferences"
+#~ msgstr "Personaliza tus preferencias de visualización"
+
+#~ msgid "Time Format"
+#~ msgstr "Formato de hora"
+
+#~ msgid "Timezone"
+#~ msgstr "Zona horaria"
+
+#~ msgid "Language"
+#~ msgstr "Idioma"
+
+#~ msgid "Save"
+#~ msgstr "Guardar"
+
+#~ msgid "Are you absolutely sure?"
+#~ msgstr "¿Estás completamente seguro?"
+
+#~ msgid ""
+#~ "This action is irreversible. It will permanently delete your account and "
+#~ "all associated data from our servers."
+#~ msgstr ""
+#~ "Esta acción es irreversible. Eliminará permanentemente tu cuenta y todos "
+#~ "los datos asociados de nuestros servidores."
+
+#~ msgid "Cancel"
+#~ msgstr "Cancelar"
+
+#~ msgid "Tournament Mode"
+#~ msgstr "Modo Torneo"
+
+#~ msgid "Waiting for players..."
+#~ msgstr "Esperando a los jugadores..."
+
+#~ msgid "Join Tournament"
+#~ msgstr "Unirse al torneo"
+
+#~ msgid "Ready"
+#~ msgstr "Listo"
+
+#~ msgid "Losers Match"
+#~ msgstr "Partido de perdedores"
+
+#~ msgid "Loser"
+#~ msgstr "Perdedor"
+
+#~ msgid "Leave Tournament"
+#~ msgstr "Salir del torneo"
+
+#~ msgid "Final"
+#~ msgstr "Final"
+
+#~ msgid "Championship"
+#~ msgstr "Campeonato"
+
+#~ msgid "Winner"
+#~ msgstr "Ganador"
+
+#~ msgid "results"
+#~ msgstr "resultados"
+
+#~ msgid "Tournament Results"
+#~ msgstr "Resultados del torneo"
+
+#~ msgid "Player"
+#~ msgstr "Jugador"
+
+#~ msgid "Back to Tournament"
+#~ msgstr "Volver al torneo"

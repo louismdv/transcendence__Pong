@@ -74,7 +74,7 @@ function updateGameHistory(games) {
     if (games.length === 0) {
         const row = document.createElement("tr");
         const cell = document.createElement("td");
-        cell.colSpan = 5;
+        cell.colSpan = 6;
         cell.textContent = gettext('No games played yet');
         cell.style.textAlign = "center";
         row.appendChild(cell);

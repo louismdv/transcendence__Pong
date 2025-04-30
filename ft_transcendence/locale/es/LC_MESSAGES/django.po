@@ -19,9 +19,6 @@ msgstr ""
 "Plural-Forms: nplurals=3; plural=n == 1 ? 0 : n != 0 && n % 1000000 == 0 ? "
 "1 : 2;\n"
 #: ft_transcendence/views.py:20
-msgid "home"
-msgstr ""
-# Página de inicio
 msgid "Home"
 msgstr "Inicio"
 
@@ -58,14 +55,9 @@ msgstr "Jugar localmente"
 msgid "DashBoard"
 msgstr "Panel de control"
 
-# Página de Torneo
-msgid "Tournament Mode"
-msgstr "Modo Torneo"
-
 msgid "Tournament Status"
 msgstr "Estado del torneo"
 
-# Página de mensajería
 msgid "Messaging"
 msgstr "Mensajería"
 
@@ -135,6 +127,9 @@ msgstr "Invitar a jugar"
 msgid "View Profile"
 msgstr "Ver perfil"
 
+msgid "Show profile"
+msgstr "Mostrar perfil"
+
 msgid "Remove"
 msgstr "Eliminar"
 
@@ -148,10 +143,10 @@ msgid "Unblock"
 msgstr "Desbloquear"
 
 msgid "Room Code :"
-msgstr "Código de la sala:"
+msgstr "Código de sala:"
 
 msgid "Copy room code"
-msgstr "Copiar código de la sala"
+msgstr "Copiar código de sala"
 
 msgid "You:"
 msgstr "Tú:"
@@ -163,10 +158,7 @@ msgid "Use"
 msgstr "Usa"
 
 msgid "arrow keys to move your paddle"
-msgstr "las teclas de flecha para mover tu paleta"
-
-msgid "En ligne"
-msgstr "En línea"
+msgstr "las teclas de flecha para mover tu pala"
 
 msgid "Write your message..."
 msgstr "Escribe tu mensaje..."
@@ -175,13 +167,13 @@ msgid "Send"
 msgstr "Enviar"
 
 msgid "Create a new game:"
-msgstr "Crear un nuevo juego:"
+msgstr "Crear una nueva partida:"
 
 msgid "What game room would you like to join/create?"
-msgstr "¿Qué sala de juego te gustaría unirte/crear?"
+msgstr "¿A qué sala de juego quieres unirte o crear?"
 
 msgid "Enter room name ..."
-msgstr "Ingresa el nombre de la sala ..."
+msgstr "Introduce el nombre de la sala..."
 
 msgid "Enter"
 msgstr "Entrar"
@@ -199,7 +191,7 @@ msgid "Need an account?"
 msgstr "¿Necesitas una cuenta?"
 
 msgid "SIGN UP"
-msgstr "REGÍSTRATE"
+msgstr "REGISTRARSE"
 
 msgid "OR"
 msgstr "O"
@@ -228,6 +220,9 @@ msgstr "INICIAR SESIÓN"
 msgid "Profile Settings"
 msgstr "Configuración del perfil"
 
+msgid "Manage your personal information and preferences"
+msgstr "Gestiona tu información personal y preferencias"
+
 msgid "Edit your personal information and preferences"
 msgstr "Edita tu información personal y preferencias"
 
@@ -250,7 +245,7 @@ msgid "Account Information"
 msgstr "Información de la cuenta"
 
 msgid "Edit your email and password"
-msgstr "Edita tu correo electrónico y contraseña"
+msgstr "Edita tu correo y contraseña"
 
 msgid "Email Address"
 msgstr "Dirección de correo electrónico"
@@ -262,7 +257,7 @@ msgid "New Password"
 msgstr "Nueva contraseña"
 
 msgid "Danger Zone"
-msgstr "Zona de peligro"
+msgstr "Zona peligrosa"
 
 msgid "Irreversible actions for your account"
 msgstr "Acciones irreversibles para tu cuenta"
@@ -289,7 +284,7 @@ msgid "Save"
 msgstr "Guardar"
 
 msgid "Are you absolutely sure?"
-msgstr "¿Estás absolutamente seguro?"
+msgstr "¿Estás completamente seguro?"
 
 msgid "This action is irreversible. It will permanently delete your account and all associated data from our servers."
 msgstr "Esta acción es irreversible. Eliminará permanentemente tu cuenta y todos los datos asociados de nuestros servidores."
@@ -297,3 +292,128 @@ msgstr "Esta acción es irreversible. Eliminará permanentemente tu cuenta y tod
 msgid "Cancel"
 msgstr "Cancelar"
 
+msgid "No friends at the moment"
+msgstr "No tienes amigos por el momento"
+
+msgid "Search for users to add them to your friends list."
+msgstr "Busca usuarios para agregarlos a tu lista de amigos."
+
+msgid "Error while loading friends. Please try again."
+msgstr "Error al cargar los amigos. Por favor, inténtalo de nuevo."
+
+msgid "No result for "
+msgstr "Sin resultados para "
+
+msgid "Friend request sent successfully!"
+msgstr "¡Solicitud de amistad enviada con éxito!"
+
+msgid "Request sent"
+msgstr "Solicitud enviada"
+
+msgid "Error during sending friend invite."
+msgstr "Error al enviar la invitación de amistad."
+
+msgid "An error has occured."
+msgstr "Ha ocurrido un error."
+
+msgid "No invitations for the moment."
+msgstr "No hay invitaciones por el momento."
+
+msgid "Error while loading invitations."
+msgstr "Error al cargar las invitaciones."
+
+msgid "No blocked users."
+msgstr "No hay usuarios bloqueados."
+
+msgid "Wins:"
+msgstr "Victorias:"
+
+msgid "Losses:"
+msgstr "Derrotas:"
+
+msgid "Total games:"
+msgstr "Total de partidas:"
+
+msgid "Win rate:"
+msgstr "Porcentaje de victorias:"
+
+msgid "Recent Games"
+msgstr "Partidas recientes"
+
+msgid "Date"
+msgstr "Fecha"
+
+msgid "Room name"
+msgstr "Nombre de la sala"
+
+msgid "Opponent"
+msgstr "Oponente"
+
+msgid "Duration"
+msgstr "Duración"
+
+msgid "Score"
+msgstr "Puntuación"
+
+msgid "Result"
+msgstr "Resultado"
+
+msgid "Player Dashboard"
+msgstr "Panel del jugador"
+
+msgid "French"
+msgstr "Francés"
+
+msgid "English"
+msgstr "Inglés"
+
+msgid "Spanish"
+msgstr "Español"
+
+msgid "Waiting..."
+msgstr "Esperando..."
+
+msgid "Tournament Mode"
+msgstr "Modo Torneo"
+
+msgid "Waiting for players..."
+msgstr "Esperando jugadores..."
+
+msgid "Join Tournament"
+msgstr "Unirse al torneo"
+
+msgid "Ready"
+msgstr "Listo"
+
+msgid "Losers Match"
+msgstr "Partido de perdedores"
+
+msgid "Loser"
+msgstr "Perdedor"
+
+msgid "Leave Tournament"
+msgstr "Salir del torneo"
+
+msgid "Final"
+msgstr "Final"
+
+msgid "Championship"
+msgstr "Campeonato"
+
+msgid "Winner"
+msgstr "Ganador"
+
+msgid "results"
+msgstr "resultados"
+
+msgid "Tournament Results"
+msgstr "Resultados del torneo"
+
+msgid "New Tournament"
+msgstr "Nuevo torneo"
+
+msgid "Player"
+msgstr "Jugador"
+
+msgid "Back to Tournament"
+msgstr "Volver al torneo"
