@@ -84,7 +84,7 @@
                 <li><a href="#home" id="homeLink"><span class="material-symbols-outlined" style="color: #F75A6A;">home</span>{% trans "Home" %}</a></li>
                 <li><a id="openTournamentLink" href="#tournament"><span class="material-symbols-outlined" style="color: #E5C462">trophy</span>{% trans "Tournament" %}</a></li>
                 <li><a href="#friends" id="friendsLink"><span class="material-symbols-outlined" style="color: #62E573">group</span>{% trans "Friends" %}</a></li>
-                <li><a id="chatLink" href="#chat"><span class="material-symbols-outlined" style="color: #628BE5;">chat</span>{% trans "Chat" %}<span class="badge bg-danger rounded-pill ms-2 unread-count">0</span></a></li>
+                <li><a id="chatLink" href="#chat"><span class="material-symbols-outlined" style="color: #628BE5;">chat</span>{% trans "Chat" %}<span class="badge bg-danger rounded-pill ms-2 unread-count"></span></a></li>
                 <li><a href="#dashboard" id="dashboardLink"><span class="material-symbols-outlined" style="color: #96725F;">leaderboard</span>{% trans "Dashboard" %}</a></li>
                 <h4>{% trans "Account" %}</h4>
                 <li><a id="settings-btn" href="#settings"><span class="material-symbols-outlined">Settings</span>{% trans "Settings" %}</a></li>
@@ -114,13 +114,7 @@
                         </button>
                     </div>
                 </div>
-                <div class="gameMode">
-                    <h3>{% trans "Dashboard:" %}</h3>
-                </div>
-                <div class="dash">
-                    {% trans "Check your stats" %}
-                    <span class="material-symbols-outlined">Open_in_new</span>
-                </div>
+      
             </div>
 
             <!-- Autres sections -->
@@ -149,14 +143,7 @@
 
     {% include 'livechat.html' %}
 
-    <script src="{% static 'js/home.js' %}"></script>
-    <script src="{% static 'js/chatpage.js' %}"></script>
-    <script src="{% static 'js/livechat.js' %}"></script>
-    <script src="{% static 'js/tournament.js' %}"></script>
-    <script src="{% static 'js/navigation.js' %}"></script>
-    <script src="{% static 'js/dashboard.js' %}"></script>
-
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+    
 
     <script>
         window.currentUserAvatar = "{{ user.userprofile.avatar.url|default:'../media/avatars/default.png' }}";

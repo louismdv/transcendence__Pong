@@ -834,7 +834,7 @@ function initTournament(restoredState = null, player1Score = 0, player2Score = 0
         });
         
         // Show setup, hide results
-        localSetupDiv.style.display = 'block';
+        localSetupDiv.style.display = 'none';
         if (tournamentResults) {
             tournamentResults.style.display = 'none';
         }
