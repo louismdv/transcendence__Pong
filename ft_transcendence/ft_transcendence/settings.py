@@ -186,7 +186,7 @@ from decouple import config
 
 FT_CLIENT_ID = config("FT_CLIENT_ID")
 FT_CLIENT_SECRET = config("FT_CLIENT_SECRET")
-FT_REDIRECT_URI = "https://localhost/auth/callback/"
+FT_REDIRECT_URI = "https://lousimdv.works/auth/callback/"
 
 
 CSRF_TRUSTED_ORIGINS = [
@@ -194,6 +194,8 @@ CSRF_TRUSTED_ORIGINS = [
     'http://localhost', 
     'https://127.0.0.1',
     'http://127.0.0.1'
+    'https:://lousimdv.works',
+    'http://lousimdv.works',
 ]
 
 CSRF_USE_SESSIONS = False
