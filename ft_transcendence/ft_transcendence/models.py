@@ -15,7 +15,7 @@ class UserProfile(models.Model):
         upload_to='avatars/',
         null=True,
         blank=True,
-        default='avatars/default.png'
+        default='../static/assets/default.png'
     )
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
