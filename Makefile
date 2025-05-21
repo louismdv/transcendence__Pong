@@ -3,7 +3,7 @@ build:
 	
 
 up:
-	docker-compose up -d --remove-orphans
+	docker-compose up --remove-orphans
 	docker-compose run web python ft_transcendence/manage.py makemessages -d djangojs -l fr --ignore=staticfiles/**
 	docker-compose run web python ft_transcendence/manage.py makemessages -d djangojs -l es --ignore=staticfiles/**
 	docker-compose run web python ft_transcendence/manage.py compilemessages

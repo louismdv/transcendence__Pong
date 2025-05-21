@@ -9,6 +9,7 @@ services:
                     daphne -p 80 -b 0.0.0.0 ft_transcendence.asgi:application"
     volumes:
       - .:/app
+      - ./locale:/app/locale
     environment:
       - DJANGO_SETTINGS_MODULE=ft_transcendence.settings
       - PYTHONUNBUFFERED=1
