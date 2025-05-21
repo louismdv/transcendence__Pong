@@ -15,11 +15,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = 'django-insecure-x=&ot3)u%h9r96@7#0&e3#w-b(t$d#uzyi4lu6optmh(bp#4*k'
 
-DEBUG = False
-if not DEBUG:
-    SECURE_SSL_REDIRECT = True
-    CSRF_COOKIE_SECURE = True
-    SESSION_COOKIE_SECURE = True
+DEBUG = True
 
 ALLOWED_HOSTS = ['*']
 
@@ -67,7 +63,7 @@ MIDDLEWARE = [
     'django.middleware.locale.LocaleMiddleware',
     
     'django.middleware.common.CommonMiddleware',
-    # 'django.middleware.csrf.CsrfViewMiddleware',
+    'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     
     # Your custom language middleware should come after LocaleMiddleware
@@ -186,16 +182,19 @@ from decouple import config
 
 FT_CLIENT_ID = config("FT_CLIENT_ID")
 FT_CLIENT_SECRET = config("FT_CLIENT_SECRET")
-FT_REDIRECT_URI = "https://localhost/auth/callback/"
+FT_REDIRECT_URI = "https://localhost:8000/auth/callback/"
 
 
 CSRF_TRUSTED_ORIGINS = [
+    'https://localhost:8000',
+    'http://localhost:8000',
     'https://localhost',
     'http://localhost', 
-    'https://127.0.0.1',
-    'http://127.0.0.1'
+    'https://127.0.0.1:8000',
+    'http://127.0.0.1:8000'
 ]
 
+CSRF_COOKIE_SECURE = False
 CSRF_USE_SESSIONS = False
 CSRF_COOKIE_HTTPONLY = False
 CSRF_COOKIE_SAMESITE = None
