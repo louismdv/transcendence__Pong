@@ -6,11 +6,10 @@ services:
     command: sh -c "cd /app/ft_transcendence && 
                     python manage.py migrate && 
                     python manage.py collectstatic --noinput --clear && 
-                    daphne -p 8000 -b 0.0.0.0 ft_transcendence.asgi:application"
+                    daphne -p 80 -b 0.0.0.0 ft_transcendence.asgi:application"
     volumes:
       - .:/app
-    # ports:
-    #   - "8000:8000"
+      - ./locale:/app/locale
     environment:
       - DJANGO_SETTINGS_MODULE=ft_transcendence.settings
       - PYTHONUNBUFFERED=1
@@ -60,7 +59,8 @@ services:
       - ./staticfiles:/app/staticfiles:ro
       - ./ft_transcendence/media:/app/media:ro
     ports:
-      - "8000:8000"
+      - "80:80"
+      - "443:443"
     depends_on:
       - web
     networks:
