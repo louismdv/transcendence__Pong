@@ -10,6 +10,8 @@ services:
     volumes:
       - .:/app
       - ./locale:/app/locale
+    ports:
+      - "8000:80"
     environment:
       - DJANGO_SETTINGS_MODULE=ft_transcendence.settings
       - PYTHONUNBUFFERED=1
