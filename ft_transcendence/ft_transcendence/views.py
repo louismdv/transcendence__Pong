@@ -1,29 +1,27 @@
-from django.shortcuts import render, redirect
-from django.views.decorators.csrf import csrf_protect, ensure_csrf_cookie
-from django.contrib.auth.decorators import login_required
-from django.contrib.auth import login, authenticate
-from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
-from django.contrib import messages
-from django.http import JsonResponse
-from django.core.files.storage import default_storage
-from .models import UserProfile, UserPreferences
-from django.conf import settings
-from django.views.decorators.http import require_POST
-from django.contrib.auth.models import User
-from .models import Friendship
-from django.utils import timezone
-from datetime import timedelta
-from django.db import models
-from django.db.models import Q
-from .models import Friendship, UserProfile
 import os
 import json
-from django.utils import translation
-from django.http import HttpResponseForbidden
 import requests
-from django.contrib.auth.models import User
-from ft_transcendence.models import GameRoom  # adjust import to where your GameRoom model is
+from datetime import timedelta
 
+from django.conf import settings
+from django.contrib import messages
+from django.contrib.auth import authenticate, login
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
+from django.contrib.auth.models import User
+from django.core.files.storage import default_storage
+from django.db import models
+from django.db.models import Q
+from django.http import JsonResponse, Http404, HttpResponseForbidden
+from django.shortcuts import render, redirect
+from django.utils import timezone, translation
+from django.views.decorators.csrf import csrf_protect, ensure_csrf_cookie
+from django.views.decorators.http import require_GET, require_POST
+
+from .models import UserProfile, UserPreferences, Friendship
+from ft_transcendence.models import GameRoom
+from urllib.request import urlopen
+from django.core.files.base import ContentFile
 
 # Step 1: Redirect to 42
 @ensure_csrf_cookie
@@ -37,10 +35,6 @@ def login_42(request):
     return redirect(auth_url)
 
 # Step 2: Handle callback
-from urllib.request import urlopen
-from django.core.files.base import ContentFile
-import os
-
 @ensure_csrf_cookie
 def callback_42(request):
     code = request.GET.get("code")
@@ -157,10 +151,7 @@ def settingspage(request):
                         return JsonResponse({'status': 'error', 'message': "L'image est trop volumineuse"})
                     if not any(avatar.name.lower().endswith(ext) for ext in settings.AVATAR_ALLOWED_FILE_EXTS):
                         return JsonResponse({'status': 'error', 'message': 'Format de fichier non supporté'})
-                    
-                    # Assurer l'existence de l'avatar par défaut dans le dossier media
-                    ensure_default_avatar_exists()
-                    
+                                        
                     # Mettre à jour l'avatar normalement
                     user.userprofile.avatar = avatar
                     user.userprofile.save()
@@ -168,10 +159,7 @@ def settingspage(request):
                 
                 user.username = username
                 user.save()
-                
-                # Si le fichier default.png a été supprimé, le restaurer
-                ensure_default_avatar_exists()
-                
+
                 return JsonResponse({
                     'status': 'success',
                     'message': 'Profil mis à jour avec succès',
@@ -379,11 +367,7 @@ def get_friends(request):
     
     return JsonResponse({'friends': friends_data})
 
-from django.contrib.auth.decorators import login_required
-from django.http import JsonResponse, HttpResponseForbidden, Http404
-from django.views.decorators.http import require_GET
-from .models import Friendship, UserProfile
-from django.contrib.auth.models import User
+
 
 @require_GET
 @login_required
@@ -824,11 +808,6 @@ def chatpage(request):
         return render(request, 'chatpage.html')
     return redirect('home')
 
-
-
-from django.views.decorators.csrf import ensure_csrf_cookie
-from django.http import JsonResponse
-
 def dashboard_data(request):
     user_profile = request.user.userprofile
     user = request.user
@@ -900,27 +879,3 @@ def tournament(request):
         'page': 'tournament',  # Indiquer la page active pour le menu
     }
     return render(request, 'tournament.html', context)
-
-import shutil
-def ensure_default_avatar_exists():
-    """Assurez-vous que l'avatar par défaut existe dans le dossier media"""
-    default_avatar_path = os.path.join(settings.MEDIA_ROOT, 'avatars', 'default.png')
-    protected_avatar_path = os.path.join(settings.STATIC_ROOT, 'img', 'protected', 'default.png')
-    
-    print(f"Vérifiant : {default_avatar_path}")
-    print(f"Source    : {protected_avatar_path}")
-    
-    if not os.path.exists(default_avatar_path):
-        print(f"Le fichier cible n'existe pas")
-        if os.path.exists(protected_avatar_path):
-            print(f"Le fichier source existe, tentative de copie...")
-            try:
-                # Créer le dossier s'il n'existe pas
-                os.makedirs(os.path.dirname(default_avatar_path), exist_ok=True)
-                # Copier l'image protégée vers media
-                shutil.copy(protected_avatar_path, default_avatar_path)
-                print(f"Avatar par défaut restauré: {default_avatar_path}")
-            except Exception as e:
-                print(f"ERREUR lors de la copie: {e}")
-        else:
-            print(f"ERREUR: Le fichier source n'existe pas!")
