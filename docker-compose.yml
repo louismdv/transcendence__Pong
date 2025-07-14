@@ -2,6 +2,7 @@
 
 services:
   web:
+    user: "${UID}:${GID}"
     build: .
     command: sh -c "cd /app/ft_transcendence && 
                     python manage.py migrate && 

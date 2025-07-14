@@ -60,24 +60,11 @@ class Ball:
             self.point_win = True
             print("point_win", self.point_win)
 
-    def hit(self, paddle_y, paddle_height):
-        # Calculate hit position: -1 (top), 0 (center), 1 (bottom)
-        relative_intersect = ((self.y - paddle_y) -
-                              paddle_height / 2) / (paddle_height / 2)
-        # Clamp to [-1, 1]
-        relative_intersect = max(-1, min(1, relative_intersect))
-        # Max bounce angle (in radians), e.g., 60 degrees
-        max_bounce_angle = math.radians(60)
-        bounce_angle = relative_intersect * max_bounce_angle
-
-        # Reverse x direction
+    def hit(self):
         self.xFac *= -1
-        # Set new direction based on bounce angle
-        self.yFac = math.sin(bounce_angle)
-        self.xFac = math.copysign(math.cos(bounce_angle), self.xFac)
-
-        # Increase speed, but clamp to a max
-        self.speed = min(self.speed * 1.05, 15)
+        tanAngle = math.tan(self.randAngle * math.pi / 180) * self.xFac
+        self.yFac = tanAngle  # Update yFac based on the angle
+        self.speed = 8 * (1 + random.random() * 0.5)
 
     async def reset(self):
         self.x = WIN_W / 2
