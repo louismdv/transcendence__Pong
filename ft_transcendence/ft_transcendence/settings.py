@@ -182,7 +182,7 @@ from decouple import config
 
 FT_CLIENT_ID = config("FT_CLIENT_ID")
 FT_CLIENT_SECRET = config("FT_CLIENT_SECRET")
-FT_REDIRECT_URI = "https://localhost:8000/auth/callback/"
+FT_REDIRECT_URI = "https://louismdv.works/auth/callback/"
 
 
 CSRF_TRUSTED_ORIGINS = [
@@ -190,8 +190,11 @@ CSRF_TRUSTED_ORIGINS = [
     'http://localhost:8000',
     'https://localhost',
     'http://localhost', 
-    'https://127.0.0.1:8000',
-    'http://127.0.0.1:8000'
+
+    'http://127.0.0.1',
+    'https:://louismdv.works',
+
+    'https://127.0.0.1:8000'
 ]
 
 CSRF_COOKIE_SECURE = False

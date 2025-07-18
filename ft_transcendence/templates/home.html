@@ -10,7 +10,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <!-- Favicon -->
-    <link rel="icon" href="{% static 'media/favicon.ico' %}" type="image/x-icon">
+    <link rel="icon" href="{% static 'assets/favicon.ico' %}" type="image/x-icon">
 
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -39,13 +39,9 @@
     <link rel="stylesheet" href="{% static 'darkmode.css' %}">
     <link rel="stylesheet" href="{% static 'dashboard.css' %}">
 
-
-
     <!-- Sound Effects -->
-    <audio id="hitSoundL" src="{% static '../media/novakL.mp3' %}" preload="auto"></audio>
-    <audio id="hitSoundR" src="{% static '../media/novakR.mp3' %}" preload="auto"></audio>
-    <audio id="hitSoundL" src="{% static '../media/novakL.mp3' %}" preload="auto"></audio>
-    <audio id="hitSoundR" src="{% static '../media/novakR.mp3' %}" preload="auto"></audio>
+    <audio id="hitSoundL" src="{% static 'assets/novakL.mp3' %}" preload="auto"></audio>
+    <audio id="hitSoundR" src="{% static 'assets/novakR.mp3' %}" preload="auto"></audio>
 
     <!-- HTMX -->
     <script src="https://unpkg.com/htmx.org@2.0.4" integrity="sha384-HGfztofotfshcF7+8n44JQL2oJmowVChPTg48S+jvZoztPfvwD79OC/LTtG6dMp+" crossorigin="anonymous"></script>
@@ -59,7 +55,7 @@
         <!-- Header -->
         <header>
             <div class="logo">
-                <img src="{% static '../media/logo.svg' %}" alt="Pong logo" width="40" height="40">
+                <img src="{% static 'assets/logo.svg' %}" alt="Pong logo" width="40" height="40">
                 PONG
             </div>
             <div id="page-title" class="page-index"></div>

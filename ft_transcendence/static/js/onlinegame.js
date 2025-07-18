@@ -1,4 +1,3 @@
-
 (() => {
 
 // ************ SETUP ************ //
@@ -373,6 +372,31 @@ function gameLoop() {
 }
 
 // ************ LISTENERS ************ //
+let moveInterval = null;
+
+function startMoveLoop() {
+    if (moveInterval !== null) return; // Already running
+    moveInterval = setInterval(() => {
+        if (keysPressed['ArrowUp']) {
+            pushMove('move_up');
+        }
+        if (keysPressed['ArrowDown']) {
+            pushMove('move_down');
+        }
+        // If neither key is pressed, stop the loop
+        if (!keysPressed['ArrowUp'] && !keysPressed['ArrowDown']) {
+            stopMoveLoop();
+        }
+    }, 16); // ~60 times per second
+}
+
+function stopMoveLoop() {
+    if (moveInterval !== null) {
+        clearInterval(moveInterval);
+        moveInterval = null;
+    }
+}
+
 function setupEventListeners() {
     window.addEventListener("hashchange", () => {
         let gamePart = window.location.hash.split("/")[0];
@@ -386,21 +410,21 @@ function setupEventListeners() {
         }
     });
     document.addEventListener('keydown', (event) => {
-
-        keysPressed[event.code] = true;
-        switch (event.code) {
-            case 'ArrowUp':
-                return pushMove('move_up');
-            case 'ArrowDown':
-                return pushMove('move_down');
-            case 'Space':
-                console.log("Space bar pressed");
-                writeToCanvas("Opponent isn't ready yet...", WHITE, WIN_W / 2, WIN_H / 2);
-                return sendMessage({ type: 'ready', player_side: players.me.side });
+        if (event.code === 'ArrowUp' || event.code === 'ArrowDown') {
+            keysPressed[event.code] = true;
+            startMoveLoop();
+        }
+        if (event.code === 'Space') {
+            console.log("Space bar pressed");
+            writeToCanvas("Opponent isn't ready yet...", WHITE, WIN_W / 2, WIN_H / 2);
+            return sendMessage({ type: 'ready', player_side: players.me.side });
         }
     });
     document.addEventListener('keyup', (event) => {
-        keysPressed[event.code] = false;
+        if (event.code === 'ArrowUp' || event.code === 'ArrowDown') {
+            keysPressed[event.code] = false;
+            // The loop will auto-stop if no keys are pressed
+        }
     });
 }
 function preventDefault(e) {
