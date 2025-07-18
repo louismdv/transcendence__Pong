@@ -1,14 +1,12 @@
 (function() {
-    // Vérifier si l'élément existe avant d'y accéder
+
     const pageTitle = document.getElementById('page-title');
     if (pageTitle) {
         pageTitle.textContent = "Local Game Mode";
     }
-    
-    // On déclare les variables canvas et ctx mais on les initialise plus tard
+
     let canvas, ctx;
     
-    // Fonction pour initialiser le canvas avec sécurité
     function initCanvas() {
         canvas = document.getElementById('localgameCanvas');
         if (!canvas) {
@@ -24,7 +22,6 @@
         return true;
     }
     
-    // Première initialisation
     initCanvas();
     
     let msPrev = window.performance.now();
@@ -48,36 +45,16 @@
     const FONT_SIZE_XL = 500, FONT_SIZE_L = 200, FONT_SIZE_M = 50;
     
     // VARIABLES
-    let isMuted = false;
+    let isMuted = true;
+    // Mute sounds by default
+    const hitSoundL = document.getElementById('hitSoundL');
+    const hitSoundR = document.getElementById('hitSoundR');
+    if (hitSoundL) hitSoundL.muted = true;
+    if (hitSoundR) hitSoundR.muted = true;
+
     let gameRunning = false;
     let playerL, playerR, ball, keysPressed = {};
-    // Tournament integration
-    let isTournamentMode = false;
-    let tournamentPlayer1 = null;
-    let tournamentPlayer2 = null;
-    
-    // IMPORTANT: Exposer la fonction pour le tournoi de manière globale
-    window.startTournamentGame = function(player1Name, player2Name) {
-        console.log("[Game] startTournamentGame appelé:", player1Name, "vs", player2Name);
-    
-        if (!initCanvas()) {
-            console.error("[Game] Impossible d'initialiser le canvas. Match annulé.");
-            return false;
-        }
-    
-        // Continue normalement après
-        isTournamentMode = true;
-        tournamentPlayer1 = player1Name;
-        tournamentPlayer2 = player2Name;
-        gameRunning = true;
-    
-        resetGame();
-        displayTournamentPlayerNames();
-        gameLoop();
-    
-        return true;
-    };
-    
+
     
     // CLASSES: Player and Ball
     class Player {
@@ -215,93 +192,16 @@
         }
     }
     
-    // Tournament integration functions
-    document.addEventListener('start-tournament-match', function(e) {
-        console.log("Événement de tournoi reçu", e.detail);
-        
-        // S'assurer que le canvas est correctement initialisé
-        if (!initCanvas()) {
-            console.error("Impossible d'initialiser le canvas pour le tournoi");
-            return;
-        }
-        
-        console.log("Canvas trouvé et initialisé:", canvas);
-        console.log("Game container trouvé?", document.getElementById('game-container'));
-        
-        isTournamentMode = true;
-        tournamentPlayer1 = e.detail.player1;
-        tournamentPlayer2 = e.detail.player2;
-        
-        // Réinitialiser explicitement le jeu
-        gameRunning = true;
-        resetGame();
-        
-        // Display player names
-        displayTournamentPlayerNames();
-        
-        // Forcer l'affichage immédiat
-        drawCanvas();
-        
-        // Start the tournament game avec un petit délai pour être sûr
-        setTimeout(() => {
-            if (canvas && ctx) {
-                console.log("Démarrage du jeu de tournoi...");
-                gameLoop();
-            } else {
-                console.error("Canvas ou contexte manquant pour le jeu de tournoi");
-            }
-        }, 100);
-    });
-    
-    function displayTournamentPlayerNames() {
-        // Remove any existing displays
-        document.querySelectorAll('.tournament-player-name').forEach(el => el.remove());
-        
-        const player1Display = document.createElement('div');
-        player1Display.className = 'tournament-player-name';
-        player1Display.textContent = tournamentPlayer1;
-        player1Display.style.position = 'absolute';
-        player1Display.style.left = '50px';
-        player1Display.style.top = '20px';
-        player1Display.style.color = 'white';
-        player1Display.style.fontSize = '20px';
-        player1Display.style.fontWeight = 'bold';
-        player1Display.style.zIndex = '10000';
-        
-        const player2Display = document.createElement('div');
-        player2Display.className = 'tournament-player-name';
-        player2Display.textContent = tournamentPlayer2;
-        player2Display.style.position = 'absolute';
-        player2Display.style.right = '50px';
-        player2Display.style.top = '20px';
-        player2Display.style.color = 'white';
-        player2Display.style.fontSize = '20px';
-        player2Display.style.fontWeight = 'bold';
-        player2Display.style.zIndex = '10000';
-        
-        // Add to game container instead of canvas
-        const gameContainer = document.getElementById('game-container');
-        if (gameContainer) {
-            gameContainer.appendChild(player1Display);
-            gameContainer.appendChild(player2Display);
-        } else if (canvas && canvas.parentElement) {
-            canvas.parentElement.appendChild(player1Display);
-            canvas.parentElement.appendChild(player2Display);
-        }
-    }
-    
     // FUNCTIONS
     function setupEventListeners() {
         // Set up event listeners for controls
         const muteButton = document.getElementById('muteButton');
         
-        // Vérifier si le bouton existe avant d'ajouter l'écouteur d'événements
         if (muteButton) {
             muteButton.addEventListener('click', (event) => {
                 toggleMute();
             });
         }
-        
         document.addEventListener('keydown', (event) => {
             keysPressed[event.code] = true;
             if (event.code === 'Space' && !gameRunning) {
@@ -312,50 +212,38 @@
                 toggleMute();
             }
             if (event.code === 'Escape') {
-                // Si nous sommes en mode tournoi, retourner au tournoi
-                if (isTournamentMode) {
-                    const gameCompletedEvent = new CustomEvent('game-completed', {
-                        detail: {
-                            player1Score: playerL.score,
-                            player2Score: playerR.score
-                        }
-                    });
-                    // Envoyer l'événement à la fois à window et document pour être sûr
-                    window.dispatchEvent(gameCompletedEvent);
-                    document.dispatchEvent(gameCompletedEvent);
-                    
-                    console.log("[Game] Événement game-completed envoyé avec les scores:", playerL.score, "-", playerR.score);
-                    
-                    isTournamentMode = false;
-                    tournamentPlayer1 = null;
-                    tournamentPlayer2 = null;
-                    
-                    document.querySelectorAll('.tournament-player-name').forEach(el => el.remove());
-                } else {
-                    resetGame();
-                    pregameLoop();
-                }
+                pregameLoop();
+                resetGame();
+                gameRunning = false;
             }
         });
         document.addEventListener('keyup', (event) => {
             keysPressed[event.code] = false;
         });
     }
-    
+
     function toggleMute() {
-        // Toggle mute status
         isMuted = !isMuted;
-        
-        // Sécuriser l'accès aux éléments audio
+
         const hitSoundL = document.getElementById('hitSoundL');
         const hitSoundR = document.getElementById('hitSoundR');
         const muteButton = document.getElementById('muteButton');
+        const muteTooltip = document.getElementById('muteTooltip');
         
         if (hitSoundL) hitSoundL.muted = isMuted;
         if (hitSoundR) hitSoundR.muted = isMuted;
         
         if (muteButton) {
-            muteButton.textContent = isMuted ? "volume_mute" : "volume_off";
+            muteButton.textContent = isMuted ? "volume_off" : "volume_mute";
+            // Add or remove the 'muted' class using the id
+            if (isMuted) {
+                muteButton.classList.add('muted');
+            } else {
+                muteButton.classList.remove('muted');
+            }
+        }
+        if (muteTooltip) {
+            muteTooltip.textContent = isMuted ? "Sound is muted" : "Sound is on";
         }
     }
     
@@ -384,8 +272,6 @@
     }
     
     function pregameLoop() {
-        // S'assurer que le canvas est initialisé
-        // if (!initCanvas()) return;
         
         // Show the pre-game screen
         ctx.fillStyle = GREY;
@@ -395,16 +281,9 @@
         const text = "Press space bar to start!";
         const textWidth = ctx.measureText(text).width;
         ctx.fillText(text, (WIN_W - textWidth) / 2, WIN_H / 2);
-    
-        // Si en mode tournoi, ne pas boucler
-        if (!isTournamentMode) {
-            requestAnimationFrame(pregameLoop);
-        }
     }
     
     function drawCanvas() {
-        // S'assurer que le canvas est initialisé
-        if (!initCanvas()) return;
         
         // Draw the game canvas
         ctx.fillStyle = GREY;
@@ -420,15 +299,11 @@
     }
     
     function resetGame() {
-        initCanvas(); // Réinitialiser le canvas
+        initCanvas();
         
-        playerL = new Player(50, WIN_H / 2 - 175 / 2, 'orange', 'KeyA', 'KeyD');
-        playerR = new Player(WIN_W - 50 - 30, WIN_H / 2 - 175 / 2, 'red', 'ArrowLeft', 'ArrowRight');
+        playerL = new Player(50, WIN_H / 2 - 175 / 2, 'orange', 'KeyW', 'KeyS');
+        playerR = new Player(WIN_W - 50 - 30, WIN_H / 2 - 175 / 2, 'red', 'ArrowUp', 'ArrowDown');
         ball = new Ball(WIN_W / 2, WIN_H / 2, 'blue');
-        
-        if (isTournamentMode) {
-            displayTournamentPlayerNames(); // Réafficher les noms des joueurs
-        }
     }
     
     function randNumBtw(min, max) {
@@ -454,9 +329,8 @@
     
     // Game loop
     function gameLoop() {
-        // S'assurer que le canvas est initialisé
         if (!initCanvas()) {
-            console.error("Canvas non trouvé dans gameLoop");
+            console.error("Canvas not initialized");
             return;
         }
         
@@ -468,11 +342,6 @@
     
         function updateGame() {
             if (!gameRunning) return;
-            
-            if (!canvas || !ctx) {
-                console.error("Canvas ou contexte perdu dans updateGame");
-                return;
-            }
             
             if (msPassed < msPerFrame) {
                 requestAnimationFrame(updateGame);
@@ -495,18 +364,10 @@
     
             // Check end game conditions
             if (playerL.score >= WINNING_SCORE || playerR.score >= WINNING_SCORE) {
-                if (isTournamentMode) {
-                    const gameCompletedEvent = new CustomEvent('game-completed', {
-                        detail: {
-                            player1Score: playerL.score,
-                            player2Score: playerR.score
-                        }
-                    });
-                    window.dispatchEvent(gameCompletedEvent);
-                    console.log("[Game] Événement game-completed envoyé avec les scores:", playerL.score, "-", playerR.score);
-                }
-            
+
+                gameRunning = false;
                 resetGame();
+                pregameLoop();
                 return;
             }
     
@@ -529,18 +390,14 @@
             requestAnimationFrame(updateGame);
         }
         
-        // Démarrage explicite
         requestAnimationFrame(updateGame);
     }
     
     // Initialize the game
     resetGame();
     setupEventListeners();
-    
-    // Only start pregame loop if not in tournament mode
-    if (!isTournamentMode) {
-        pregameLoop();
-    }
+    pregameLoop();
+
     window.getGameScores = function() {
         console.log("[Game] getGameScores appelé, scores:", 
             playerL ? playerL.score : 0, 
@@ -550,4 +407,4 @@
             player2Score: playerR ? playerR.score : 0
         };
     };
-})(); // Notez le changement ici: utilisez une fonction anonyme standard au lieu d'une fonction fléchée
+})();

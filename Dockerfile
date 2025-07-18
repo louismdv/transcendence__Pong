@@ -16,7 +16,7 @@ RUN pip install --no-cache-dir -r requirements.txt
 EXPOSE 8000
 
 ENV PYTHONUNBUFFERED=1
-ENV DJANGO_SETTINGS_MODULE=ft_transcendence.settings
+ENV DJANGO_SETTINGS_MODULE=ft_transcendence.settings.base
 
 # Lancer le serveur ASGI avec daphne
 CMD ["sh", "-c", "python manage.py migrate && daphne -p 8000 -b 0.0.0.0 ft_transcendence.asgi:application"]

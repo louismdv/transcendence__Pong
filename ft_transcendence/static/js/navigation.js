@@ -22,13 +22,6 @@ document.addEventListener("DOMContentLoaded", () => {
         titleClass: "page-settings",
         linkId: "settings-btn",
       },
-      tournament: {
-        sectionSelector: "#tournament-section",
-        displayStyle: "block",
-        titleText: "Tournament",
-        titleClass: "page-tournament",
-        linkId: "openTournamentLink",
-      },
       chat: {
         sectionSelector: "#chat-section",
         displayStyle: "block",

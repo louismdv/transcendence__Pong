@@ -7,7 +7,6 @@
 
 ## MANAGEMENT
 
-- **Major module**: Standard user management, authentication, users across tournaments.
 - **Major module**: Implementing remote authentication.
 
 ## GAMEPLAY
@@ -58,7 +57,6 @@ ROADMAP / TODO list
 
 - [ ] Users can subscribe to the website in a secure way.
 - [ ] Registered users can log in in a secure way.
-- [ ] Users can select a unique display name to play the tournaments.
 - [ ] Users can update their information.
 - [ ] Users can upload an avatar, with a default option if none is provided.
 - [ ] Users can add others as friends and view their online status.
@@ -70,7 +68,6 @@ ROADMAP / TODO list
 
 - [ ] Users can subscribe to the website in a secure way.
 - [ ] Registered users can log in in a secure way.
-- [ ] Users can select a unique display name to play the tournaments.
 - [ ] Users can update their information.
 - [ ] Users can upload an avatar, with a default option if none is provided.
 - [ ] Users can add others as friends and view their online status.
@@ -92,8 +89,6 @@ Be careful, the management of duplicate usernames/emails is at your discretion. 
 
 - [ ] Implement a local Pong game for two players using the same keyboard.
 - [ ] Add the ability to play against remote players via a Remote Players module.
-- [ ] Create a tournament system with multiple players and match display.
-- [ ] Implement a registration system for player aliases at the start of a tournament.
 - [ ] Set up a matchmaking system to organize matches and announce upcoming battles.
 - [ ] Ensure uniform paddle speed rules for all players, including AI.
 - [ ] Develop the Pong game following frontend constraints or use the FrontEnd/Graphics module for visual enhancements.

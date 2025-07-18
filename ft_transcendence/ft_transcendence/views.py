@@ -297,46 +297,6 @@ def login_view(request):
         form = AuthenticationForm()
     return render(request, 'login.html', {'form': form})
 
-@ensure_csrf_cookie
-@login_required(login_url='/login')
-def tournament(request):
-    if not hasattr(request.user, 'userprofile'):
-        UserProfile.objects.create(user=request.user)
-    return render(request, 'tournament.html')
-
-@ensure_csrf_cookie
-@login_required(login_url='/login')
-@csrf_protect
-def tournament_join(request):
-    if request.method == 'POST':
-        return JsonResponse({
-            'status': 'success',
-            'message': 'Tournoi rejoint',
-            'player_id': str(request.user.id),
-            'username': request.user.username
-        })
-    return JsonResponse({'status': 'error', 'message': 'Méthode non autorisée'})
-
-@ensure_csrf_cookie
-@login_required(login_url='/login')
-@csrf_protect
-def tournament_leave(request):
-    if request.method == 'POST':
-        return JsonResponse({'status': 'success', 'message': 'Tournoi quitté'})
-    return JsonResponse({'status': 'error', 'message': 'Méthode non autorisée'})
-
-@ensure_csrf_cookie
-@login_required(login_url='/login')
-@csrf_protect
-def tournament_ready(request):
-    if request.method == 'POST':
-        try:
-            data = json.loads(request.body)
-            ready = data.get('ready', False)
-            return JsonResponse({'status': 'success', 'message': 'Prêt mis à jour', 'ready': ready})
-        except json.JSONDecodeError:
-            return JsonResponse({'status': 'error', 'message': 'JSON invalide'})
-    return JsonResponse({'status': 'error', 'message': 'Méthode non autorisée'})
 
 @ensure_csrf_cookie
 @login_required
@@ -848,34 +808,7 @@ def dashboard_data(request):
         'online_total_games': user_profile.total_online_games,
 
         'totalGames': user_profile.total_online_games + user_profile.total_local_games,
-        'tournamentsWon': 3,  # hardcoded for now
         'recentGames': recentGames_data,
     }
     
     return JsonResponse(user_stats)
-
-
-@ensure_csrf_cookie
-@login_required(login_url='/login')
-def tournament_game(request):
-    """Vue pour afficher la page du jeu en tournoi."""
-    # Récupérer les paramètres de l'URL
-    player1 = request.GET.get('player1', 'Player 1')
-    player2 = request.GET.get('player2', 'Player 2')
-    match_type = request.GET.get('match', 'Match')
-    
-    context = {
-        'player1': player1,
-        'player2': player2,
-        'match_type': match_type
-    }
-    
-    return render(request, 'tournament_game.html', context)
-
-@login_required(login_url='/login')
-def tournament(request):
-    """Vue pour la page du tournoi"""
-    context = {
-        'page': 'tournament',  # Indiquer la page active pour le menu
-    }
-    return render(request, 'tournament.html', context)

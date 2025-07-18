@@ -5,13 +5,17 @@
     align-items: center;
     margin: auto;
     justify-content: center;
+    max-width: 1300px; /* Limit maximum width */
+    max-height: 800px; /* Limit maximum height */
+    width: 100%; /* Use available width up to max-width */
+    height: 100%; /* Use available height up to max-height */
 }
 
 /* class used to design for onlinegameCanvas and localgameCanvas */
 .gamebox {
     font-family: 'Pixelify Sans', sans-serif;
     position: relative;
-    max-width: 80%;
+    max-width: 75%;
     border-radius: 10px;
     border: 10px solid #451b96;
     margin: 10px auto;
@@ -32,4 +36,16 @@
     justify-content: center;
     border: none; /* Remove default border */
     font-size: 25px; /* Adjust font size if needed */
+}
+
+.instructions {
+    display: flex;
+    margin: auto;
+}
+
+#locale-game-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 75%;
 }
