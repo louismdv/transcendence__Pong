@@ -2,6 +2,7 @@
 
 services:
   web:
+    build: .
     command: sh -c "cd /app/ft_transcendence && python manage.py migrate && python manage.py collectstatic --noinput --clear && daphne -p 8000 -b 0.0.0.0 ft_transcendence.asgi:application"
     environment:
       - DJANGO_SETTINGS_MODULE=ft_transcendence.settings.prod
