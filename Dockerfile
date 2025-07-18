@@ -13,10 +13,10 @@ RUN apt-get update && apt-get install -y gettext
 RUN pip install --no-cache-dir -r requirements.txt
 
 # Exposer le port sur lequel Django va tourner
-EXPOSE 80
+EXPOSE 8000
 
 ENV PYTHONUNBUFFERED=1
 ENV DJANGO_SETTINGS_MODULE=ft_transcendence.settings
 
 # Lancer le serveur ASGI avec daphne
-CMD ["sh", "-c", "python manage.py migrate && daphne -p 80 -b 0.0.0.0 ft_transcendence.asgi:application"]
+CMD ["sh", "-c", "python manage.py migrate && daphne -p 8000 -b 0.0.0.0 ft_transcendence.asgi:application"]
