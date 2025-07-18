@@ -8,9 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-
-"POT-Creation-Date: 2025-05-21 17:07+0000\n"
-
+"POT-Creation-Date: 2025-07-18 20:49+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -245,26 +243,6 @@ msgstr ""
 msgid "Game invite sent!"
 msgstr "¡Invitación para jugar enviada!"
 
-#: ft_transcendence/static/js/tournament.js:56
-msgid "New Tournament"
-msgstr "Nuevo torneo"
-
-#: ft_transcendence/static/js/tournament.js:67
-msgid "Tournament Bracket"
-msgstr "Llaves del torneo"
-
-#: ft_transcendence/static/js/tournament.js:146
-msgid "Local Tournament Setup"
-msgstr "Configuración del torneo local"
-
-#: ft_transcendence/static/js/tournament.js:165
-msgid "Start Local Tournament"
-msgstr "Iniciar torneo local"
-
-#: ft_transcendence/static/js/tournament.js:364
-msgid "Tournament starting..."
-msgstr "El torneo está comenzando..."
-
 #~ msgid "Show profile"
 #~ msgstr "Mostrar perfil"
 
@@ -292,9 +270,6 @@ msgstr "El torneo está comenzando..."
 #~ msgid "Main menu"
 #~ msgstr "Menú principal"
 
-#~ msgid "Tournament"
-#~ msgstr "Torneo"
-
 #~ msgid "Chat"
 #~ msgstr "Chat"
 
@@ -315,9 +290,6 @@ msgstr "El torneo está comenzando..."
 
 #~ msgid "DashBoard"
 #~ msgstr "Panel de control"
-
-#~ msgid "Tournament Status"
-#~ msgstr "Estado del torneo"
 
 #~ msgid "Messaging"
 #~ msgstr "Mensajería"
@@ -518,14 +490,8 @@ msgstr "El torneo está comenzando..."
 #~ msgid "Cancel"
 #~ msgstr "Cancelar"
 
-#~ msgid "Tournament Mode"
-#~ msgstr "Modo Torneo"
-
 #~ msgid "Waiting for players..."
 #~ msgstr "Esperando a los jugadores..."
-
-#~ msgid "Join Tournament"
-#~ msgstr "Unirse al torneo"
 
 #~ msgid "Ready"
 #~ msgstr "Listo"
@@ -535,9 +501,6 @@ msgstr "El torneo está comenzando..."
 
 #~ msgid "Loser"
 #~ msgstr "Perdedor"
-
-#~ msgid "Leave Tournament"
-#~ msgstr "Salir del torneo"
 
 #~ msgid "Final"
 #~ msgstr "Final"
@@ -551,11 +514,5 @@ msgstr "El torneo está comenzando..."
 #~ msgid "results"
 #~ msgstr "resultados"
 
-#~ msgid "Tournament Results"
-#~ msgstr "Resultados del torneo"
-
 #~ msgid "Player"
 #~ msgstr "Jugador"
-
-#~ msgid "Back to Tournament"
-#~ msgstr "Volver al torneo"

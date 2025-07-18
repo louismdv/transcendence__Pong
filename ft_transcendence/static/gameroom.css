@@ -117,8 +117,18 @@
     flex-direction: row;
     align-items: center;
     margin-bottom: 35px;
+    font-size: 1.2rem;
+    text-align: center;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 5px;
 }
 
+#muteButton {
+    flex: 0 0 auto;
+    margin: 0 20px;
+    position: relative;
+}
 
 .avatar-container {
   position: relative;
@@ -129,38 +139,6 @@
   border-radius: 25%; /* If your profile picture is circular */
 }
 
-
-/* This creates the semi-transparent mask */
-/* .loader {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 80%;
-    height: 100%;
-    border-radius: 25%;
-    background-color: rgba(139, 139, 139, 0.563);
-    z-index: 1;
-} */
-
-/* If you still want a spinner on top of the mask */
-/* .loader::after {
-    content: "";
-    position: absolute;
-    top: 5;
-    left: 5;
-    width: 30px;
-    height: 30px;
-    border: 3px solid #f3f3f3;
-    border-top: 3px solid #006eb7;
-    border-radius: 50%;
-    animation: spin 1s linear infinite;
-}
-
-
-@keyframes spin {
-  0% { transform: translate(-50%, -50%) rotate(0deg); }
-  100% { transform: translate(-50%, -50%) rotate(360deg); }
-} */
 
 .loader {
     width: 5px;

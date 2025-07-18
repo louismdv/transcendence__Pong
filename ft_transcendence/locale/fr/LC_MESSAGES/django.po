@@ -28,9 +28,6 @@ msgstr "Choisissez un mode de jeu :"
 msgid "Main menu"
 msgstr "Menu principal"
 
-msgid "Tournament"
-msgstr "Tournoi"
-
 msgid "Friends"
 msgstr "Amis"
 
@@ -54,9 +51,6 @@ msgstr "Jouer en local"
 
 msgid "DashBoard"
 msgstr "Tableau de bord"
-
-msgid "Tournament Status"
-msgstr "Statut du tournoi"
 
 msgid "Messaging"
 msgstr "Messagerie"
@@ -373,14 +367,8 @@ msgstr "Espagnol"
 msgid "Waiting..."
 msgstr "en attente..."
 
-msgid "Tournament Mode"
-msgstr "Mode Tournoi"
-
 msgid "Waiting for players..."
 msgstr "En attente des joueurs"
-
-msgid "Join Tournament"
-msgstr "Rejoindre le tournoi"
 
 msgid "Ready"
 msgstr "Prêt"
@@ -390,9 +378,6 @@ msgstr "Match perdant"
 
 msgid "Loser"
 msgstr "Perdant"
-
-msgid "Leave Tournament"
-msgstr "Quitter le tournoi"
 
 msgid "Final"
 msgstr "Finale"
@@ -406,16 +391,5 @@ msgstr "Gagnant"
 msgid "results"
 msgstr "resultats"
 
-msgid "Tournament Results"
-msgstr "Resultats du tournoi"
-
-msgid "New Tournament"
-msgstr "Nouveau tournoi"
-
 msgid "Player"
 msgstr "Joueur"
-
-
-msgid "Back to Tournament"
-msgstr "Retour aU tournoi"
-

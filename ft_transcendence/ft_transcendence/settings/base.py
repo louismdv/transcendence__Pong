@@ -3,6 +3,14 @@ import os
 from decouple import config
 from django.contrib.messages import constants as messages
 
+BASE_DIR = Path(__file__).resolve().parent.parent.parent
+
+SECRET_KEY = config('SECRET_KEY', default='unsafe-secret-key-for-dev')
+
+DEBUG = False  # Default to False, override in dev.py
+
+ALLOWED_HOSTS = []  # Override in dev.py and prod.py
+
 MESSAGE_TAGS = {
     messages.DEBUG: 'debug',
     messages.INFO: 'info',
@@ -10,14 +18,6 @@ MESSAGE_TAGS = {
     messages.WARNING: 'warning',
     messages.ERROR: 'error',
 }
-
-BASE_DIR = Path(__file__).resolve().parent.parent
-
-SECRET_KEY = 'django-insecure-x=&ot3)u%h9r96@7#0&e3#w-b(t$d#uzyi4lu6optmh(bp#4*k'
-
-DEBUG = True
-
-ALLOWED_HOSTS = ['*']
 
 INSTALLED_APPS = [
     'channels',
@@ -54,21 +54,14 @@ ACCOUNT_USERNAME_REQUIRED = True
 ACCOUNT_AUTHENTICATION_METHOD = 'username'
 ACCOUNT_EMAIL_VERIFICATION = 'optional'
 
-
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
-    
-    # This should come right after sessions
     'django.middleware.locale.LocaleMiddleware',
-    
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
-    
-    # Your custom language middleware should come after LocaleMiddleware
     'ft_transcendence.middleware.UserLanguageMiddleware',
-
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'allauth.account.middleware.AccountMiddleware',
@@ -109,27 +102,17 @@ DATABASES = {
 }
 
 AUTH_PASSWORD_VALIDATORS = [
-    {
-        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
-    },
+    {'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator', },
+    {'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator', },
+    {'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator', },
+    {'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator', },
 ]
 
 LOGIN_URL = '/login'
 LOGIN_REDIRECT_URL = '/'
 
 TIME_ZONE = 'UTC'
-
 USE_TZ = True
-
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 STATIC_URL = '/static/'
@@ -137,22 +120,9 @@ STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "static"),
 ]
 
-# translation
-
-USE_I18N = True
-LANGUAGE_CODE = 'en'
-LANGUAGES = [
-    ('en', 'English'),
-    ('fr', 'French'),
-    ('es', 'Spanish'),
-]
-LOCALE_PATHS = [
-    os.path.join(BASE_DIR, 'locale'),
-]
-# _______________
-
 STATIC_ROOT = os.path.join(BASE_DIR.parent, 'staticfiles')
 
+# Whitenoise config (serve static files efficiently)
 WHITENOISE_MIDDLEWARE = ['whitenoise.middleware.WhiteNoiseMiddleware']
 MIDDLEWARE = WHITENOISE_MIDDLEWARE + MIDDLEWARE
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
@@ -171,40 +141,16 @@ CHANNEL_LAYERS = {
         'BACKEND': 'channels_redis.core.RedisChannelLayer',
         'CONFIG': {
             "hosts": [os.environ.get('REDIS_URL', 'redis://redis:6379/0')],
-            # "capacity": 2,
         },
     },
 }
 
-
-# 42 OAuth Settings
-from decouple import config
-
-FT_CLIENT_ID = config("FT_CLIENT_ID")
-FT_CLIENT_SECRET = config("FT_CLIENT_SECRET")
-FT_REDIRECT_URI = "https://louismdv.works/auth/callback/"
-
-
-CSRF_TRUSTED_ORIGINS = [
-    'https://localhost:8000',
-    'http://localhost:8000',
-    'https://localhost',
-    'http://localhost', 
-
-    'http://127.0.0.1',
-    'https:://louismdv.works',
-
-    'https://127.0.0.1:8000'
+# Internationalization / translation
+USE_I18N = True
+LANGUAGE_CODE = 'en'
+LANGUAGES = [
+    ('en', 'English'),
+    ('fr', 'French'),
+    ('es', 'Spanish'),
 ]
-
-CSRF_COOKIE_SECURE = False
-CSRF_USE_SESSIONS = False
-CSRF_COOKIE_HTTPONLY = False
-CSRF_COOKIE_SAMESITE = None
-SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
-CSRF_COOKIE_NAME = 'csrftoken'
-CSRF_COOKIE_DOMAIN = None
-CSRF_COOKIE_PATH = '/'
-
-# Désactivez temporairement la vérification du référent
-CSRF_TRUSTED_REFERERS = None
+LOCALE_PATHS = [os.path.join(BASE_DIR, 'locale')]

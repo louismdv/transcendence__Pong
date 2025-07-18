@@ -30,8 +30,6 @@ class UserProfile(models.Model):
     local_wins = models.PositiveIntegerField(default=0)
     local_losses = models.PositiveIntegerField(default=0)
     total_local_games = models.PositiveIntegerField(default=0)
-    
-    # tournaments_won = models.PositiveIntegerField(default=0)
 
     class Meta:
         verbose_name = 'User Profile'

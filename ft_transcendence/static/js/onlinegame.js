@@ -46,7 +46,7 @@ function initGame() {
     console.log("Initializing game...");
 
     // 1. Get canvas and context
-    // document.getElementById('page-title').textContent = "Online Game Mode";
+    document.getElementById('page-title').textContent = "Online Game Mode";
     canvas = document.getElementById('onlinegameCanvas');
     ctx = canvas.getContext("2d");
 

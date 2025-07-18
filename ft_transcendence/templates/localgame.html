@@ -1,7 +1,41 @@
+{% load i18n static %}
 
 <section id ="localgame-section">
     <div id="gameWrapper">
-        <button id="muteButton" class="material-symbols-outlined">volume_off</button>
+
+        <div id="locale-game-header" style="display: flex; align-items: center; justify-content: space-between;">
+
+            <div class="instructions">
+                Left Player controls:
+                <div style="display: flex; margin:auto">
+                    <span id="arrowBox" style="display: flex; align-items: center; justify-content: center; width: 33px; height: 27px;">
+                        <span class="material-symbols-outlined" style="font-size: 20px; font-family: 'Poppins'; "> W </span>
+                    </span>
+                    <span id="arrowBox" style="display: flex; align-items: center; justify-content: center; width: 33px; height: 27px;">
+                        <span class="material-symbols-outlined" style="font-size: 20px; font-family: 'Poppins';"> S </span>
+                    </span> 
+                </div>
+            </div>
+
+            <button id="muteButton" class="material-symbols-outlined">
+                volume_off
+                <span class="tooltip-text" id="muteTooltip">Sound is muted</span>
+            </button>
+
+            <div class="instructions">
+                Right Player controls:
+                <div style="display: flex; margin:auto">
+                    <span id="arrowBox">
+                        <span class="material-symbols-outlined">arrow_drop_up</span>
+                    </span>
+                    <span id="arrowBox">
+                        <span class="material-symbols-outlined">arrow_drop_down</span>
+                    </span> 
+                </div>
+            </div>
+
+        </div>
+
         <canvas id="localgameCanvas" class="gamebox" width="1080" height="720"></canvas>
     </div>
 </section>
