@@ -6,6 +6,8 @@
 <link rel="stylesheet" href="{% static 'style.css' %}">
 
 <section id="register">
+    <div id="lottie-background"></div>
+
     <div class="login-content">
         <h2 class="h2-login">{% trans "Sign Up" %}</h2>
         {% if messages %}
@@ -22,10 +24,6 @@
                 <input type="text" id="username" name="username" required>
             </div>
             <div class="login-form">
-                <label for="email">{% trans "Email" %}</label>
-                <input type="text" id="email" name="email" required>
-            </div>
-            <div class="login-form">
                 <label for="password1">{% trans "Password" %}</label>
                 <input type="password" id="password1" name="password1" required>
             </div>
@@ -40,3 +38,17 @@
         </form>
     </div>
 </section>
+
+
+<script>
+  lottie.loadAnimation({
+  container: document.getElementById('lottie-background'),
+  renderer: 'svg',
+  loop: true,
+  autoplay: true,
+  path: "{% static 'assets/lottie-signin-bg.json' %}",
+  rendererSettings: {
+    preserveAspectRatio: 'xMidYMid slice'  // 👈 best for background
+  }
+  });
+</script>
