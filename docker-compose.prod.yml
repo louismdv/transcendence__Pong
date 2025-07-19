@@ -12,6 +12,8 @@ services:
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
       - POSTGRES_HOST=db
       - POSTGRES_PORT=5432
+    volumes:
+      - .:/app  
     networks:
       - backend
 
