@@ -27,5 +27,6 @@ jobs:
           ssh -o StrictHostKeyChecking=no lmerveil@${{ secrets.VM_HOST }} << 'EOF'
             cd ~/transcendence__Pong
             git pull
+            docker-compose -f docker-compose.yml -f docker-compose.prod.yml down
             docker-compose -f docker-compose.yml -f docker-compose.prod.yml up
           EOF
