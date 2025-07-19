@@ -25,6 +25,7 @@ services:
       - ./nginx/ssl:/etc/letsencrypt
       - ./staticfiles:/app/staticfiles:ro
       - ./ft_transcendence/media:/app/media:ro
+      - ./nginx/html:/usr/share/nginx/html:ro
     ports:
       - "80:80"    # HTTP
       - "443:443"  # HTTPS
