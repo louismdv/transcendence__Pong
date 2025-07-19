@@ -65,6 +65,9 @@ body::before {
 /* Style pour les messages contenant la classe success */
 /* Style pour la div contenant le message de succès */
 .messages.success {
+    font-family: 'Poppins', sans-serif;
+    font-weight: 400;
+    font-size: 2rem;
     background-color: rgba(0, 128, 0, 0.3); /* Vert transparent sur la div entière */
     color: white; /* Texte en blanc */
     padding: 10px 20px; /* Espacement autour du texte */
@@ -74,6 +77,9 @@ body::before {
 
 /* Style pour la div contenant un message d'erreur */
 .messages.error {
+    font-family: 'Poppins', sans-serif;
+    font-weight: 400;
+    font-size: 2rem;
     background-color: rgba(255, 0, 0, 0.3); /* Rouge transparent sur la div entière */
     color: white; /* Texte en blanc */
     padding: 10px 20px; /* Espacement autour du texte */
