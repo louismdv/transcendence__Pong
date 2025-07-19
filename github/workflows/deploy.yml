@@ -21,8 +21,11 @@ jobs:
       - name: Deploy to Azure VM
         run: |
           ssh -o StrictHostKeyChecking=no user@${{ secrets.VM_HOST }} << EOF
-            export DB_PASSWORD=$DB_PASSWORD
-            export DJANGO_SECRET_KEY=$DJANGO_SECRET_KEY
+            export POSTGRES_DB=${{ secrets.POSTGRES_DB }}
+            export POSTGRES_USER=${{ secrets.POSTGRES_USER }}
+            export POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }}
+            export POSTGRES_HOST=db
+            export POSTGRES_PORT=5432
             cd ~/transcendence__Pong
             git pull
             docker-compose -f docker-compose.yml -f docker-compose.prod.yml -d build
