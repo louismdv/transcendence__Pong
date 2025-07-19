@@ -35,16 +35,16 @@ from django.core.files.base import ContentFile
 #     return redirect(auth_url)
 
 # Step 2: Handle callback
-@ensure_csrf_cookie
-def callback_42(request):
-    code = request.GET.get("code")
-    if not code:
-        return render(request, "error.html", {"message": "No code provided."})
+# @ensure_csrf_cookie
+# def callback_42(request):
+#     code = request.GET.get("code")
+#     if not code:
+#         return render(request, "error.html", {"message": "No code provided."})
 
-    # Step 1: Get access token
-    token_response = requests.post("https://api.intra.42.fr/oauth/token", data={
-        "grant_type": "authorization_code",
-        "client_id": settings.FT_CLIENT_ID,
+#     # Step 1: Get access token
+#     token_response = requests.post("https://api.intra.42.fr/oauth/token", data={
+#         "grant_type": "authorization_code",
+#         "client_id": settings.FT_CLIENT_ID,
 
 # Step 1: Redirect to 42
 # @ensure_csrf_cookie
