@@ -38,17 +38,6 @@ class UserProfile(models.Model):
     def __str__(self):
         return f"{self.user.username}'s profile"
 
-    # def save(self, *args, **kwargs):
-    #     try:
-    #         # Check if there's an existing profile
-    #         old_profile = UserProfile.objects.get(user=self.user)
-    #         if old_profile.avatar != self.avatar:
-    #             # Delete old avatar file if it's different from the new one
-    #             old_profile.avatar.delete(save=False)
-    #     except UserProfile.DoesNotExist:
-    #         pass
-        
-    #     super().save(*args, **kwargs)
 
 class UserPreferences(models.Model):
     TIME_FORMAT_CHOICES = [
