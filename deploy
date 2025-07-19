@@ -20,7 +20,9 @@ jobs:
 
       - name: Deploy to Azure VM
         run: |
-          ssh -o StrictHostKeyChecking=no lmerveil@${{ secrets.VM_HOST }} << 'EOF'
+          ssh -o StrictHostKeyChecking=no user@${{ secrets.VM_HOST }} << EOF
+            export DB_PASSWORD=$DB_PASSWORD
+            export DJANGO_SECRET_KEY=$DJANGO_SECRET_KEY
             cd ~/transcendence__Pong
             git pull
             docker-compose -f docker-compose.yml -f docker-compose.prod.yml -d build
