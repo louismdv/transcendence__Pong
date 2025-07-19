@@ -93,11 +93,11 @@ ASGI_APPLICATION = 'ft_transcendence.asgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': config('POSTGRES_DB'),
-        'USER': config('POSTGRES_USER'),
-        'PASSWORD': config('POSTGRES_PASSWORD'),
+        'NAME': config('POSTGRES_DB', default='ft_ficello'),
+        'USER': config('POSTGRES_USER', default='latranscenderie'),
+        'PASSWORD': config('POSTGRES_PASSWORD', default='lazigouingouinerie42'),
         'HOST': 'db',
-        'PORT': '5432',
+        'PORT': 5432
     }
 }
 
