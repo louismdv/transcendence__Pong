@@ -30,7 +30,7 @@
             <li class="nav-item" role="presentation">
                 <button class="nav-link active" id="friends-tab" data-bs-toggle="tab" data-bs-target="#friends" type="button" role="tab" aria-controls="friends" aria-selected="true">
                     <i class="bi bi-people-fill me-2"></i>{% trans "My Friends" %}
-                    <span class="badge bg-primary rounded-pill ms-2">0</span>
+                    <span class="badge bg-primary rounded-pill ms-2" id="friendsCount">0</span>
                 </button>
             </li>
             <li class="nav-item" role="presentation">
@@ -40,13 +40,15 @@
                 </button>
             </li>
             <li class="nav-item" role="presentation">
-                <button class="nav-link" id="search-tab" data-bs-toggle="tab" data-bs-target="#search" type="button" role="tab" aria-controls="search" aria-selected="false">
-                    <i class="bi bi-search me-2"></i>{% trans "Search" %}
+                <button class="nav-link" id="blocked-tab" data-bs-toggle="tab" data-bs-target="#blocked" type="button" role="tab" aria-controls="blocked" aria-selected="false">
+                    <i class="bi bi-slash-circle-fill me-2"></i>{% trans "Blocked" %}
+                    <span class="badge bg-secondary rounded-pill ms-2" id="blockedCount">0</span>
                 </button>
             </li>
             <li class="nav-item" role="presentation">
-                <button class="nav-link" id="blocked-tab" data-bs-toggle="tab" data-bs-target="#blocked" type="button" role="tab" aria-controls="blocked" aria-selected="false">
-                    <i class="bi bi-slash-circle-fill me-2"></i>{% trans "Blocked" %}
+                <button class="nav-link d-flex align-items-center gap-2" id="search-tab" data-bs-toggle="tab" data-bs-target="#search" type="button" role="tab" aria-controls="search" aria-selected="false" style="padding: 0 10px;">
+                    <i class="bi bi-search"></i>
+                    <input type="text" id="userSearch" class="form-control border-0 bg-transparent p-0" placeholder="{% trans 'Search...' %}" style="width: 120px; font-size: 1em; box-shadow: none;">
                 </button>
             </li>
         </ul>
@@ -72,10 +74,6 @@
 
             <div class="tab-pane fade" id="requests" role="tabpanel" aria-labelledby="requests-tab">
                 <div class="card mb-4">
-                    <div class="card-header requests-header">
-                        <h5 class="card-title mb-0">{% trans "Received Requests" %}</h5>
-                        <div class="text-muted small">{% trans "Pending friend requests" %}</div>
-                    </div>
                     <div class="card-body">
                         <div id="friendRequestsContainer">
                             <div class="d-flex justify-content-center">
@@ -89,28 +87,20 @@
             </div>
 
             <div class="tab-pane fade" id="search" role="tabpanel" aria-labelledby="search-tab">
+                <!-- Search Results Header (will be populated by JavaScript) -->
+                <div id="searchResultsHeader" class="mb-3" style="display: none;">
+                    <!-- Header content will be inserted here by JavaScript -->
+                </div>
+                
                 <div class="card">
-                    <div class="card-header">
-                        <h5 class="card-title mb-0">{% trans "Search Users" %}</h5>
-                    </div>
-                    <div class="card-body">
-                        <div class="input-group mb-3">
-                            <input type="text" id="userSearch" class="form-control" placeholder="{% trans 'Search by username...' %}">
-                            <span class="input-group-text"><i class="bi bi-search"></i></span>
-                        </div>
-                        <div id="searchResults">
-                            <p class="text-muted">{% trans "Enter at least 3 characters to search" %}</p>
-                        </div>
+                    <div id="searchResults">
+                        <p class="text-muted">{% trans "Enter at least 3 characters to search" %}</p>
                     </div>
                 </div>
             </div>
 
             <div class="tab-pane fade" id="blocked" role="tabpanel" aria-labelledby="blocked-tab">
                 <div class="card">
-                    <div class="card-header blocked-header">
-                        <h5 class="card-title mb-0">{% trans "Blocked Users" %}</h5>
-                        <div class="text-muted small">{% trans "These users cannot contact you" %}</div>
-                    </div>
                     <div class="card-body">
                         <div id="blockedUsersContainer">
                             <div class="d-flex justify-content-center">

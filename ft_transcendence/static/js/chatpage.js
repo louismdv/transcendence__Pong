@@ -54,7 +54,6 @@ function loadChatCards(status) {
                 chatContainer.innerHTML = `
                     <div class="empty-state">
                         <h6>${gettext('No friends ')} ${status === "offline" ? gettext('offline') : gettext('online')} ${gettext(' at the moment.')}</h6>
-                        <p class="text-muted">${gettext('Please come back later.')}</p>
                     </div>
                 `;
                 return 0;  // Return 0 if no friends are found

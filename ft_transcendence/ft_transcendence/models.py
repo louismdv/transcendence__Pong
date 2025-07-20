@@ -5,6 +5,7 @@ from django.dispatch import receiver
 from django.core.exceptions import ObjectDoesNotExist
 from django.utils import timezone
 
+
 class UserProfile(models.Model):
     user = models.OneToOneField(
         User,
@@ -15,7 +16,7 @@ class UserProfile(models.Model):
         upload_to='avatars/',
         null=True,
         blank=True,
-        default='../static/assets/default.png'
+        default='../static/assets/avatars/default.png'
     )
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -26,7 +27,7 @@ class UserProfile(models.Model):
     online_wins = models.PositiveIntegerField(default=0)
     online_losses = models.PositiveIntegerField(default=0)
     total_online_games = models.PositiveIntegerField(default=0)
-    
+
     local_wins = models.PositiveIntegerField(default=0)
     local_losses = models.PositiveIntegerField(default=0)
     total_local_games = models.PositiveIntegerField(default=0)
@@ -38,13 +39,18 @@ class UserProfile(models.Model):
     def __str__(self):
         return f"{self.user.username}'s profile"
 
+    def get_avatar_url(self):
+        if self.avatar and hasattr(self.avatar, 'url'):
+            return self.avatar.url
+        return '/static/assets/avatars/default.png'
+
 
 class UserPreferences(models.Model):
     TIME_FORMAT_CHOICES = [
         ('12h', '12 heures'),
         ('24h', '24 heures'),
     ]
-    
+
     LANGUAGE_CHOICES = [
         ('fr', 'Français'),
         ('en', 'English'),
@@ -88,6 +94,7 @@ class UserPreferences(models.Model):
     def __str__(self):
         return f"{self.user.username}'s preferences"
 
+
 @receiver(post_save, sender=User)
 def create_user_profile_and_preferences(sender, instance, created, **kwargs):
     if created:
@@ -100,6 +107,7 @@ def create_user_profile_and_preferences(sender, instance, created, **kwargs):
             UserPreferences.objects.create(user=instance)
         except Exception as e:
             print(f"Error creating UserPreferences: {e}")
+
 
 @receiver(post_save, sender=User)
 def save_user_profile_and_preferences(sender, instance, **kwargs):
@@ -120,6 +128,7 @@ def save_user_profile_and_preferences(sender, instance, **kwargs):
     except Exception as e:
         print(f"Error saving UserPreferences: {e}")
 
+
 class Friendship(models.Model):
     STATUS_CHOICES = (
         ('pending', 'En attente'),
@@ -127,25 +136,31 @@ class Friendship(models.Model):
         ('rejected', 'Rejeté'),
         ('blocked', 'Bloqué'),
     )
-    
-    sender = models.ForeignKey(User, related_name='friendship_requests_sent', on_delete=models.CASCADE)
-    receiver = models.ForeignKey(User, related_name='friendship_requests_received', on_delete=models.CASCADE)
-    status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='pending')
+
+    sender = models.ForeignKey(
+        User, related_name='friendship_requests_sent', on_delete=models.CASCADE)
+    receiver = models.ForeignKey(
+        User, related_name='friendship_requests_received', on_delete=models.CASCADE)
+    status = models.CharField(
+        max_length=10, choices=STATUS_CHOICES, default='pending')
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    
+
     class Meta:
         unique_together = ('sender', 'receiver')
 
+
 class GameRoom(models.Model):
-    user = models.ForeignKey(User, related_name='game_rooms', on_delete=models.CASCADE)
-    opponent = models.ForeignKey(User, related_name='opponent_rooms', on_delete=models.CASCADE, null=True, blank=True)
-    winner = models.ForeignKey(User, related_name='games_won', on_delete=models.CASCADE, null=True, blank=True)
+    user = models.ForeignKey(
+        User, related_name='game_rooms', on_delete=models.CASCADE)
+    opponent = models.ForeignKey(
+        User, related_name='opponent_rooms', on_delete=models.CASCADE, null=True, blank=True)
+    winner = models.ForeignKey(
+        User, related_name='games_won', on_delete=models.CASCADE, null=True, blank=True)
     room_name = models.CharField(max_length=100)
     created_at = models.DateTimeField(auto_now_add=True)
     score = models.CharField(max_length=10, default='0-0')
     duration = models.DurationField(null=True, blank=True)
 
     def __str__(self):
-            return self.room_name
-    
+        return self.room_name

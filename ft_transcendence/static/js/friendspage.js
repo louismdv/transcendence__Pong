@@ -5,6 +5,12 @@
 
 
 document.addEventListener('DOMContentLoaded', function() {
+    console.log('DOM Content Loaded - Initializing friends page');
+    
+    // Check if the friends count badge exists
+    const friendsCountBadge = document.getElementById('friendsCount');
+    console.log('Initial friends count badge check:', friendsCountBadge);
+    
     // Initialiser la page
     loadFriends();
     loadFriendRequests();
@@ -67,6 +73,9 @@ function loadFriends() {
             return response.json();
         })
         .then(async data => {
+            // Update the friends count badge
+            updateFriendsCountBadge(data.friends.length);
+
             if (data.friends.length === 0) {
                 friendsContainer.innerHTML = `
                     <div class="empty-state">
@@ -213,10 +222,7 @@ function filterFriends(searchTerm) {
     });
     
     // Mettre à jour le compteur
-    const badge = document.querySelector('.card-title .badge');
-    if (badge) {
-        badge.textContent = visibleCount;
-    }
+    updateFriendsCountBadge(visibleCount);
     
     // Afficher un message si aucun résultat
     const friendsContainer = document.getElementById('friendsContainer');
@@ -376,7 +382,7 @@ function loadBlockedUsers() {
                 `;
                 
                 // Mettre à jour le badge
-                const badge = document.querySelector('#blocked-tab .badge');
+                const badge = document.getElementById('blockedCount');
                 if (badge) {
                     badge.textContent = "0";
                 }
@@ -392,7 +398,7 @@ function loadBlockedUsers() {
             blockedContainer.innerHTML = blockedHTML;
             
             // Mettre à jour le badge
-            const badge = document.querySelector('#blocked-tab .badge');
+            const badge = document.getElementById('blockedCount');
             if (badge) {
                 badge.textContent = data.blocked_users.length;
             }
@@ -471,7 +477,7 @@ function unblockUser(userId) {
 // Fonction pour mettre à jour le compteur d'utilisateurs bloqués
 function updateBlockedCounter() {
     const blockedContainer = document.getElementById('blockedUsersContainer');
-    const badge = document.querySelector('#blocked-tab .badge');
+    const badge = document.getElementById('blockedCount');
     
     if (blockedContainer && badge) {
         const blockedCount = blockedContainer.querySelectorAll('.blocked-user-card').length;
@@ -504,6 +510,7 @@ const searchTimeout = {
 function setupUserSearch() {
     const searchInput = document.getElementById('userSearch');
     const searchResults = document.getElementById('searchResults');
+    const searchResultsHeader = document.getElementById('searchResultsHeader');
     
     if (searchInput && searchResults) {
         searchInput.addEventListener('input', function() {
@@ -513,11 +520,13 @@ function setupUserSearch() {
             clearTimeout(searchTimeout.timer);
             
             if (query.length < 3) {
+                searchResultsHeader.style.display = 'none';
                 searchResults.innerHTML = '<p class="text-muted">Entrez au moins 3 caractères</p>';
                 return;
             }
             
-            // Afficher un indicateur de chargement
+            // Hide header and show loading indicator
+            searchResultsHeader.style.display = 'none';
             searchResults.innerHTML = `
                 <div class="d-flex justify-content-center py-2">
                     <div class="spinner-border spinner-border-sm text-primary" role="status">
@@ -532,10 +541,30 @@ function setupUserSearch() {
                     .then(response => response.json())
                     .then(data => {
                         if (data.users.length === 0) {
+                            searchResultsHeader.style.display = 'none';
                             searchResults.innerHTML = '<p class="text-muted">Aucun utilisateur trouvé</p>';
                             return;
                         }
                         
+                        // Show and populate the results header
+                        const timestamp = new Date().toLocaleTimeString();
+                        searchResultsHeader.innerHTML = `
+                            <div class="search-results-header">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <span class="text-muted">
+                                        <i class="bi bi-search me-1"></i>
+                                        ${data.users.length} résultat${data.users.length > 1 ? 's' : ''} trouvé${data.users.length > 1 ? 's' : ''}
+                                    </span>
+                                    <small class="text-muted">
+                                        <i class="bi bi-clock me-1"></i>
+                                        ${timestamp}
+                                    </small>
+                                </div>
+                            </div>
+                        `;
+                        searchResultsHeader.style.display = 'block';
+                        
+                        // Build user results
                         let usersHTML = '';
                         data.users.forEach(user => {
                             let actionButton = '';
@@ -813,14 +842,41 @@ function updateFriendStatuses() {
  * UTILITAIRES
  */
 
+// Function to update the friends count badge
+function updateFriendsCountBadge(count) {
+    const friendsCountBadge = document.getElementById('friendsCount');
+    console.log('updateFriendsCountBadge called with count:', count);
+    console.log('Friends count badge element:', friendsCountBadge);
+    
+    if (friendsCountBadge) {
+        friendsCountBadge.textContent = count;
+        console.log('Successfully updated friends count badge to:', count);
+    } else {
+        console.error('Friends count badge not found! Trying again in 100ms...');
+        // Retry after a short delay in case DOM isn't ready
+        setTimeout(() => {
+            const retryBadge = document.getElementById('friendsCount');
+            if (retryBadge) {
+                retryBadge.textContent = count;
+                console.log('Successfully updated friends count badge on retry to:', count);
+            } else {
+                console.error('Friends count badge still not found after retry!');
+            }
+        }, 100);
+    }
+}
+
 // Mettre à jour le compteur d'amis
 function updateFriendCounter() {
     const friendsContainer = document.getElementById('friendsContainer');
-    const badge = document.querySelector('.card-title .badge');
     
-    if (friendsContainer && badge) {
+    console.log('updateFriendCounter called');
+    console.log('Friends container:', friendsContainer);
+    
+    if (friendsContainer) {
         const friendCount = friendsContainer.querySelectorAll('.friend-card:not([style*="display: none"])').length;
-        badge.textContent = friendCount;
+        console.log('Calculated friend count:', friendCount);
+        updateFriendsCountBadge(friendCount);
         
         // Afficher l'état vide si aucun ami
         if (friendCount === 0 && !document.querySelector('.empty-state')) {

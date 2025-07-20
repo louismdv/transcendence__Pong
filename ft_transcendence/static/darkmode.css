@@ -45,6 +45,7 @@
 
 .darkmode .text-muted{
     color: rgb(163 163 163 / 75%) !important;
+    margin: 10px !important;
 }
 .darkmode .chat-message.sent .message-content {
     background-color: var(--color);

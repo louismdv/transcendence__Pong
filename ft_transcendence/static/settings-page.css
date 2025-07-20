@@ -88,7 +88,10 @@
 }
 
 .btn-outline-secondary {
-    border: 1px solid var(--dark-mode);
+    border-top: 0.5px solid var(--dark-color);
+    border-left: 0 solid var(--dark-color);
+    border-right: 0 solid var(--dark-color);
+    border-radius: 0px 0px 16px 16px;
 }
 .btn-outline-secondary:hover {
     background-color: var (--dark-color);
