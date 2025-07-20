@@ -327,7 +327,7 @@ class Ball {
         this.color = color;
         this.xFac = 1;
         this.yFac = 1;
-        this.speed = 5;
+        this.speed = 0;git 
         this.radius = BALL_RADIUS;
         this.hitCount = 0;
     }
@@ -387,7 +387,7 @@ function startMoveLoop() {
         if (!keysPressed['ArrowUp'] && !keysPressed['ArrowDown']) {
             stopMoveLoop();
         }
-    }, 16); // ~60 times per second
+    }, 50); // ~20 times per second (slower movement)
 }
 
 function stopMoveLoop() {

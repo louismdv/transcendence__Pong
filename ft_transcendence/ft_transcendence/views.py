@@ -28,19 +28,23 @@ from django.core.files.base import ContentFile
 def main(request):
     return render(request, 'main.html')
 
+
 @ensure_csrf_cookie
 @login_required(login_url='/login')
 def home(request):
     return render(request, 'home.html')
 
+
 @ensure_csrf_cookie
 def livechat(request):
     return render(request, 'livechat.html')
+
 
 @ensure_csrf_cookie
 @login_required(login_url='/login')
 def localgame(request):
     return render(request, 'localgame.html')
+
 
 @ensure_csrf_cookie
 @login_required(login_url='/login')
@@ -56,7 +60,8 @@ def settingspage(request):
             UserPreferences.objects.create(user=request.user)
     except Exception as e:
         print(f"Error creating user profile/preferences: {str(e)}")
-        messages.error(request, "Erreur lors de l'initialisation des paramètres utilisateur")
+        messages.error(
+            request, "Erreur lors de l'initialisation des paramètres utilisateur")
         return redirect('home')
 
     if request.method == 'POST':
@@ -74,10 +79,10 @@ def settingspage(request):
             if action == 'update_profile':
                 user = request.user
                 username = data.get('username')
-                
+
                 if not username:
                     return JsonResponse({'status': 'error', 'message': "Nom d'utilisateur requis"})
-                
+
                 avatar_url = None
                 if request.FILES.get('avatar'):
                     avatar = request.FILES['avatar']
@@ -85,19 +90,19 @@ def settingspage(request):
                         return JsonResponse({'status': 'error', 'message': "L'image est trop volumineuse"})
                     if not any(avatar.name.lower().endswith(ext) for ext in settings.AVATAR_ALLOWED_FILE_EXTS):
                         return JsonResponse({'status': 'error', 'message': 'Format de fichier non supporté'})
-                                        
+
                     # Mettre à jour l'avatar normalement
                     user.userprofile.avatar = avatar
                     user.userprofile.save()
-                    avatar_url = user.userprofile.avatar.url
-                
+                    avatar_url = user.userprofile.get_avatar_url()
+
                 user.username = username
                 user.save()
 
                 return JsonResponse({
                     'status': 'success',
                     'message': 'Profil mis à jour avec succès',
-                    'avatar_url': avatar_url or (user.userprofile.avatar.url if user.userprofile.avatar else None),
+                    'avatar_url': avatar_url or user.userprofile.get_avatar_url(),
                     'username': user.username
                 })
 
@@ -155,7 +160,7 @@ def settingspage(request):
             elif action == 'delete_account':
                 if not data.get('confirm_deletion') == 'true':
                     return JsonResponse({'status': 'error', 'message': 'Confirmation requise'})
-                
+
                 username = request.user.username
                 request.user.delete()
                 return JsonResponse({
@@ -177,7 +182,7 @@ def settingspage(request):
         user_data = {
             'username': request.user.username,
             'email': request.user.email,
-            'avatar': request.user.userprofile.avatar.url if request.user.userprofile.avatar else None,
+            'avatar': request.user.userprofile.get_avatar_url(),
             'preferences': {
                 'time_format': request.user.preferences.time_format,
                 'timezone': request.user.preferences.timezone,
@@ -191,13 +196,16 @@ def settingspage(request):
         })
     except Exception as e:
         print(f"Error in GET request: {str(e)}")
-        messages.error(request, f"Erreur lors du chargement des paramètres: {str(e)}")
+        messages.error(
+            request, f"Erreur lors du chargement des paramètres: {str(e)}")
         return redirect('home')
+
 
 @ensure_csrf_cookie
 @login_required(login_url='/login')
 def friendspage(request):
     return render(request, 'friendspage.html')
+
 
 @ensure_csrf_cookie
 @csrf_protect
@@ -217,50 +225,52 @@ def register(request):
         form = UserCreationForm()
     return render(request, 'register.html', {'form': form})
 
+
 @ensure_csrf_cookie
 @csrf_protect
 def login_view(request):
     if request.method == 'POST':
-        form = AuthenticationForm(request, data=request.POST)
-        if form.is_valid():
-            login(request, form.get_user())
+        username = request.POST.get('username')
+        password = request.POST.get('password')
+        user = authenticate(request, username=username, password=password)
+        if user is not None:
+            login(request, user)
             return redirect('home')
         else:
             messages.error(request, 'Identifiants incorrects')
-    else:
-        form = AuthenticationForm()
-    return render(request, 'login.html', {'form': form})
+    return render(request, 'login.html')
 
 
 @ensure_csrf_cookie
 @login_required
 def get_friends(request):
     # Récupérer les amis (statut "accepted")
-    friends_sent = Friendship.objects.filter(sender=request.user, status='accepted')
-    friends_received = Friendship.objects.filter(receiver=request.user, status='accepted')
-    
+    friends_sent = Friendship.objects.filter(
+        sender=request.user, status='accepted')
+    friends_received = Friendship.objects.filter(
+        receiver=request.user, status='accepted')
+
     friends_data = []
-    
+
     for friendship in friends_sent:
         friend = friendship.receiver
         friends_data.append({
             'id': friend.id,
             'username': friend.username,
-            'avatar': friend.userprofile.avatar.url if hasattr(friend, 'userprofile') and friend.userprofile.avatar else None,
+            'avatar': friend.userprofile.get_avatar_url() if hasattr(friend, 'userprofile') else None,
             'online': hasattr(friend, 'userprofile') and getattr(friend.userprofile, 'is_online', False),
         })
-    
+
     for friendship in friends_received:
         friend = friendship.sender
         friends_data.append({
             'id': friend.id,
             'username': friend.username,
-            'avatar': friend.userprofile.avatar.url if hasattr(friend, 'userprofile') and friend.userprofile.avatar else None,
+            'avatar': friend.userprofile.get_avatar_url() if hasattr(friend, 'userprofile') else None,
             'online': hasattr(friend, 'userprofile') and getattr(friend.userprofile, 'is_online', False),
         })
-    
-    return JsonResponse({'friends': friends_data})
 
+    return JsonResponse({'friends': friends_data})
 
 
 @require_GET
@@ -273,7 +283,8 @@ def get_friend_stats(request, friend_id):
 
     # Check if the requester is friends with this user
     is_friend = Friendship.objects.filter(
-        (Q(sender=request.user, receiver=friend) | Q(sender=friend, receiver=request.user)),
+        (Q(sender=request.user, receiver=friend) |
+         Q(sender=friend, receiver=request.user)),
         status='accepted'
     ).exists()
 
@@ -290,22 +301,25 @@ def get_friend_stats(request, friend_id):
         'losses': profile.online_losses or 0
     })
 
+
 @ensure_csrf_cookie
 @login_required
 def get_friend_requests(request):
     # Récupérer les demandes d'amis reçues (statut "pending")
-    requests = Friendship.objects.filter(receiver=request.user, status='pending')
-    
+    requests = Friendship.objects.filter(
+        receiver=request.user, status='pending')
+
     requests_data = []
     for req in requests:
         requests_data.append({
             'id': req.id,
             'username': req.sender.username,
-            'avatar': req.sender.userprofile.avatar.url if hasattr(req.sender, 'userprofile') and req.sender.userprofile.avatar else None,
+            'avatar': req.sender.userprofile.get_avatar_url() if hasattr(req.sender, 'userprofile') else None,
             'created_at': req.created_at.isoformat(),
         })
-    
+
     return JsonResponse({'requests': requests_data})
+
 
 @ensure_csrf_cookie
 @login_required
@@ -313,19 +327,22 @@ def search_users(request):
     query = request.GET.get('q', '')
     if len(query) < 3:
         return JsonResponse({'users': []})
-    
-    users = User.objects.filter(username__icontains=query).exclude(id=request.user.id)[:10]
-    
+
+    users = User.objects.filter(
+        username__icontains=query).exclude(id=request.user.id)[:10]
+
     users_data = []
     for user in users:
         # Vérifier si une relation d'amitié existe déjà
-        friendship_sent = Friendship.objects.filter(sender=request.user, receiver=user).first()
-        friendship_received = Friendship.objects.filter(sender=user, receiver=request.user).first()
-        
+        friendship_sent = Friendship.objects.filter(
+            sender=request.user, receiver=user).first()
+        friendship_received = Friendship.objects.filter(
+            sender=user, receiver=request.user).first()
+
         status = None
         is_sender = False
         request_id = None
-        
+
         if friendship_sent:
             status = friendship_sent.status
             is_sender = True
@@ -334,7 +351,7 @@ def search_users(request):
             status = friendship_received.status
             is_sender = False
             request_id = friendship_received.id
-        
+
         users_data.append({
             'id': user.id,
             'username': user.username,
@@ -343,8 +360,9 @@ def search_users(request):
             'is_sender': is_sender,
             'request_id': request_id,
         })
-    
+
     return JsonResponse({'users': users_data})
+
 
 @ensure_csrf_cookie
 @login_required
@@ -352,21 +370,23 @@ def search_users(request):
 def send_friend_request(request, user_id):
     try:
         receiver = User.objects.get(id=user_id)
-        
+
         # Vérifier si une demande existe déjà
         if Friendship.objects.filter(
-            (models.Q(sender=request.user) & models.Q(receiver=receiver)) | 
+            (models.Q(sender=request.user) & models.Q(receiver=receiver)) |
             (models.Q(sender=receiver) & models.Q(receiver=request.user))
         ).exists():
             return JsonResponse({'success': False, 'message': 'Une relation existe déjà avec cet utilisateur'})
-        
+
         # Créer la demande d'ami
-        friendship = Friendship(sender=request.user, receiver=receiver, status='pending')
+        friendship = Friendship(sender=request.user,
+                                receiver=receiver, status='pending')
         friendship.save()
-        
+
         return JsonResponse({'success': True})
     except User.DoesNotExist:
         return JsonResponse({'success': False, 'message': 'Utilisateur non trouvé'})
+
 
 @ensure_csrf_cookie
 @login_required
@@ -375,9 +395,10 @@ def handle_friend_request(request, request_id):
     try:
         data = json.loads(request.body)
         action = data.get('action')
-        
-        friendship = Friendship.objects.get(id=request_id, receiver=request.user, status='pending')
-        
+
+        friendship = Friendship.objects.get(
+            id=request_id, receiver=request.user, status='pending')
+
         if action == 'accept':
             friendship.status = 'accepted'
             friendship.save()
@@ -393,6 +414,7 @@ def handle_friend_request(request, request_id):
     except json.JSONDecodeError:
         return JsonResponse({'success': False, 'message': 'Données invalides'})
 
+
 @ensure_csrf_cookie
 @login_required
 @require_POST
@@ -400,15 +422,18 @@ def remove_friend(request, friend_id):
     # Supprimer la relation d'amitié dans les deux sens
     count = 0
     try:
-        friendship1 = Friendship.objects.filter(sender=request.user, receiver_id=friend_id, status='accepted')
-        friendship2 = Friendship.objects.filter(sender_id=friend_id, receiver=request.user, status='accepted')
-        
+        friendship1 = Friendship.objects.filter(
+            sender=request.user, receiver_id=friend_id, status='accepted')
+        friendship2 = Friendship.objects.filter(
+            sender_id=friend_id, receiver=request.user, status='accepted')
+
         count += friendship1.delete()[0]
         count += friendship2.delete()[0]
-        
+
         return JsonResponse({'success': True if count > 0 else False})
     except Exception as e:
         return JsonResponse({'success': False, 'message': str(e)})
+
 
 @ensure_csrf_cookie
 @login_required
@@ -416,43 +441,48 @@ def remove_friend(request, friend_id):
 def block_user(request, user_id):
     try:
         user_to_block = User.objects.get(id=user_id)
-        
+
         # Supprimer les relations existantes
         Friendship.objects.filter(
-            (models.Q(sender=request.user) & models.Q(receiver=user_to_block)) | 
+            (models.Q(sender=request.user) & models.Q(receiver=user_to_block)) |
             (models.Q(sender=user_to_block) & models.Q(receiver=request.user))
         ).delete()
-        
+
         # Créer la relation de blocage
-        friendship = Friendship(sender=request.user, receiver=user_to_block, status='blocked')
+        friendship = Friendship(sender=request.user,
+                                receiver=user_to_block, status='blocked')
         friendship.save()
-        
+
         return JsonResponse({'success': True})
     except User.DoesNotExist:
         return JsonResponse({'success': False, 'message': 'Utilisateur non trouvé'})
+
 
 @ensure_csrf_cookie
 def update_online_status(request):
     """Met à jour automatiquement les statuts des utilisateurs inactifs"""
     # Définir le délai après lequel un utilisateur est considéré comme hors ligne (10s)
     offline_threshold = timezone.now() - timedelta(seconds=10)
-    
+
     updated_count = UserProfile.objects.filter(
-        last_activity__lt=offline_threshold, 
+        last_activity__lt=offline_threshold,
         is_online=True
     ).update(is_online=False)
-    
+
     return JsonResponse({'success': True, 'updated': updated_count})
+
 
 @ensure_csrf_cookie
 @login_required
 def get_friend_statuses(request):
     # Récupérer les amis (statut "accepted")
-    friends_sent = Friendship.objects.filter(sender=request.user, status='accepted')
-    friends_received = Friendship.objects.filter(receiver=request.user, status='accepted')
-    
+    friends_sent = Friendship.objects.filter(
+        sender=request.user, status='accepted')
+    friends_received = Friendship.objects.filter(
+        receiver=request.user, status='accepted')
+
     friend_statuses = []
-    
+
     for friendship in friends_sent:
         friend = friendship.receiver
         friend_statuses.append({
@@ -460,7 +490,7 @@ def get_friend_statuses(request):
             'username': friend.username,
             'online': hasattr(friend, 'userprofile') and friend.userprofile.is_online
         })
-    
+
     for friendship in friends_received:
         friend = friendship.sender
         friend_statuses.append({
@@ -468,8 +498,9 @@ def get_friend_statuses(request):
             'username': friend.username,
             'online': hasattr(friend, 'userprofile') and friend.userprofile.is_online
         })
-    
+
     return JsonResponse({'friends': friend_statuses})
+
 
 @ensure_csrf_cookie
 @login_required
@@ -479,22 +510,23 @@ def remove_friend(request, friend_id):
     try:
         # Supprimer la relation d'amitié dans les deux sens
         friendship1 = Friendship.objects.filter(
-            sender=request.user, 
-            receiver_id=friend_id, 
+            sender=request.user,
+            receiver_id=friend_id,
             status='accepted'
         )
         friendship2 = Friendship.objects.filter(
-            sender_id=friend_id, 
-            receiver=request.user, 
+            sender_id=friend_id,
+            receiver=request.user,
             status='accepted'
         )
-        
+
         count = friendship1.delete()[0] + friendship2.delete()[0]
-        
+
         return JsonResponse({'success': count > 0})
-            
+
     except Exception as e:
         return JsonResponse({'success': False, 'message': str(e)})
+
 
 @ensure_csrf_cookie
 @login_required
@@ -503,13 +535,13 @@ def block_user(request, user_id):
     """Bloque un utilisateur."""
     try:
         user_to_block = User.objects.get(id=user_id)
-        
+
         # Supprimer les relations existantes
         Friendship.objects.filter(
-            (models.Q(sender=request.user) & models.Q(receiver=user_to_block)) | 
+            (models.Q(sender=request.user) & models.Q(receiver=user_to_block)) |
             (models.Q(sender=user_to_block) & models.Q(receiver=request.user))
         ).delete()
-        
+
         # Créer la relation de blocage
         friendship = Friendship(
             sender=request.user,
@@ -517,12 +549,13 @@ def block_user(request, user_id):
             status='blocked'
         )
         friendship.save()
-        
+
         return JsonResponse({'success': True})
     except User.DoesNotExist:
         return JsonResponse({'success': False, 'message': 'Utilisateur non trouvé'})
     except Exception as e:
         return JsonResponse({'success': False, 'message': str(e)})
+
 
 @ensure_csrf_cookie
 @login_required
@@ -531,24 +564,26 @@ def invite_to_game(request, user_id):
     """Invite un utilisateur à jouer."""
     try:
         user_to_invite = User.objects.get(id=user_id)
-        
+
         # Vérifier si l'utilisateur est un ami
         is_friend = Friendship.objects.filter(
             (models.Q(sender=request.user) & models.Q(receiver=user_to_invite) & models.Q(status='accepted')) |
-            (models.Q(sender=user_to_invite) & models.Q(receiver=request.user) & models.Q(status='accepted'))
+            (models.Q(sender=user_to_invite) & models.Q(
+                receiver=request.user) & models.Q(status='accepted'))
         ).exists()
-        
+
         if not is_friend:
             return JsonResponse({'success': False, 'message': 'Vous ne pouvez inviter que vos amis à jouer'})
-        
+
         # Ici, vous pourriez implémenter la logique d'envoi d'invitation au jeu
         # Par exemple, via des notifications WebSocket ou en sauvegardant dans la base de données
-        
+
         return JsonResponse({'success': True, 'message': 'Invitation envoyée !'})
     except User.DoesNotExist:
         return JsonResponse({'success': False, 'message': 'Utilisateur non trouvé'})
     except Exception as e:
         return JsonResponse({'success': False, 'message': str(e)})
+
 
 @ensure_csrf_cookie
 @login_required
@@ -556,30 +591,32 @@ def user_profile(request, user_id):
     """Affiche le profil d'un utilisateur."""
     try:
         user = User.objects.get(id=user_id)
-        
+
         # Vérifier si l'utilisateur est bloqué
         is_blocked = Friendship.objects.filter(
             sender=request.user,
             receiver=user,
             status='blocked'
         ).exists()
-        
+
         # Vérifier si l'utilisateur est un ami
         is_friend = Friendship.objects.filter(
             (models.Q(sender=request.user) & models.Q(receiver=user) & models.Q(status='accepted')) |
-            (models.Q(sender=user) & models.Q(receiver=request.user) & models.Q(status='accepted'))
+            (models.Q(sender=user) & models.Q(
+                receiver=request.user) & models.Q(status='accepted'))
         ).exists()
-        
+
         context = {
             'profile_user': user,
             'is_friend': is_friend,
             'is_blocked': is_blocked,
         }
-        
+
         return render(request, 'profile.html', context)
     except User.DoesNotExist:
         messages.error(request, "Utilisateur non trouvé.")
         return redirect('friends')
+
 
 @ensure_csrf_cookie
 @login_required
@@ -587,28 +624,31 @@ def chat_with_user(request, user_id):
     """Affiche ou crée une conversation avec un utilisateur."""
     try:
         other_user = User.objects.get(id=user_id)
-        
+
         # Vérifier si l'utilisateur est un ami
         is_friend = Friendship.objects.filter(
             (models.Q(sender=request.user) & models.Q(receiver=other_user) & models.Q(status='accepted')) |
-            (models.Q(sender=other_user) & models.Q(receiver=request.user) & models.Q(status='accepted'))
+            (models.Q(sender=other_user) & models.Q(
+                receiver=request.user) & models.Q(status='accepted'))
         ).exists()
-        
+
         if not is_friend:
-            messages.warning(request, "Vous ne pouvez discuter qu'avec vos amis.")
+            messages.warning(
+                request, "Vous ne pouvez discuter qu'avec vos amis.")
             return redirect('friends')
-        
+
         # Récupérer ou créer une conversation
         # Cette partie dépend de votre implémentation du système de chat
-        
+
         context = {
             'other_user': other_user,
         }
-        
+
         return render(request, 'chat.html', context)
     except User.DoesNotExist:
         messages.error(request, "Utilisateur non trouvé.")
         return redirect('friends')
+
 
 @ensure_csrf_cookie
 @login_required
@@ -620,7 +660,7 @@ def get_blocked_users(request):
             sender=request.user,
             status='blocked'
         ).select_related('receiver')
-        
+
         blocked_users = []
         for relation in blocked_relations:
             # Adapter les champs selon votre modèle
@@ -629,21 +669,22 @@ def get_blocked_users(request):
                 'username': relation.receiver.username,
                 'blocked_date': relation.created_at.isoformat()
             }
-            
+
             # Gérer l'avatar selon votre logique
             if hasattr(relation.receiver, 'userprofile') and relation.receiver.userprofile.avatar:
                 user_info['avatar'] = relation.receiver.userprofile.avatar.url
             else:
                 user_info['avatar'] = None
-            
+
             blocked_users.append(user_info)
-        
+
         return JsonResponse({'blocked_users': blocked_users})
-    
+
     except Exception as e:
         # Logger l'erreur pour le débogage
         print(f"Error in get_blocked_users: {e}")
         return JsonResponse({'blocked_users': [], 'error': str(e)})
+
 
 @ensure_csrf_cookie
 @login_required
@@ -652,35 +693,36 @@ def unblock_user(request, user_id):
     """Débloque un utilisateur."""
     try:
         user_to_unblock = User.objects.get(id=user_id)
-        
+
         # Trouver et supprimer la relation de blocage
         blocked_relation = Friendship.objects.filter(
             sender=request.user,
             receiver=user_to_unblock,
             status='blocked'
         )
-        
+
         if not blocked_relation.exists():
             return JsonResponse({
-                'success': False, 
+                'success': False,
                 'message': 'Cet utilisateur n\'est pas bloqué.'
             })
-        
+
         blocked_relation.delete()
         return JsonResponse({'success': True})
-    
+
     except User.DoesNotExist:
         return JsonResponse({
-            'success': False, 
+            'success': False,
             'message': 'Utilisateur non trouvé.'
         })
-    
+
     except Exception as e:
         print(f"Error in unblock_user: {e}")
         return JsonResponse({
-            'success': False, 
+            'success': False,
             'message': f'Une erreur est survenue: {str(e)}'
         })
+
 
 @ensure_csrf_cookie
 @login_required
@@ -695,12 +737,14 @@ def set_language_ajax(request):
             return JsonResponse({'status': 'ok'})
     return JsonResponse({'status': 'error'}, status=400)
 
+
 @ensure_csrf_cookie
 @login_required
 def chatpage(request):
     if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
         return render(request, 'chatpage.html')
     return redirect('home')
+
 
 def dashboard_data(request):
     user_profile = request.user.userprofile
@@ -744,5 +788,5 @@ def dashboard_data(request):
         'totalGames': user_profile.total_online_games + user_profile.total_local_games,
         'recentGames': recentGames_data,
     }
-    
+
     return JsonResponse(user_stats)
