@@ -27,7 +27,7 @@ class Ball:
         self.bottom = self.y + self.radius
         self.randAngle = 0
         self.deceleration = 0.998  # deceleration factor
-        self.minSpeed = 7
+        self.minSpeed = 9
         self.playerL_points = 0
         self.playerR_points = 0
         self.point_win = False
@@ -64,7 +64,7 @@ class Ball:
         self.xFac *= -1
         tanAngle = math.tan(self.randAngle * math.pi / 180) * self.xFac
         self.yFac = tanAngle  # Update yFac based on the angle
-        self.speed = 8 * (1 + random.random() * 0.5)
+        self.speed = 15 * (1 + random.random() * 0.5)
 
     async def reset(self):
         self.x = WIN_W / 2
