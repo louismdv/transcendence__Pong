@@ -327,7 +327,7 @@ class Ball {
         this.color = color;
         this.xFac = 1;
         this.yFac = 1;
-        this.speed = 0; 
+        this.speed = 0;
         this.radius = BALL_RADIUS;
         this.hitCount = 0;
     }
