@@ -63,7 +63,7 @@
     display: flex;
     align-items: center;
     position: relative;
-    background-color: var(--primary-color);
+    background-color: var(--dark-bg-color);
     color: var(--text-color);
     width: auto;
     height: 40px;

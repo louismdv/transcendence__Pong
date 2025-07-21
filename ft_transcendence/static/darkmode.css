@@ -1,16 +1,7 @@
-/* --primary-color: #313131;
---background-color: #f2f0ef;
---text-color: #fff;
---secondary-color:#451b96;
---color: #9176FF;
---dark-color: #141414;
---full-black:#171719;
---dark-mode:#3e4147;
---dark-icon-color: #fff;
---light-color: #f7f7f7;
---light-icon-color: #FFDE59;
---btn-size: 105px;
---indicator-size: 50px; */
+.darkmode {
+    --grid-wrapper-bg: #171719;
+}
+
 .darkmode .chat-window-header{
     background: #3c3c3c;
     border-bottom: 1px solid rgba(0, 0, 0, 0.5);
@@ -44,8 +35,8 @@
 }
 
 .darkmode .text-muted{
-    color: rgb(163 163 163 / 75%) !important;
-    margin: 10px !important;
+    color: rgb(163 163 163 / 75%);
+    margin: 10px ;
 }
 .darkmode .chat-message.sent .message-content {
     background-color: var(--color);
