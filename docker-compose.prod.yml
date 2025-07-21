@@ -37,8 +37,8 @@ services:
   certbot:
     image: certbot/certbot
     volumes:
-      - ./nginx/ssl:/etc/letsencrypt
       - ./nginx/www:/var/www/html
+      - ./nginx/ssl:/etc/letsencrypt
     command: certonly --non-interactive --webroot --webroot-path=/var/www/html --email your-email@example.com --agree-tos --no-eff-email -d louismdv.works
 
 networks:
