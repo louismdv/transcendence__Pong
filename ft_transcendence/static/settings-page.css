@@ -165,3 +165,10 @@
     }
 }
 
+.form-control {
+    max-width: 500px;
+}
+
+.save-btn {
+    max-width: 100px;
+}

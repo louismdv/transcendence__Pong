@@ -58,8 +58,8 @@ msgid "No data"
 msgstr "Aucune données"
 
 #: ft_transcendence/static/js/dashboard.js:25
-msgid "Player statistics"
-msgstr "Statistiques du joueur"
+msgid "Statistics"
+msgstr "Statistiques"
 
 #: ft_transcendence/static/js/dashboard.js:55
 msgid "Online wins"

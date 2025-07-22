@@ -17,15 +17,6 @@ document.addEventListener('DOMContentLoaded', function() {
     loadBlockedUsers(); // Ajout de cette fonction
     setupUserSearch();
     
-    // Configuration de la recherche d'amis
-    // const searchInput = document.getElementById('friendSearch');
-    // if (searchInput) {
-    //     searchInput.addEventListener('input', function() {
-    //         const searchTerm = this.value.toLowerCase();
-    //         filterFriends(searchTerm);
-    //     });
-    // }
-    
     // Initialisation des statuts en ligne
     updateOnlineStatus();
     

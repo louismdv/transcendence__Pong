@@ -2,6 +2,7 @@
 :root{
     /* COLORS */
     --dark-bg-color: #313131;
+    --light-secondary-color: #f7f7f7;
     --background-color: #fff;
     --text-color: #fff;
     --secondary-color:#451b96;
@@ -123,4 +124,8 @@ form {
     display: flex;
     justify-content: center;
     align-items: center;
+}
+
+.form-select {
+    max-width: 500px;
 }
