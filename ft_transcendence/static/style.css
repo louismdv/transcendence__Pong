@@ -5,8 +5,6 @@
     --background-color: #fff;
     --text-color: #fff;
     --secondary-color:#451b96;
-    --secondary-color-dark: #313131;
-    --bs-secondary-color: #575757;
     --color: #9176FF;
     --dark-color: #575757;
     --full-black:#171719;
@@ -112,15 +110,4 @@ form {
 
 .nav-tabs .nav-link {
     color: var(--full-black);
-}
-
-.text-muted-custom {
-    color: var(--bs-secondary-color);
-}
-
-.span .text-muted-custom {
-    margin: 10px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
 }

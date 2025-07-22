@@ -164,7 +164,9 @@
 }
 
 .contacts-group-header h6, .rounded-pill{
+    margin: 0;
     font-weight: 600;
+    display: flex;
     align-items: center;
 }
 
