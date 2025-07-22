@@ -41,28 +41,29 @@
             <div class="tab-pane fade show active" id="friends" role="tabpanel" aria-labelledby="friends-tab">
                 <div class="d-flex justify-content-between align-items-center mb-3">
                     <h5>{% trans "Friends List" %}</h5>
-                    <div class="input-group search-container" style="width: 300px;">
+                    <!-- <div class="input-group search-container" style="width: 300px;">
                         <input type="text" id="friendSearch" class="form-control" placeholder="{% trans 'Search a friend...' %}">
                         <span class="input-group-text"><i class="bi bi-search"></i></span>
-                    </div>
+                    </div> -->
                 </div>
-                <div id="friendsContainer" class="friends-grid">
-                    <div class="d-flex justify-content-center">
-                        <div class="spinner-border text-primary" role="status">
-                            <span class="visually-hidden">{% trans "Loading..." %}</span>
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <div id="friendsContainer" class="friends-grid">
+                            <div class="d-flex justify-content-center">
+                                <div class="spinner-border text-primary" role="status">
+                                    <span class="visually-hidden">{% trans "Loading..." %}</span>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
 
             <div class="tab-pane fade" id="requests" role="tabpanel" aria-labelledby="requests-tab">
-                <div class="card mb-4">
-                    <div class="card-body">
                         <div id="friendRequestsContainer">
                             <div class="d-flex justify-content-center">
                                 <div class="spinner-border spinner-border-sm text-primary" role="status">
                                     <span class="visually-hidden">{% trans "Loading..." %}</span>
-                                </div>
                             </div>
                         </div>
                     </div>
@@ -75,21 +76,21 @@
                     <!-- Header content will be inserted here by JavaScript -->
                 </div>
                 
-                <div class="card">
-                    <div id="searchResults">
-                        <p class="text-muted">{% trans "Enter at least 3 characters to search" %}</p>
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <div id="searchResults">
+                            <span class="text-muted-custom">{% trans "Enter at least 3 characters to search" %}</span>
+                        </div>
                     </div>
                 </div>
             </div>
 
             <div class="tab-pane fade" id="blocked" role="tabpanel" aria-labelledby="blocked-tab">
-                <div class="card">
+                <div class="card mb-4">
                     <div class="card-body">
                         <div id="blockedUsersContainer">
-                            <div class="d-flex justify-content-center">
                                 <div class="spinner-border spinner-border-sm text-primary" role="status">
                                     <span class="visually-hidden">{% trans "Loading..." %}</span>
-                                </div>
                             </div>
                         </div>
                     </div>
@@ -145,7 +146,7 @@
             </div>
             <div class="blocked-user-info">
                 <h6 class="blocked-user-name">{username}</h6>
-                <div class="blocked-date text-muted small">{% trans "Blocked on" %} {blockedDate}</div>
+                <div class="blocked-date text-muted-custom">{% trans "Blocked on" %} {blockedDate}</div>
             </div>
             <div class="blocked-user-actions">
                 <button class="btn btn-sm btn-outline-secondary" onclick="unblockUser('{id}'); return false;">

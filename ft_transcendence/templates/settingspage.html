@@ -12,27 +12,27 @@
             <h5>{% trans "Manage your personal information and preferences" %}</h5>
 
         <!-- Navigation Tabs -->
-        <div class="nav nav-tabs mb-4" id="settingsTabs" role="tablist">
-            <div class="nav-item" role="presentation">
-                <button class="nav-link active" id="profile-tab" data-bs-toggle="tab" data-bs-target="#profile" type="button" role="tab">Profile</button>
-            </div>
-            <div class="nav-item" role="presentation">
-                <button class="nav-link" id="account-tab" data-bs-toggle="tab" data-bs-target="#account" type="button" role="tab">Account</button>
-            </div>
-            <div class="nav-item" role="presentation">
-                <button class="nav-link" id="preferences-tab" data-bs-toggle="tab" data-bs-target="#preferences" type="button" role="tab">Preferences</button>
-            </div>
-        </div>
         
         <!-- Tab Content -->
         <div class="settings-content">
+            <div class="nav nav-tabs mb-4" id="settingsTabs" role="tablist">
+                <div class="nav-item" role="presentation">
+                    <button class="nav-link active" id="profile-tab" data-bs-toggle="tab" data-bs-target="#profile" type="button" role="tab">Profile</button>
+                </div>
+                <div class="nav-item" role="presentation">
+                    <button class="nav-link" id="account-tab" data-bs-toggle="tab" data-bs-target="#account" type="button" role="tab">Account</button>
+                </div>
+                <div class="nav-item" role="presentation">
+                    <button class="nav-link" id="preferences-tab" data-bs-toggle="tab" data-bs-target="#preferences" type="button" role="tab">Preferences</button>
+                </div>
+            </div>
             <div class="tab-content" id="settingsTabsContent">
                 <!-- Profile Tab -->
                 <div class="tab-pane fade show active" id="profile" role="tabpanel">
                     <div class="my-card mb-4">
                         <div class="my-card-header">
                             <h5 class="my-card-title mb-0">{% trans "Profile Information" %}</h5>
-                            <div class="text-muted small">{% trans "Edit your personal information" %}</div>
+                            <div class="text-muted-custom">{% trans "Edit your personal information" %}</div>
                         </div>
                         <div class="my-card-body">
                             <!-- Avatar Section -->
@@ -65,7 +65,7 @@
                     <div class="my-card mb-4">
                         <div class="my-card-header">
                             <h5 class="my-card-title mb-0">{% trans "Account Information" %}</h5>
-                            <div class="text-muted small">{% trans "Edit your email and password" %}</div>
+                            <div class="text-muted-custom">{% trans "Edit your email and password" %}</div>
                         </div>
                         <div class="my-card-body">
                             <!-- Email Section -->
@@ -101,8 +101,8 @@
                     <!-- Danger Zone -->
                     <div class="my-card border-danger mb-4">
                         <div class="my-card-header bg-danger bg-opacity-10 text-danger">
-                            <h5 class="my-card-title mb-0">{% trans "Danger Zone" %}</h5>
-                            <div class="text-muted small">{% trans "Irreversible actions for your account" %}</div>
+                            <h5 class="text-mute-custom">{% trans "Danger Zone" %}</h5>
+                            <div class="text-mute-custom">{% trans "Irreversible actions for your account" %}</div>
                         </div>
                         <div class="my-card-body">
                             <button type="button" id="delete-account-btn" class="btn-settings btn-danger">
@@ -118,7 +118,7 @@
                     <div class="my-card mb-4">
                         <div class="my-card-header">
                             <h5 class="my-card-title mb-0">{% trans "Display Preferences" %}</h5>
-                            <div class="text-muted small">{% trans "Customize your display preferences" %}</div>
+                            <div class="text-muted-custom">{% trans "Customize your display preferences" %}</div>
                         </div>
                         <div class="my-card-body">
                             <!-- Time Format -->
