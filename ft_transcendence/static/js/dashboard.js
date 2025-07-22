@@ -22,7 +22,7 @@ function initializePieChart() {
         data: {
             labels: [gettext('No data')],
             datasets: [{
-                label: gettext('Player statistics'),
+                label: gettext('Statistics'),
                 data: [1],
                 backgroundColor: ['#e0e0e0'],
                 borderWidth: 1

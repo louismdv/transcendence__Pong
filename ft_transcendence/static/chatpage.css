@@ -183,9 +183,14 @@
     align-items: center;
     padding: 10px 15px;
     border-radius: 8px;
-    background: rgba(255, 255, 255, 0.05);
     transition: all 0.2s ease;
+    background: var(--light-secondary-color);
 }
+
+.contact-item .contact-actions .action-button {
+    background: var(--bs-secondary-color);
+}
+
 
 .contact-item:hover {
     background: rgba(255, 255, 255, 0.1);
@@ -222,6 +227,8 @@
     display: flex;
     gap: 10px;
 }
+
+
 /* Styles pour l'en-tête des contacts */
 .contacts-header {
     display: flex;

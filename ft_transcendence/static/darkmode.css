@@ -1,5 +1,8 @@
 .darkmode {
     --grid-wrapper-bg: #171719;
+    --text-color: #fff;
+    --light-color: #171719;
+    --light-secondary-color: rgba(255, 255, 255, 0.05);
 }
 
 .darkmode .chat-window-header{
@@ -83,13 +86,15 @@
  .darkmode .chat-content,
  .darkmode .card,
  .darkmode .nav-tabs .nav-link.active,
- .darkmode .dashboard-card  {
+ .darkmode .dashboard-card {
     background-color: var(--dark-color);
     color: var(--text-color);
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 }
 
 .darkmode .nav-tabs .nav-link, 
-.darkmode .my-card-header .my-card-title{
+.darkmode .my-card-header .my-card-title,
+.darkmode .action-button .message-button,
+.darkmode .action-button .invite-button {
     color: var(--text-color);
 }
