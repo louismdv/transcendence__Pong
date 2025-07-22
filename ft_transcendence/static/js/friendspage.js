@@ -18,13 +18,13 @@ document.addEventListener('DOMContentLoaded', function() {
     setupUserSearch();
     
     // Configuration de la recherche d'amis
-    const searchInput = document.getElementById('friendSearch');
-    if (searchInput) {
-        searchInput.addEventListener('input', function() {
-            const searchTerm = this.value.toLowerCase();
-            filterFriends(searchTerm);
-        });
-    }
+    // const searchInput = document.getElementById('friendSearch');
+    // if (searchInput) {
+    //     searchInput.addEventListener('input', function() {
+    //         const searchTerm = this.value.toLowerCase();
+    //         filterFriends(searchTerm);
+    //     });
+    // }
     
     // Initialisation des statuts en ligne
     updateOnlineStatus();
@@ -79,11 +79,7 @@ function loadFriends() {
             if (data.friends.length === 0) {
                 friendsContainer.innerHTML = `
                     <div class="empty-state">
-                        <div class="empty-icon">
-                            <i class="bi bi-people"></i>
-                        </div>
-                        <h6>${gettext("No friends at the moment")}</h6>
-                        <p class="text-muted">${gettext("Search for users to add them to your friends list.")}</p>
+                        <span class="text-muted-custom">${gettext("Search for users to add them to your friends list.")}</span>
                     </div>
                 `;
                 updateFriendCounter();
@@ -232,7 +228,7 @@ function filterFriends(searchTerm) {
             const message = document.createElement('div');
             message.className = 'no-results text-center py-3';
             message.innerHTML = `
-                <p class="text-muted">${gettext('No result for ')}"${searchTerm}"</p>
+                <p class="text-muted-custom">${gettext('No result for ')}"${searchTerm}"</p>
             `;
             friendsContainer.appendChild(message);
         }
@@ -372,13 +368,7 @@ function loadBlockedUsers() {
         .then(data => {
             if (data.blocked_users.length === 0) {
                 blockedContainer.innerHTML = `
-                    <div class="empty-state">
-                        <div class="empty-icon">
-                            <i class="bi bi-shield-check"></i>
-                        </div>
-                        <h6>${gettext('No blocked users.')}</h6>
-                        <p class="text-muted">Vous n'avez bloqué personne pour le moment.</p>
-                    </div>
+                    <span class="text-muted-custom">Vous n'avez bloqué personne pour le moment.</span>
                 `;
                 
                 // Mettre à jour le badge
@@ -424,7 +414,7 @@ function createBlockedUserCardHTML(user) {
                 </div>
                 <div class="user-info flex-grow-1">
                     <h6 class="mb-0">${user.username}</h6>
-                    <small class="text-muted">Bloqué ${formatDate(user.blocked_date)}</small>
+                    <small class="text-muted-custom">Bloqué ${formatDate(user.blocked_date)}</small>
                 </div>
                 <div class="actions">
                     <button class="btn btn-sm btn-outline-primary" onclick="unblockUser('${user.id}')">
@@ -491,7 +481,7 @@ function updateBlockedCounter() {
                         <i class="bi bi-shield-check"></i>
                     </div>
                     <h6>${gettext('No blocked users.')}</h6>
-                    <p class="text-muted">Vous n'avez bloqué personne pour le moment.</p>
+                    <p class="text-muted-custom">Vous n'avez bloqué personne pour le moment.</p>
                 </div>
             `;
         }
@@ -521,7 +511,7 @@ function setupUserSearch() {
             
             if (query.length < 3) {
                 searchResultsHeader.style.display = 'none';
-                searchResults.innerHTML = '<p class="text-muted">Entrez au moins 3 caractères</p>';
+                searchResults.innerHTML = '<p class="text-muted-custom">Entrez au moins 3 caractères</p>';
                 return;
             }
             
@@ -542,7 +532,7 @@ function setupUserSearch() {
                     .then(data => {
                         if (data.users.length === 0) {
                             searchResultsHeader.style.display = 'none';
-                            searchResults.innerHTML = '<p class="text-muted">Aucun utilisateur trouvé</p>';
+                            searchResults.innerHTML = '<p class="text-muted-custom">Aucun utilisateur trouvé</p>';
                             return;
                         }
                         
@@ -551,11 +541,11 @@ function setupUserSearch() {
                         searchResultsHeader.innerHTML = `
                             <div class="search-results-header">
                                 <div class="d-flex justify-content-between align-items-center">
-                                    <span class="text-muted">
+                                    <span class="text-muted-custom">
                                         <i class="bi bi-search me-1"></i>
                                         ${data.users.length} résultat${data.users.length > 1 ? 's' : ''} trouvé${data.users.length > 1 ? 's' : ''}
                                     </span>
-                                    <small class="text-muted">
+                                    <small class="text-muted-custom">
                                         <i class="bi bi-clock me-1"></i>
                                         ${timestamp}
                                     </small>
@@ -660,20 +650,20 @@ function loadFriendRequests() {
             }
             
             if (data.requests.length === 0) {
-                requestsContainer.innerHTML = '<p class="text-muted">' + gettext('No invitations for the moment.') + '</p>';
+                requestsContainer.innerHTML = '<span class="text-muted-custom">' + gettext('No invitations for the moment.') + '</span>';
                 return;
             }
             
             let requestsHTML = '';
             data.requests.forEach(request => {
                 requestsHTML += `
-                    <div class="request-item d-flex align-items-center p-2 mb-2 border-bottom" data-request-id="${request.id}">
+                    <div class="request-item d-flex align-items-center w-500 p-2 mb-2 border rounded-3" data-request-id="${request.id}">
                         <div class="user-avatar me-3">
                             <img src="${request.avatar || '/media/avatars/default.png'}" alt="${request.username}" class="avatar-sm">
                         </div>
                         <div class="user-info flex-grow-1">
                             <h6 class="mb-0">${request.username}</h6>
-                            <small class="text-muted">${formatDate(request.created_at)}</small>
+                            <small class="text-muted-custom" style="margin-right: 10px">${formatDate(request.created_at)}</small>
                         </div>
                         <div class="request-actions">
                             <button class="btn btn-sm btn-success me-1" onclick="acceptFriendRequest('${request.id}')">
@@ -789,7 +779,7 @@ function updateRequestCounter() {
         badge.textContent = requestCount;
         
         if (requestCount === 0) {
-            requestsContainer.innerHTML = '<p class="text-muted">' + gettext('No requests at the moment.') + '</p>';
+            requestsContainer.innerHTML = '<p class="text-muted-custom">' + gettext('No requests at the moment.') + '</p>';
         }
     }
 }
@@ -886,7 +876,7 @@ function updateFriendCounter() {
                         <i class="bi bi-people"></i>
                     </div>
                     <h6>${gettext('No friends at the moment.')}</h6>
-                    <p class="text-muted">${gettext('Search for users to add to your friends list.')}</p>
+                    <p class="text-muted-custom">${gettext('Search for users to add to your friends list.')}</p>
                 </div>
             `;
         }

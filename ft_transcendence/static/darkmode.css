@@ -34,9 +34,8 @@
     color: rgba(255, 255, 255, 0.5);
 }
 
-.darkmode .text-muted{
+.darkmode .text-muted-custom {
     color: rgb(163 163 163 / 75%);
-    margin: 10px ;
 }
 .darkmode .chat-message.sent .message-content {
     background-color: var(--color);
@@ -92,5 +91,5 @@
 
 .darkmode .nav-tabs .nav-link, 
 .darkmode .my-card-header .my-card-title{
-    color: #ffffff;
+    color: var(--text-color);
 }
