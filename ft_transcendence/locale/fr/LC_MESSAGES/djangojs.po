@@ -518,3 +518,6 @@ msgstr "Invitation à jouer envoyée!"
 
 #~ msgid "Player"
 #~ msgstr "Joueur"
+
+msgid "No users blocked at the moment."
+msgstr "Vous n'avez bloqué personne pour le moment."

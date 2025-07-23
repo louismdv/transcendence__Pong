@@ -359,7 +359,7 @@ function loadBlockedUsers() {
         .then(data => {
             if (data.blocked_users.length === 0) {
                 blockedContainer.innerHTML = `
-                    <span class="text-muted-custom">Vous n'avez bloqué personne pour le moment.</span>
+                    <span class="text-muted-custom">${gettext('No users blocked at the moment.')}</span>
                 `;
                 
                 // Mettre à jour le badge
@@ -472,7 +472,7 @@ function updateBlockedCounter() {
                         <i class="bi bi-shield-check"></i>
                     </div>
                     <h6>${gettext('No blocked users.')}</h6>
-                    <p class="text-muted-custom">Vous n'avez bloqué personne pour le moment.</p>
+                    <span class="text-muted-custom">${gettext('No users blocked at the moment.')}</span>
                 </div>
             `;
         }
@@ -770,7 +770,7 @@ function updateRequestCounter() {
         badge.textContent = requestCount;
         
         if (requestCount === 0) {
-            requestsContainer.innerHTML = '<p class="text-muted-custom">' + gettext('No requests at the moment.') + '</p>';
+            requestsContainer.innerHTML = '<span class="text-muted-custom">' + gettext('No requests at the moment.') + '</span>';
         }
     }
 }
