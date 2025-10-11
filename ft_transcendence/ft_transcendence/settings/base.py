@@ -9,7 +9,7 @@ SECRET_KEY = config('SECRET_KEY', default='unsafe-secret-key-for-dev')
 
 DEBUG = False  # Default to False, override in dev.py
 
-ALLOWED_HOSTS = ['louismdv.works', 'www.louismdv.works']  # Override in dev.py and prod.py
+ALLOWED_HOSTS = []  # Override in dev.py and prod.py
 
 MESSAGE_TAGS = {
     messages.DEBUG: 'debug',
